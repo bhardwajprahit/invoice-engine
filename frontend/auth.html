@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Invoice Engine — Sign in</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="supabase-config.js"></script>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 24px;
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background:
+
+                radial-gradient(
+                    circle at 50% -10%,
+                    rgba(96,124,255,.16),
+                    transparent 45%
+                ),
+
+                #080b12;
+
+            color: #d8deea;
+
+        }
+
+
+        .auth-card {
+
+            width: 100%;
+
+            max-width: 430px;
+
+            padding: 38px;
+
+            border:
+                1px solid #1c2636;
+
+            border-radius: 18px;
+
+            background:
+                rgba(13,17,26,.92);
+
+            box-shadow:
+                0 25px 80px rgba(0,0,0,.35);
+
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            margin-bottom: 32px;
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+        }
+
+
+        .brand-mark {
+
+            width: 36px;
+
+            height: 36px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(96,124,255,.2),
+                    rgba(155,124,255,.15)
+                );
+
+            border:
+                1px solid rgba(96,124,255,.25);
+
+            color: #8297ff;
+
+        }
+
+
+        .brand-mark svg {
+
+            width: 19px;
+
+            height: 19px;
+
+            stroke: currentColor;
+
+        }
+
+
+        h1 {
+
+            font-size: 30px;
+
+            letter-spacing: -1px;
+
+        }
+
+
+        .subtitle {
+
+            margin-top: 9px;
+
+            color: #707b8e;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+        }
+
+
+        .tabs {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            margin-top: 28px;
+
+            padding: 4px;
+
+            border-radius: 9px;
+
+            background: #111722;
+
+            border: 1px solid #1c2636;
+
+        }
+
+
+        .tab {
+
+            padding: 10px;
+
+            border: 0;
+
+            border-radius: 7px;
+
+            background: transparent;
+
+            color: #707b8e;
+
+            cursor: pointer;
+
+            font-weight: 600;
+
+        }
+
+
+        .tab.active {
+
+            background: #1c2636;
+
+            color: #d8deea;
+
+        }
+
+
+        .form {
+
+            margin-top: 25px;
+
+        }
+
+
+        label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #a5afc0;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+        }
+
+
+        input {
+
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border:
+                1px solid #1c2636;
+
+            border-radius: 9px;
+
+            outline: none;
+
+            background: #0b0f17;
+
+            color: #d8deea;
+
+            font-size: 14px;
+
+            margin-bottom: 17px;
+
+        }
+
+
+        input:focus {
+
+            border-color: #607cff;
+
+            box-shadow:
+                0 0 0 3px rgba(96,124,255,.10);
+
+        }
+
+
+        .submit {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border: 0;
+
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            color: white;
+
+            font-weight: 700;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #536fff,
+                    #7564df
+                );
+
+        }
+
+
+        .submit:disabled {
+
+            opacity: .6;
+
+            cursor: wait;
+
+        }
+
+
+        .message {
+
+            display: none;
+
+            margin-top: 16px;
+
+            padding: 12px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .message.error {
+
+            display: block;
+
+            color: #ff9b9b;
+
+            background: rgba(255,80,80,.08);
+
+            border:
+                1px solid rgba(255,80,80,.18);
+
+        }
+
+
+        .message.success {
+
+            display: block;
+
+            color: #7ee6a7;
+
+            background: rgba(85,217,138,.08);
+
+            border:
+                1px solid rgba(85,217,138,.18);
+
+        }
+
+
+        .back {
+
+            display: block;
+
+            margin-top: 22px;
+
+            text-align: center;
+
+            color: #707b8e;
+
+            font-size: 13px;
+
+        }
+
+
+        .back:hover {
+
+            color: #d8deea;
+
+        }
+
+
+        @media(max-width: 500px) {
+
+            .auth-card {
+
+                padding: 28px 22px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="auth-card">
+
+
+    <div class="brand">
+
+        <div class="brand-mark">
+
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="1.8"
+            >
+
+                <path d="M7 3h7l4 4v14H7z"/>
+
+                <path d="M14 3v5h5"/>
+
+                <path d="M10 13h5"/>
+
+                <path d="M10 17h5"/>
+
+            </svg>
+
+        </div>
+
+
+        Invoice Engine
+
+    </div>
+
+
+    <h1 id="title">
+        Welcome back
+    </h1>
+
+
+    <p class="subtitle" id="subtitle">
+
+        Sign in to access your invoice workspace.
+
+    </p>
+
+
+    <div class="tabs">
+
+
+        <button
+            class="tab active"
+            id="loginTab"
+            onclick="showLogin()"
+        >
+
+            Sign in
+
+        </button>
+
+
+        <button
+            class="tab"
+            id="signupTab"
+            onclick="showSignup()"
+        >
+
+            Create account
+
+        </button>
+
+
+    </div>
+
+
+    <form
+        class="form"
+        id="authForm"
+    >
+
+
+        <label for="email">
+            Email
+        </label>
+
+
+        <input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            required
+        >
+
+
+        <label for="password">
+            Password
+        </label>
+
+
+        <input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            minlength="6"
+            required
+        >
+
+
+        <button
+            class="submit"
+            id="submitButton"
+            type="submit"
+        >
+
+            Sign in
+
+        </button>
+
+
+    </form>
+
+
+    <div
+        class="message"
+        id="message"
+    ></div>
+
+
+    <a
+        class="back"
+        href="index.html"
+    >
+
+        ← Back to Invoice Engine
+
+    </a>
+
+
+</div>
+
+
+<script>
+
+
+let mode = "login";
+
+
+const title =
+    document.getElementById("title");
+
+const subtitle =
+    document.getElementById("subtitle");
+
+const loginTab =
+    document.getElementById("loginTab");
+
+const signupTab =
+    document.getElementById("signupTab");
+
+const submitButton =
+    document.getElementById("submitButton");
+
+const message =
+    document.getElementById("message");
+
+
+function clearMessage() {
+
+    message.className = "message";
+
+    message.textContent = "";
+
+}
+
+
+function showLogin() {
+
+    mode = "login";
+
+    title.textContent =
+        "Welcome back";
+
+    subtitle.textContent =
+        "Sign in to access your invoice workspace.";
+
+    loginTab.classList.add("active");
+
+    signupTab.classList.remove("active");
+
+    submitButton.textContent =
+        "Sign in";
+
+    clearMessage();
+
+}
+
+
+function showSignup() {
+
+    mode = "signup";
+
+    title.textContent =
+        "Create your account";
+
+    subtitle.textContent =
+        "Create an account to start processing invoices.";
+
+    signupTab.classList.add("active");
+
+    loginTab.classList.remove("active");
+
+    submitButton.textContent =
+        "Create account";
+
+    clearMessage();
+
+}
+
+
+function showError(text) {
+
+    message.className =
+        "message error";
+
+    message.textContent =
+        text;
+
+}
+
+
+function showSuccess(text) {
+
+    message.className =
+        "message success";
+
+    message.textContent =
+        text;
+
+}
+
+
+document
+    .getElementById("authForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            clearMessage();
+
+            const email =
+                document
+                    .getElementById("email")
+                    .value
+                    .trim();
+
+            const password =
+                document
+                    .getElementById("password")
+                    .value;
+
+
+            submitButton.disabled = true;
+
+
+            try {
+
+
+                if (mode === "signup") {
+
+
+                    const {
+                        data,
+                        error
+                    } = await supabaseClient
+                        .auth
+                        .signUp({
+                            email,
+                            password
+                        });
+
+
+                    if (error) {
+
+                        throw error;
+
+                    }
+
+
+                    if (
+                        data.user &&
+                        !data.session
+                    ) {
+
+                        showSuccess(
+                            "Account created. Check your email to verify your account."
+                        );
+
+                    } else {
+
+                        showSuccess(
+                            "Account created successfully."
+                        );
+
+                        setTimeout(
+                            () => {
+                                window.location.href =
+                                    "dashboard.html";
+                            },
+                            800
+                        );
+
+                    }
+
+
+                } else {
+
+
+                    const {
+                        data,
+                        error
+                    } = await supabaseClient
+                        .auth
+                        .signInWithPassword({
+                            email,
+                            password
+                        });
+
+
+                    if (error) {
+
+                        throw error;
+
+                    }
+
+
+                    showSuccess(
+                        "Signed in successfully."
+                    );
+
+
+                    setTimeout(
+                        () => {
+                            window.location.href =
+                                "dashboard.html";
+                        },
+                        500
+                    );
+
+                }
+
+
+            } catch (error) {
+
+                showError(
+                    error.message ||
+                    "Something went wrong."
+                );
+
+            } finally {
+
+                submitButton.disabled = false;
+
+            }
+
+        }
+    );
+
+
+/*
+    If the user is already signed in,
+    send them directly to the dashboard.
+*/
+
+
+async function checkExistingSession() {
+
+    const {
+        data
+    } = await supabaseClient
+        .auth
+        .getSession();
+
+
+    if (data.session) {
+
+        window.location.href =
+            "dashboard.html";
+
+    }
+
+}
+
+
+checkExistingSession();
+
+
+</script>
+
+
+</body>
+
+</html>
