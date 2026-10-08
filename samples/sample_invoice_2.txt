@@ -1,0 +1,15 @@
+TAX INVOICE
+
+Invoice Number: INV-2026-002
+Invoice Date: 03-10-2026
+
+Vendor: Wayne Enterprises Pvt. Ltd.
+GSTIN: 07WAYNE1234E1Z8
+
+Item: Security Equipment
+Quantity: 5
+Unit Price: 12000
+
+Subtotal: 60000
+GST: 10800
+Total Amount: 70800

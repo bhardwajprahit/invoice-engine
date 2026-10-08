@@ -1,0 +1,15 @@
+TAX INVOICE
+
+Invoice Number: INV-2026-001
+Invoice Date: 02-10-2026
+
+Vendor: Stark Technologies Pvt. Ltd.
+GSTIN: 03ABCDE1234F1Z5
+
+Item: Computer Equipment
+Quantity: 2
+Unit Price: 45000
+
+Subtotal: 90000
+GST: 16200
+Total Amount: 106200
