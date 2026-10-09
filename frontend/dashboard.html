@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -10,669 +8,6903 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Invoice Engine — Sign in</title>
+    <title>Invoice Engine — Dashboard</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- =====================================================
+         SHEETJS
+         ===================================================== -->
 
-    <script src="/frontend/supabase-config.js"></script>
+    <script
+        src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"
+    ></script>
+
+    <!-- =====================================================
+         FONT
+         ===================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- =====================================================
+         STYLE
+         ===================================================== -->
 
     <style>
 
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
+        :root {
+
+            --bg:
+                #070b12;
+
+            --panel:
+                #0d131d;
+
+            --panel-2:
+                #111927;
+
+            --panel-3:
+                #151f2d;
+
+            --border:
+                rgba(255,255,255,.08);
+
+            --border-strong:
+                rgba(255,255,255,.13);
+
+            --text:
+                #f5f7fb;
+
+            --muted:
+                #8b96a8;
+
+            --muted-2:
+                #647084;
+
+            --blue:
+                #5b8cff;
+
+            --blue-2:
+                #3f6fe5;
+
+            --green:
+                #39d98a;
+
+            --yellow:
+                #f5c451;
+
+            --red:
+                #ff647c;
+
+            --shadow:
+                0 20px 60px rgba(0,0,0,.35);
+
+            --radius:
+                16px;
+        }
+
+        html,
         body {
-            min-height: 100vh;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin: 0;
+            padding: 0;
 
-            padding: 24px;
+            width: 100%;
+            height: 100%;
+
+            background:
+                var(--bg);
+
+            color:
+                var(--text);
 
             font-family:
                 Inter,
-                system-ui,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
+                Arial,
                 sans-serif;
+        }
 
-            color: #d8deea;
+        body {
+            overflow-x: hidden;
+        }
+
+        button,
+        input,
+        select {
+
+            font-family:
+                inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        /* =================================================
+           APP
+           ================================================= */
+
+        .app {
+
+            min-height: 100vh;
+
+            display: flex;
 
             background:
                 radial-gradient(
-                    circle at 50% 0%,
-                    rgba(96,124,255,.14),
-                    transparent 45%
+                    circle at 70% -10%,
+                    rgba(70,110,220,.12),
+                    transparent 32%
                 ),
-                #080b12;
+                var(--bg);
         }
 
-        .card {
+        /* =================================================
+           SIDEBAR
+           ================================================= */
 
-            width: 100%;
-            max-width: 430px;
+        .sidebar {
 
-            padding: 34px;
+            width: 250px;
 
-            border:
-                1px solid #1c2636;
+            min-height: 100vh;
 
-            border-radius: 18px;
+            border-right:
+                1px solid var(--border);
 
             background:
-                rgba(13,17,26,.94);
+                rgba(9,14,22,.96);
 
-            box-shadow:
-                0 25px 80px rgba(0,0,0,.35);
+            padding:
+                24px 16px;
+
+            position: fixed;
+
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            z-index: 20;
         }
 
         .brand {
 
             display: flex;
+
             align-items: center;
 
-            gap: 10px;
+            gap: 12px;
 
-            margin-bottom: 32px;
-
-            font-size: 18px;
-            font-weight: 700;
+            padding:
+                0 10px 26px;
         }
 
         .brand-mark {
 
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
+
+            border-radius: 11px;
 
             display: grid;
+
             place-items: center;
-
-            border-radius: 10px;
-
-            background:
-                rgba(96,124,255,.12);
-
-            border:
-                1px solid rgba(96,124,255,.25);
-        }
-
-        h1 {
-
-            font-size: 30px;
-
-            letter-spacing: -1px;
-
-            margin-bottom: 8px;
-        }
-
-        .subtitle {
-
-            color: #707b8e;
-
-            font-size: 14px;
-
-            line-height: 1.6;
-
-            margin-bottom: 28px;
-        }
-
-        .tabs {
-
-            display: grid;
-
-            grid-template-columns: 1fr 1fr;
-
-            gap: 5px;
-
-            padding: 5px;
-
-            margin-bottom: 24px;
-
-            border-radius: 10px;
-
-            background: #0a0e15;
-
-            border: 1px solid #1c2636;
-        }
-
-        .tab {
-
-            border: 0;
-
-            padding: 10px;
-
-            border-radius: 7px;
-
-            cursor: pointer;
-
-            background: transparent;
-
-            color: #707b8e;
-
-            font-weight: 600;
-        }
-
-        .tab.active {
-
-            background: #151c29;
-
-            color: #d8deea;
-        }
-
-        label {
-
-            display: block;
-
-            margin-bottom: 7px;
-
-            color: #a5afc0;
-
-            font-size: 13px;
-        }
-
-        input {
-
-            width: 100%;
-
-            padding: 13px 14px;
-
-            margin-bottom: 18px;
-
-            border-radius: 9px;
-
-            border: 1px solid #1c2636;
-
-            outline: none;
-
-            background: #0a0e15;
-
-            color: #d8deea;
-
-            font-size: 14px;
-        }
-
-        input:focus {
-
-            border-color: #607cff;
-
-            box-shadow:
-                0 0 0 3px rgba(96,124,255,.10);
-        }
-
-        .submit {
-
-            width: 100%;
-
-            padding: 13px;
-
-            border: 0;
-
-            border-radius: 9px;
-
-            cursor: pointer;
-
-            color: white;
-
-            font-weight: 700;
 
             background:
                 linear-gradient(
                     135deg,
-                    #536fff,
-                    #7564df
+                    #6c9cff,
+                    #385bc5
                 );
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 8px 25px rgba(70,110,230,.25);
         }
 
-        .submit:disabled {
+        .brand-title {
 
-            opacity: .6;
+            font-size: 16px;
 
-            cursor: not-allowed;
+            font-weight: 800;
+
+            letter-spacing:
+                -.02em;
         }
 
-        .message {
+        .brand-subtitle {
 
-            min-height: 20px;
+            margin-top: 2px;
 
-            margin-top: 16px;
+            font-size: 11px;
+
+            color:
+                var(--muted);
+        }
+
+        .nav-label {
+
+            padding:
+                14px 10px 8px;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            color:
+                var(--muted-2);
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .12em;
+        }
+
+        .nav-item {
+
+            width: 100%;
+
+            border: 0;
+
+            background: transparent;
+
+            color:
+                var(--muted);
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding:
+                11px 12px;
+
+            margin:
+                2px 0;
+
+            border-radius: 10px;
+
+            text-align: left;
 
             font-size: 13px;
 
-            line-height: 1.5;
-
-            color: #a5afc0;
+            transition:
+                .18s ease;
         }
 
-        .back {
+        .nav-item:hover {
 
-            display: block;
+            background:
+                rgba(255,255,255,.045);
 
-            margin-top: 24px;
+            color:
+                var(--text);
+        }
+
+        .nav-item.active {
+
+            background:
+                rgba(91,140,255,.13);
+
+            color:
+                #dce6ff;
+        }
+
+        .nav-icon {
+
+            width: 18px;
 
             text-align: center;
 
-            color: #707b8e;
-
-            font-size: 13px;
+            font-size: 15px;
         }
 
-        .back:hover {
+        .sidebar-bottom {
 
-            color: #d8deea;
+            position: absolute;
+
+            left: 16px;
+            right: 16px;
+            bottom: 20px;
+
+            border-top:
+                1px solid var(--border);
+
+            padding-top: 16px;
+        }
+
+        .profile {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding:
+                8px;
+        }
+
+        .avatar {
+
+            width: 34px;
+            height: 34px;
+
+            border-radius: 10px;
+
+            display: grid;
+
+            place-items: center;
+
+            background:
+                #1c2737;
+
+            border:
+                1px solid var(--border-strong);
+
+            font-size: 11px;
+
+            font-weight: 800;
+        }
+
+        .profile-name {
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+        .profile-status {
+
+            margin-top: 3px;
+
+            font-size: 10px;
+
+            color:
+                var(--green);
+        }
+
+        /* =================================================
+           MAIN
+           ================================================= */
+
+        .main {
+
+            width: calc(100% - 250px);
+
+            margin-left: 250px;
+
+            min-height: 100vh;
+        }
+
+        .topbar {
+
+            height: 72px;
+
+            border-bottom:
+                1px solid var(--border);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                0 30px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 15;
+
+            background:
+                rgba(7,11,18,.88);
+
+            backdrop-filter:
+                blur(18px);
+        }
+
+        .topbar-left h1 {
+
+            margin: 0;
+
+            font-size: 18px;
+
+            letter-spacing:
+                -.025em;
+        }
+
+        .topbar-left p {
+
+            margin:
+                4px 0 0;
+
+            color:
+                var(--muted);
+
+            font-size: 11px;
+        }
+
+        .api-status {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-size: 11px;
+
+            color:
+                var(--muted);
+        }
+
+        .status-dot {
+
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background:
+                var(--green);
+
+            box-shadow:
+                0 0 12px rgba(57,217,138,.6);
+        }
+
+        .status-dot.offline {
+
+            background:
+                var(--red);
+
+            box-shadow:
+                0 0 12px rgba(255,100,124,.5);
+        }
+
+        .content {
+
+            padding:
+                28px 30px 50px;
+        }
+
+        /* =================================================
+           BUTTONS
+           ================================================= */
+
+        .btn {
+
+            border: 1px solid var(--border-strong);
+
+            background:
+                var(--panel-2);
+
+            color:
+                var(--text);
+
+            border-radius: 10px;
+
+            padding:
+                10px 14px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            transition:
+                .18s ease;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+        }
+
+        .btn:hover {
+
+            background:
+                var(--panel-3);
+
+            border-color:
+                rgba(255,255,255,.18);
+
+            transform:
+                translateY(-1px);
+        }
+
+        .btn-primary {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--blue),
+                    var(--blue-2)
+                );
+
+            border-color:
+                transparent;
+
+            color: white;
+
+            box-shadow:
+                0 10px 25px rgba(70,105,220,.18);
+        }
+
+        .btn-primary:hover {
+
+            filter:
+                brightness(1.08);
+        }
+
+        .btn-danger {
+
+            color:
+                #ff8799;
+        }
+
+        .btn-success {
+
+            color:
+                #62e5a3;
+        }
+
+        .btn-small {
+
+            padding:
+                7px 10px;
+
+            font-size: 11px;
+        }
+
+        /* =================================================
+           CARDS
+           ================================================= */
+
+        .grid {
+
+            display: grid;
+
+            gap: 14px;
+        }
+
+        .stats-grid {
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            margin-bottom: 22px;
+        }
+
+        .card {
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(17,25,39,.95),
+                    rgba(11,17,27,.95)
+                );
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                var(--radius);
+
+            box-shadow:
+                var(--shadow);
+        }
+
+        .stat-card {
+
+            padding:
+                18px;
+
+            min-height:
+                120px;
+        }
+
+        .stat-label {
+
+            color:
+                var(--muted);
+
+            font-size: 11px;
+
+            font-weight: 600;
+        }
+
+        .stat-value {
+
+            margin-top:
+                12px;
+
+            font-size: 28px;
+
+            font-weight: 800;
+
+            letter-spacing:
+                -.04em;
+        }
+
+        .stat-note {
+
+            margin-top:
+                7px;
+
+            font-size: 10px;
+
+            color:
+                var(--muted-2);
+        }
+
+        /* =================================================
+           PAGE HEADER
+           ================================================= */
+
+        .page-header {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom:
+                20px;
+        }
+
+        .page-header h2 {
+
+            margin: 0;
+
+            font-size: 22px;
+
+            letter-spacing:
+                -.035em;
+        }
+
+        .page-header p {
+
+            margin:
+                6px 0 0;
+
+            color:
+                var(--muted);
+
+            font-size: 12px;
+        }
+
+        /* =================================================
+           TABLE
+           ================================================= */
+
+        .table-card {
+
+            overflow:
+                hidden;
+        }
+
+        .table-toolbar {
+
+            padding:
+                15px;
+
+            border-bottom:
+                1px solid var(--border);
+
+            display: flex;
+
+            gap: 10px;
+
+            align-items: center;
+        }
+
+        .search {
+
+            flex: 1;
+
+            min-width: 180px;
+
+            background:
+                #0a111b;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 10px;
+
+            color:
+                var(--text);
+
+            padding:
+                10px 12px;
+
+            outline: none;
+
+            font-size: 12px;
+        }
+
+        .search:focus {
+
+            border-color:
+                rgba(91,140,255,.55);
+
+            box-shadow:
+                0 0 0 3px rgba(91,140,255,.08);
+        }
+
+        select {
+
+            background:
+                #0a111b;
+
+            border:
+                1px solid var(--border);
+
+            color:
+                var(--text);
+
+            border-radius: 10px;
+
+            padding:
+                10px 12px;
+
+            outline: none;
+
+            font-size: 11px;
+        }
+
+        .table-wrap {
+
+            overflow-x:
+                auto;
+        }
+
+        table {
+
+            width: 100%;
+
+            border-collapse:
+                collapse;
+        }
+
+        th {
+
+            text-align: left;
+
+            padding:
+                12px 15px;
+
+            font-size: 9px;
+
+            color:
+                var(--muted-2);
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .08em;
+
+            border-bottom:
+                1px solid var(--border);
+
+            white-space:
+                nowrap;
+        }
+
+        td {
+
+            padding:
+                13px 15px;
+
+            border-bottom:
+                1px solid rgba(255,255,255,.045);
+
+            font-size: 11px;
+
+            color:
+                #d8deea;
+
+            vertical-align:
+                middle;
+        }
+
+        tr:hover td {
+
+            background:
+                rgba(255,255,255,.018);
+        }
+
+        .invoice-number {
+
+            font-weight: 700;
+
+            color:
+                #f2f5fb;
+        }
+
+        .sub {
+
+            margin-top: 4px;
+
+            font-size: 9px;
+
+            color:
+                var(--muted-2);
+        }
+
+        .status {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            padding:
+                5px 8px;
+
+            border-radius:
+                999px;
+
+            font-size: 9px;
+
+            font-weight: 700;
+        }
+
+        .status-valid {
+
+            background:
+                rgba(57,217,138,.09);
+
+            color:
+                #61e3a1;
+        }
+
+        .status-warning {
+
+            background:
+                rgba(245,196,81,.10);
+
+            color:
+                #f4ca64;
+        }
+
+        .status-invalid {
+
+            background:
+                rgba(255,100,124,.10);
+
+            color:
+                #ff8497;
+        }
+
+        .status-processing {
+
+            background:
+                rgba(91,140,255,.10);
+
+            color:
+                #84aaff;
+        }
+
+        .status-failed {
+
+            background:
+                rgba(255,100,124,.10);
+
+            color:
+                #ff8497;
+        }
+
+        .menu-btn {
+
+            width: 30px;
+            height: 30px;
+
+            border: 0;
+
+            border-radius: 8px;
+
+            background:
+                transparent;
+
+            color:
+                var(--muted);
+
+            font-size: 18px;
+        }
+
+        .menu-btn:hover {
+
+            background:
+                rgba(255,255,255,.06);
+
+            color:
+                var(--text);
+        }
+
+        /* =================================================
+           PROCESSING
+           ================================================= */
+
+        .processing-list {
+
+            display: grid;
+
+            gap: 12px;
+        }
+
+        .job-card {
+
+            padding:
+                17px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                14px;
+
+            background:
+                var(--panel);
+        }
+
+        .job-top {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+        }
+
+        .job-name {
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+        .job-id {
+
+            margin-top:
+                4px;
+
+            color:
+                var(--muted-2);
+
+            font-size: 9px;
+
+            font-family:
+                monospace;
+        }
+
+        .job-message {
+
+            margin-top:
+                14px;
+
+            color:
+                var(--muted);
+
+            font-size: 11px;
+        }
+
+        .job-actions {
+
+            display: flex;
+
+            gap: 8px;
+
+            margin-top:
+                15px;
+
+            flex-wrap: wrap;
+        }
+
+        /* =================================================
+           MODAL
+           ================================================= */
+
+        .modal-backdrop {
+
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(0,0,0,.68);
+
+            backdrop-filter:
+                blur(8px);
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            z-index: 100;
+        }
+
+        .modal-backdrop.show {
+
+            display: flex;
+        }
+
+        .modal {
+
+            width:
+                min(680px, calc(100vw - 30px));
+
+            max-height:
+                calc(100vh - 40px);
+
+            overflow-y:
+                auto;
+
+            background:
+                #0d141f;
+
+            border:
+                1px solid var(--border-strong);
+
+            border-radius:
+                18px;
+
+            box-shadow:
+                0 40px 100px rgba(0,0,0,.6);
+
+            padding:
+                22px;
+        }
+
+        .modal.large {
+
+            width:
+                min(900px, calc(100vw - 30px));
+        }
+
+        .modal-header {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom:
+                20px;
+        }
+
+        .modal-header h3 {
+
+            margin: 0;
+
+            font-size: 17px;
+        }
+
+        .modal-header p {
+
+            margin:
+                5px 0 0;
+
+            font-size: 10px;
+
+            color:
+                var(--muted);
+        }
+
+        .close {
+
+            border: 0;
+
+            background:
+                transparent;
+
+            color:
+                var(--muted);
+
+            font-size: 22px;
+
+            line-height: 1;
+        }
+
+        .upload-zone {
+
+            border:
+                1px dashed rgba(91,140,255,.35);
+
+            border-radius:
+                14px;
+
+            min-height:
+                190px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            padding:
+                25px;
+
+            background:
+                rgba(91,140,255,.035);
+
+            transition:
+                .18s ease;
+        }
+
+        .upload-zone.dragover {
+
+            background:
+                rgba(91,140,255,.10);
+
+            border-color:
+                rgba(91,140,255,.7);
+        }
+
+        .upload-icon {
+
+            width: 50px;
+            height: 50px;
+
+            border-radius: 14px;
+
+            display: grid;
+
+            place-items: center;
+
+            margin:
+                0 auto 12px;
+
+            background:
+                rgba(91,140,255,.12);
+
+            font-size: 22px;
+        }
+
+        .upload-title {
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+        .upload-description {
+
+            margin-top:
+                6px;
+
+            color:
+                var(--muted);
+
+            font-size: 10px;
+        }
+
+        .file-input {
+
+            display: none;
+        }
+
+        .selected-files {
+
+            margin-top:
+                14px;
+
+            display: grid;
+
+            gap: 7px;
+        }
+
+        .selected-file {
+
+            padding:
+                9px 11px;
+
+            border:
+                1px solid var(--border);
+
+            background:
+                rgba(255,255,255,.025);
+
+            border-radius:
+                9px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 10px;
+
+            font-size: 10px;
+        }
+
+        .modal-footer {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 8px;
+
+            margin-top:
+                20px;
+        }
+
+        /* =================================================
+           DETAIL
+           ================================================= */
+
+        .detail-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 10px;
+        }
+
+        .detail {
+
+            padding:
+                12px;
+
+            border:
+                1px solid var(--border);
+
+            background:
+                rgba(255,255,255,.018);
+
+            border-radius:
+                10px;
+        }
+
+        .detail-label {
+
+            font-size: 9px;
+
+            color:
+                var(--muted-2);
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .06em;
+        }
+
+        .detail-value {
+
+            margin-top:
+                6px;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+            word-break:
+                break-word;
+        }
+
+        .line-items {
+
+            margin-top:
+                18px;
+        }
+
+        .line-items h4 {
+
+            margin:
+                0 0 10px;
+
+            font-size: 12px;
+        }
+
+        /* =================================================
+           EMPTY
+           ================================================= */
+
+        .empty {
+
+            padding:
+                55px 20px;
+
+            text-align:
+                center;
+
+            color:
+                var(--muted);
+        }
+
+        .empty-icon {
+
+            font-size: 30px;
+
+            opacity:
+                .6;
+
+            margin-bottom:
+                10px;
+        }
+
+        .empty-title {
+
+            color:
+                #cbd3df;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+        .empty-text {
+
+            margin-top:
+                5px;
+
+            font-size: 10px;
+        }
+
+        /* =================================================
+           TOAST
+           ================================================= */
+
+        .toast-container {
+
+            position: fixed;
+
+            right: 20px;
+
+            bottom: 20px;
+
+            z-index: 200;
+
+            display: grid;
+
+            gap: 8px;
+
+            width:
+                min(380px, calc(100vw - 40px));
+        }
+
+        .toast {
+
+            border:
+                1px solid var(--border-strong);
+
+            background:
+                #111927;
+
+            box-shadow:
+                0 20px 50px rgba(0,0,0,.4);
+
+            border-radius:
+                12px;
+
+            padding:
+                13px 14px;
+
+            font-size: 11px;
+
+            animation:
+                toastIn .2s ease;
+        }
+
+        .toast-title {
+
+            font-weight:
+                800;
+
+            margin-bottom:
+                4px;
+        }
+
+        .toast-message {
+
+            color:
+                var(--muted);
+
+            line-height:
+                1.45;
+        }
+
+        @keyframes toastIn {
+
+            from {
+
+                transform:
+                    translateY(10px);
+
+                opacity: 0;
+            }
+
+            to {
+
+                transform:
+                    translateY(0);
+
+                opacity: 1;
+            }
+        }
+
+        /* =================================================
+           CONTEXT MENU
+           ================================================= */
+
+        .context-menu {
+
+            position: fixed;
+
+            display: none;
+
+            min-width: 180px;
+
+            padding: 6px;
+
+            background:
+                #111927;
+
+            border:
+                1px solid var(--border-strong);
+
+            border-radius:
+                11px;
+
+            box-shadow:
+                0 25px 70px rgba(0,0,0,.55);
+
+            z-index: 150;
+        }
+
+        .context-menu.show {
+
+            display: block;
+        }
+
+        .context-item {
+
+            width: 100%;
+
+            border: 0;
+
+            background: transparent;
+
+            color:
+                #dbe1ec;
+
+            padding:
+                9px 10px;
+
+            border-radius: 7px;
+
+            text-align:
+                left;
+
+            font-size: 11px;
+        }
+
+        .context-item:hover {
+
+            background:
+                rgba(255,255,255,.06);
+        }
+
+        .context-item.danger {
+
+            color:
+                #ff8497;
+        }
+
+        /* =================================================
+           REPORTS
+           ================================================= */
+
+        .report-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 14px;
+        }
+
+        .report-card {
+
+            padding:
+                20px;
+        }
+
+        .report-card h3 {
+
+            margin:
+                0;
+
+            font-size: 14px;
+        }
+
+        .report-card p {
+
+            margin:
+                6px 0 18px;
+
+            font-size: 10px;
+
+            color:
+                var(--muted);
+        }
+
+        .report-number {
+
+            font-size: 30px;
+
+            font-weight:
+                800;
+        }
+
+        /* =================================================
+           FILES
+           ================================================= */
+
+        .folder-toolbar {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            gap: 10px;
+
+            margin-bottom:
+                15px;
+
+            flex-wrap: wrap;
+        }
+
+        .folder-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+        }
+
+        .folder-card {
+
+            padding:
+                16px;
+
+            cursor:
+                pointer;
+        }
+
+        .folder-card:hover {
+
+            border-color:
+                rgba(255,255,255,.15);
+        }
+
+        .folder-icon {
+
+            font-size: 24px;
+
+            margin-bottom:
+                12px;
+        }
+
+        .folder-name {
+
+            font-size: 12px;
+
+            font-weight:
+                700;
+        }
+
+        .folder-count {
+
+            margin-top:
+                4px;
+
+            color:
+                var(--muted);
+
+            font-size: 9px;
+        }
+
+        /* =================================================
+           QUICK-START TUTORIAL
+           ================================================= */
+
+        .tutorial-card {
+
+            display: grid;
+
+            grid-template-columns: minmax(0, 1fr) minmax(320px, 1.05fr);
+
+            gap: 24px;
+
+            padding: 22px;
+
+            margin-bottom: 22px;
+
+            overflow: hidden;
+
+        }
+
+        .tutorial-copy {
+
+            align-self: center;
+
+            min-width: 0;
+
+        }
+
+        .tutorial-eyebrow {
+
+            color: #84aaff;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: .14em;
+
+            margin-bottom: 10px;
+
+        }
+
+        .tutorial-copy h3 {
+
+            margin: 0;
+
+            font-size: 20px;
+
+            line-height: 1.35;
+
+            letter-spacing: -.03em;
+
+        }
+
+        .tutorial-copy p {
+
+            margin: 10px 0 16px;
+
+            color: var(--muted);
+
+            font-size: 12px;
+
+            line-height: 1.7;
+
+            max-width: 460px;
+
+        }
+
+        .tutorial-steps {
+
+            display: grid;
+
+            gap: 9px;
+
+            margin: 0 0 18px;
+
+        }
+
+        .tutorial-steps div {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            color: #dce4f2;
+
+            font-size: 11px;
+
+        }
+
+        .tutorial-steps span {
+
+            display: inline-grid;
+
+            place-items: center;
+
+            width: 25px;
+
+            height: 25px;
+
+            border-radius: 8px;
+
+            background: rgba(91,140,255,.12);
+
+            color: #9dbaff;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+        }
+
+        .tutorial-video-wrap {
+
+            min-width: 0;
+
+            align-self: center;
+
+            overflow: hidden;
+
+            border: 1px solid var(--border-strong);
+
+            border-radius: 13px;
+
+            background: #070b12;
+
+        }
+
+        .tutorial-video {
+
+            display: block;
+
+            width: 100%;
+
+            aspect-ratio: 16 / 9;
+
+            object-fit: cover;
+
+            background: #070b12;
+
+        }
+
+        .tutorial-video-caption {
+
+            padding: 10px 12px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+
+            text-align: center;
+
+            border-top: 1px solid var(--border);
+
+        }
+
+        .tutorial-video-caption span {
+
+            color: #84aaff;
+
+            padding: 0 5px;
+
+        }
+
+
+        /* =================================================
+           RESPONSIVE
+           ================================================= */
+
+        @media (max-width: 1050px) {
+
+            .tutorial-card {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .tutorial-copy p {
+
+                max-width: 700px;
+
+            }
+
+            .stats-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .detail-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .folder-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+
+                width: 72px;
+
+                padding:
+                    18px 9px;
+            }
+
+            .brand {
+
+                justify-content:
+                    center;
+
+                padding:
+                    0 0 20px;
+            }
+
+            .brand-copy,
+            .nav-label,
+            .nav-text,
+            .profile-copy {
+
+                display:
+                    none;
+            }
+
+            .nav-item {
+
+                justify-content:
+                    center;
+
+                padding:
+                    12px;
+            }
+
+            .sidebar-bottom {
+
+                left: 9px;
+                right: 9px;
+            }
+
+            .profile {
+
+                justify-content:
+                    center;
+            }
+
+            .main {
+
+                width:
+                    calc(100% - 72px);
+
+                margin-left:
+                    72px;
+            }
+
+            .topbar {
+
+                padding:
+                    0 18px;
+            }
+
+            .content {
+
+                padding:
+                    20px 18px 40px;
+            }
+
+            .report-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .stats-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+            .page-header {
+
+                flex-direction:
+                    column;
+            }
+
+            .table-toolbar {
+
+                flex-wrap:
+                    wrap;
+            }
+
+            .search {
+
+                width: 100%;
+                flex: none;
+            }
+
+            .detail-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+            .folder-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
         }
 
     </style>
-
 </head>
-
 
 <body>
 
+<div class="app">
 
-<div class="card">
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
 
+    <aside class="sidebar">
 
-    <div class="brand">
+        <div class="brand">
 
-        <div class="brand-mark">
-            IE
+            <div class="brand-mark">
+                IE
+            </div>
+
+            <div class="brand-copy">
+
+                <div class="brand-title">
+                    Invoice Engine
+                </div>
+
+                <div class="brand-subtitle">
+                    Intelligent invoice automation
+                </div>
+
+            </div>
+
         </div>
 
-        Invoice Engine
-
-    </div>
-
-
-    <h1 id="title">
-        Welcome back
-    </h1>
-
-
-    <p class="subtitle" id="subtitle">
-
-        Sign in to continue to your invoice workspace.
-
-    </p>
-
-
-    <div class="tabs">
+        <div class="nav-label">
+            Workspace
+        </div>
 
         <button
-            class="tab active"
-            id="signInTab"
-            type="button"
+            class="nav-item active"
+            data-page="overview"
         >
-            Sign in
+            <span class="nav-icon">⌂</span>
+            <span class="nav-text">Overview</span>
         </button>
 
         <button
-            class="tab"
-            id="signUpTab"
-            type="button"
+            class="nav-item"
+            data-page="invoices"
         >
-            Create account
+            <span class="nav-icon">▤</span>
+            <span class="nav-text">Invoices</span>
         </button>
-
-    </div>
-
-
-    <form id="authForm">
-
-
-        <label for="email">
-            Email
-        </label>
-
-
-        <input
-            id="email"
-            type="email"
-            placeholder="you@example.com"
-            required
-        >
-
-
-        <label for="password">
-            Password
-        </label>
-
-
-        <input
-            id="password"
-            type="password"
-            placeholder="••••••••"
-            minlength="6"
-            required
-        >
-
 
         <button
-            class="submit"
-            id="submitButton"
-            type="submit"
+            class="nav-item"
+            data-page="processing"
         >
-
-            Sign in
-
+            <span class="nav-icon">◌</span>
+            <span class="nav-text">Processing</span>
         </button>
 
+        <button
+            class="nav-item"
+            data-page="review"
+        >
+            <span class="nav-icon">✓</span>
+            <span class="nav-text">Review</span>
+        </button>
 
-    </form>
+        <button
+            class="nav-item"
+            data-page="reports"
+        >
+            <span class="nav-icon">◩</span>
+            <span class="nav-text">Reports</span>
+        </button>
 
+        <button
+            class="nav-item"
+            data-page="files"
+        >
+            <span class="nav-icon">▰</span>
+            <span class="nav-text">Files</span>
+        </button>
 
-    <div
-        class="message"
-        id="message"
-    ></div>
+        <div class="sidebar-bottom">
 
+            <div class="profile">
 
-    <a
-        class="back"
-        href="/"
-    >
-        ← Back to Invoice Engine
-    </a>
+                <div class="avatar">
+                    PB
+                </div>
 
+                <div class="profile-copy">
+
+                    <div class="profile-name">
+                        Prahit Bhardwaj
+                    </div>
+
+                    <div class="profile-status">
+                        ● API connected
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <h1 id="pageTitle">
+                    Overview
+                </h1>
+
+                <p id="pageSubtitle">
+                    Intelligent invoice processing workspace
+                </p>
+
+            </div>
+
+            <div class="api-status">
+
+                <span
+                    id="apiDot"
+                    class="status-dot"
+                ></span>
+
+                <span id="apiText">
+                    API checking...
+                </span>
+
+            </div>
+
+        </header>
+
+        <div
+            id="content"
+            class="content"
+        ></div>
+
+    </main>
 
 </div>
 
 
+<!-- =========================================================
+     MODALS
+     ========================================================= -->
+
+<div
+    id="uploadModal"
+    class="modal-backdrop"
+>
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h3>
+                    New processing job
+                </h3>
+
+                <p>
+                    Upload invoice images or PDFs for extraction.
+                </p>
+
+            </div>
+
+            <button
+                class="close"
+                onclick="closeModal('uploadModal')"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div
+            id="uploadZone"
+            class="upload-zone"
+        >
+
+            <div>
+
+                <div class="upload-icon">
+                    ↑
+                </div>
+
+                <div class="upload-title">
+                    Drop invoices here
+                </div>
+
+                <div class="upload-description">
+                    PDF, PNG, JPG or JPEG
+                </div>
+
+                <br>
+
+                <button
+                    class="btn btn-primary"
+                    onclick="document.getElementById('fileInput').click()"
+                >
+                    Choose files
+                </button>
+
+                <input
+                    id="fileInput"
+                    class="file-input"
+                    type="file"
+                    accept=".pdf,.png,.jpg,.jpeg"
+                    multiple
+                >
+
+            </div>
+
+        </div>
+
+        <div
+            id="selectedFiles"
+            class="selected-files"
+        ></div>
+
+        <div class="modal-footer">
+
+            <button
+                class="btn"
+                onclick="closeModal('uploadModal')"
+            >
+                Cancel
+            </button>
+
+            <button
+                id="startProcessingBtn"
+                class="btn btn-primary"
+                onclick="startProcessing()"
+                disabled
+            >
+                Start processing
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div
+    id="invoiceModal"
+    class="modal-backdrop"
+>
+
+    <div class="modal large">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h3 id="invoiceModalTitle">
+                    Invoice
+                </h3>
+
+                <p id="invoiceModalSubtitle">
+                    Invoice details
+                </p>
+
+            </div>
+
+            <button
+                class="close"
+                onclick="closeModal('invoiceModal')"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div id="invoiceDetails"></div>
+
+    </div>
+
+</div>
+
+
+<div
+    id="excelModal"
+    class="modal-backdrop"
+>
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h3>
+                    Add to existing Excel
+                </h3>
+
+                <p>
+                    Select an existing workbook and append this invoice data.
+                </p>
+
+            </div>
+
+            <button
+                class="close"
+                onclick="closeModal('excelModal')"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div class="upload-zone">
+
+            <div>
+
+                <div class="upload-icon">
+                    ▣
+                </div>
+
+                <div class="upload-title">
+                    Choose an Excel workbook
+                </div>
+
+                <div class="upload-description">
+                    Existing .xlsx or .xls file
+                </div>
+
+                <br>
+
+                <button
+                    class="btn btn-primary"
+                    onclick="chooseExistingExcel()"
+                >
+                    Choose workbook
+                </button>
+
+            </div>
+
+        </div>
+
+        <div
+            id="excelAppendStatus"
+            style="margin-top:14px;font-size:11px;color:var(--muted)"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CONTEXT MENU
+     ========================================================= -->
+
+<div
+    id="contextMenu"
+    class="context-menu"
+>
+
+    <button
+        class="context-item"
+        onclick="contextOpenInvoice()"
+    >
+        Open invoice
+    </button>
+
+    <button
+        class="context-item"
+        onclick="contextReviewInvoice()"
+    >
+        Mark for review
+    </button>
+
+    <button
+        class="context-item"
+        onclick="contextDuplicateInvoice()"
+    >
+        Duplicate record
+    </button>
+
+    <button
+        class="context-item danger"
+        onclick="contextDeleteInvoice()"
+    >
+        Delete record
+    </button>
+
+</div>
+
+
+<!-- =========================================================
+     TOASTS
+     ========================================================= -->
+
+<div
+    id="toastContainer"
+    class="toast-container"
+></div>
+
+
 <script>
 
-    const {
-        createClient
-    } = window.supabase;
+/* ============================================================
+   CONFIGURATION
+   ============================================================ */
+
+const API_BASE = (
+    window.location.protocol === "file:"
+        ? "http://127.0.0.1:8000"
+        : window.location.origin
+);
 
 
-    const client = supabaseClient;
+/* ============================================================
+   STATE
+   ============================================================ */
+
+const state = {
+
+    page:
+        "overview",
+
+    invoices:
+        [],
+
+    stats:
+        {},
+
+    jobs:
+        {},
+
+    selectedFiles:
+        [],
+
+    contextInvoiceId:
+        null,
+
+    selectedJob:
+        null,
+
+    search:
+        "",
+
+    status:
+        "",
+
+    folders:
+        loadFolders(),
+
+    reviewIds:
+        loadReviewIds(),
+
+    initialized:
+        false
+
+};
 
 
-    const authForm =
-        document.getElementById("authForm");
+/* ============================================================
+   BASIC HELPERS
+   ============================================================ */
 
+function escapeHtml(value) {
 
-    const emailInput =
-        document.getElementById("email");
+    if (
+        value === null ||
+        value === undefined
+    ) {
 
-
-    const passwordInput =
-        document.getElementById("password");
-
-
-    const submitButton =
-        document.getElementById("submitButton");
-
-
-    const message =
-        document.getElementById("message");
-
-
-    const signInTab =
-        document.getElementById("signInTab");
-
-
-    const signUpTab =
-        document.getElementById("signUpTab");
-
-
-    const title =
-        document.getElementById("title");
-
-
-    const subtitle =
-        document.getElementById("subtitle");
-
-
-    let mode = "signin";
-
-
-    function showMessage(text) {
-
-        message.textContent = text;
-
-    }
-
-
-    function setMode(newMode) {
-
-        mode = newMode;
-
-        const signingIn =
-            mode === "signin";
-
-
-        signInTab.classList.toggle(
-            "active",
-            signingIn
-        );
-
-
-        signUpTab.classList.toggle(
-            "active",
-            !signingIn
-        );
-
-
-        title.textContent =
-            signingIn
-                ? "Welcome back"
-                : "Create your account";
-
-
-        subtitle.textContent =
-            signingIn
-                ? "Sign in to continue to your invoice workspace."
-                : "Create an account to start using Invoice Engine.";
-
-
-        submitButton.textContent =
-            signingIn
-                ? "Sign in"
-                : "Create account";
-
-
-        showMessage("");
+        return "";
 
     }
 
+    return String(value)
 
-    signInTab.addEventListener(
-        "click",
-        function() {
+        .replaceAll("&", "&amp;")
 
-            setMode("signin");
+        .replaceAll("<", "&lt;")
+
+        .replaceAll(">", "&gt;")
+
+        .replaceAll('"', "&quot;")
+
+        .replaceAll("'", "&#039;");
+}
+
+
+function formatNumber(value) {
+
+    const number =
+        Number(value);
+
+    if (
+        !Number.isFinite(number)
+    ) {
+
+        return "—";
+
+    }
+
+    return number.toLocaleString(
+        "en-IN"
+    );
+}
+
+
+function formatAmount(value, currency) {
+
+    const number =
+        Number(value);
+
+    if (
+        !Number.isFinite(number)
+    ) {
+
+        return "—";
+
+    }
+
+    return (
+        currency
+        ? `${currency} ${number.toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`
+        : number.toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })
+    );
+}
+
+
+/* ============================================================
+   ERROR HANDLING
+   ============================================================ */
+
+function readableError(error) {
+
+    if (
+        error === null ||
+        error === undefined
+    ) {
+
+        return "Unknown error.";
+
+    }
+
+    if (
+        typeof error === "string"
+    ) {
+
+        return error;
+
+    }
+
+    if (
+        error instanceof Error
+    ) {
+
+        return error.message;
+
+    }
+
+    if (
+        typeof error === "object"
+    ) {
+
+        if (
+            typeof error.detail === "string"
+        ) {
+
+            return error.detail;
+
+        }
+
+        if (
+            Array.isArray(error.detail)
+        ) {
+
+            return error.detail
+                .map(item => {
+
+                    if (
+                        typeof item === "string"
+                    ) {
+
+                        return item;
+
+                    }
+
+                    if (
+                        item &&
+                        typeof item.msg === "string"
+                    ) {
+
+                        return item.msg;
+
+                    }
+
+                    return JSON.stringify(item);
+
+                })
+                .join("; ");
+
+        }
+
+        if (
+            typeof error.message === "string"
+        ) {
+
+            return error.message;
+
+        }
+
+        try {
+
+            return JSON.stringify(
+                error,
+                null,
+                2
+            );
+
+        } catch {
+
+            return "Unknown server error.";
+
+        }
+
+    }
+
+    return String(error);
+}
+
+
+/* ============================================================
+   API REQUEST
+   ============================================================ */
+
+async function apiRequest(
+    path,
+    options = {}
+) {
+
+    const response =
+        await fetch(
+            `${API_BASE}${path}`,
+            {
+                ...options,
+
+                headers: {
+                    ...(options.headers || {})
+                }
+            }
+        );
+
+    const contentType =
+        response.headers.get(
+            "content-type"
+        ) || "";
+
+    let data;
+
+    if (
+        contentType.includes(
+            "application/json"
+        )
+    ) {
+
+        data =
+            await response.json();
+
+    } else {
+
+        const text =
+            await response.text();
+
+        data =
+            text || null;
+
+    }
+
+    if (
+        !response.ok
+    ) {
+
+        throw new Error(
+            readableError(data)
+        );
+
+    }
+
+    return data;
+
+}
+
+
+/* ============================================================
+   API HEALTH
+   ============================================================ */
+
+async function checkApi() {
+
+    try {
+
+        await apiRequest(
+            "/health"
+        );
+
+        document
+            .getElementById("apiDot")
+            .classList
+            .remove("offline");
+
+        document
+            .getElementById("apiText")
+            .textContent =
+                "API connected";
+
+        return true;
+
+    } catch (error) {
+
+        document
+            .getElementById("apiDot")
+            .classList
+            .add("offline");
+
+        document
+            .getElementById("apiText")
+            .textContent =
+                "API offline";
+
+        return false;
+
+    }
+
+}
+
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+
+document
+    .querySelectorAll(".nav-item")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                navigate(
+                    button.dataset.page
+                );
+
+            }
+        );
+
+    });
+
+
+function navigate(page) {
+
+    state.page =
+        page;
+
+    document
+        .querySelectorAll(".nav-item")
+        .forEach(item => {
+
+            item.classList.toggle(
+                "active",
+                item.dataset.page === page
+            );
+
+        });
+
+    renderPage();
+
+}
+
+
+/* ============================================================
+   PAGE META
+   ============================================================ */
+
+function pageMeta(page) {
+
+    const meta = {
+
+        overview: [
+            "Overview",
+            "Your invoice automation workspace"
+        ],
+
+        invoices: [
+            "Invoices",
+            "Search, inspect and manage processed invoices"
+        ],
+
+        processing: [
+            "Processing",
+            "Track active invoice processing jobs"
+        ],
+
+        review: [
+            "Review",
+            "Invoices requiring human attention"
+        ],
+
+        reports: [
+            "Reports",
+            "Invoice data and processing insights"
+        ],
+
+        files: [
+            "Files",
+            "Organize generated workbooks and invoice exports"
+        ]
+
+    };
+
+    return (
+        meta[page]
+        || meta.overview
+    );
+
+}
+
+
+/* ============================================================
+   RENDER PAGE
+   ============================================================ */
+
+function renderPage() {
+
+    const [
+        title,
+        subtitle
+    ] =
+        pageMeta(
+            state.page
+        );
+
+    document
+        .getElementById("pageTitle")
+        .textContent =
+            title;
+
+    document
+        .getElementById("pageSubtitle")
+        .textContent =
+            subtitle;
+
+    const content =
+        document
+            .getElementById("content");
+
+    if (
+        state.page === "overview"
+    ) {
+
+        content.innerHTML =
+            renderOverview();
+
+        loadOverviewData();
+
+        return;
+
+    }
+
+    if (
+        state.page === "invoices"
+    ) {
+
+        content.innerHTML =
+            renderInvoices();
+
+        loadInvoices();
+
+        return;
+
+    }
+
+    if (
+        state.page === "processing"
+    ) {
+
+        content.innerHTML =
+            renderProcessing();
+
+        renderJobs();
+
+        return;
+
+    }
+
+    if (
+        state.page === "review"
+    ) {
+
+        content.innerHTML =
+            renderReview();
+
+        loadReview();
+
+        return;
+
+    }
+
+    if (
+        state.page === "reports"
+    ) {
+
+        content.innerHTML =
+            renderReports();
+
+        loadReports();
+
+        return;
+
+    }
+
+    if (
+        state.page === "files"
+    ) {
+
+        content.innerHTML =
+            renderFiles();
+
+        return;
+
+    }
+
+}
+
+
+/* ============================================================
+   OVERVIEW
+   ============================================================ */
+
+function getGreeting() {
+
+    const hour = new Date().getHours();
+
+    const greeting =
+        hour < 12
+            ? "Good morning"
+            : hour < 17
+                ? "Good afternoon"
+                : "Good evening";
+
+    return `${greeting}, Prahit.`;
+
+}
+
+
+function renderOverview() {
+
+    return `
+
+        <div class="page-header">
+
+            <div>
+
+                <h2>
+                    ${getGreeting()}
+                </h2>
+
+                <p>
+                    Here's what's happening with your invoice data.
+                </p>
+
+            </div>
+
+            <button
+                class="btn btn-primary"
+                onclick="openUploadModal()"
+            >
+                + New processing job
+            </button>
+
+        </div>
+
+        <div
+            id="statsGrid"
+            class="grid stats-grid"
+        >
+
+            ${statCard(
+                "Documents processed",
+                "—",
+                "Total invoices in database"
+            )}
+
+            ${statCard(
+                "Valid",
+                "—",
+                "Passed validation"
+            )}
+
+            ${statCard(
+                "Review required",
+                "—",
+                "Need human attention"
+            )}
+
+            ${statCard(
+                "Processing errors",
+                "—",
+                "Failed processing jobs"
+            )}
+
+        </div>
+
+        <section class="card tutorial-card">
+
+            <div class="tutorial-copy">
+
+                <div class="tutorial-eyebrow">QUICK START</div>
+
+                <h3>From invoice to Excel in minutes.</h3>
+
+                <p>
+                    Upload invoice photos or PDFs, let Invoice Engine extract
+                    the data, review anything flagged, and export your records.
+                </p>
+
+                <div class="tutorial-steps">
+
+                    <div><span>01</span> Upload bills</div>
+                    <div><span>02</span> Extract with AI</div>
+                    <div><span>03</span> Review & export</div>
+
+                </div>
+
+                <button
+                    class="btn btn-small"
+                    type="button"
+                    onclick="replayTutorial()"
+                >
+                    ↻ Replay tutorial
+                </button>
+
+            </div>
+
+            <div class="tutorial-video-wrap">
+
+                <video
+                    id="tutorialVideo"
+                    class="tutorial-video"
+                    src="/frontend/invoice-engine-tutorial.mp4"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    controls
+                    preload="metadata"
+                    aria-label="Invoice Engine quick-start tutorial"
+                >
+                    Your browser does not support embedded video.
+                </video>
+
+                <div class="tutorial-video-caption">
+                    Upload <span>→</span> Extract <span>→</span> Validate <span>→</span> Export
+                </div>
+
+            </div>
+
+        </section>
+
+        <div class="card table-card">
+
+            <div class="table-toolbar">
+
+                <div style="font-size:12px;font-weight:700">
+                    Recent invoices
+                </div>
+
+                <div style="flex:1"></div>
+
+                <button
+                    class="btn btn-small"
+                    onclick="navigate('invoices')"
+                >
+                    View all
+                </button>
+
+            </div>
+
+            <div
+                id="recentInvoices"
+                class="table-wrap"
+            >
+
+                <div class="empty">
+
+                    Loading invoices...
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+function statCard(
+    label,
+    value,
+    note
+) {
+
+    return `
+
+        <div class="card stat-card">
+
+            <div class="stat-label">
+                ${escapeHtml(label)}
+            </div>
+
+            <div class="stat-value">
+                ${escapeHtml(value)}
+            </div>
+
+            <div class="stat-note">
+                ${escapeHtml(note)}
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+async function loadOverviewData() {
+
+    try {
+
+        const [
+            stats,
+            invoices
+        ] =
+            await Promise.all([
+
+                apiRequest(
+                    "/stats"
+                ),
+
+                apiRequest(
+                    "/search?page=1&page_size=6"
+                )
+
+            ]);
+
+        state.stats =
+            stats || {};
+
+        state.invoices =
+            extractInvoiceArray(
+                invoices
+            );
+
+        updateOverviewStats();
+
+        renderRecentInvoices();
+
+    } catch (error) {
+
+        const target =
+            document
+                .getElementById(
+                    "recentInvoices"
+                );
+
+        if (
+            target
+        ) {
+
+            target.innerHTML =
+                emptyState(
+                    "Unable to load invoices",
+                    readableError(error)
+                );
+
+        }
+
+    }
+
+}
+
+
+function updateOverviewStats() {
+
+    const grid =
+        document
+            .getElementById(
+                "statsGrid"
+            );
+
+    if (
+        !grid
+    ) {
+
+        return;
+
+    }
+
+    const stats =
+        state.stats;
+
+    const total =
+        stats.total_invoices
+        ??
+        stats.total
+        ??
+        stats.count
+        ??
+        0;
+
+    const valid =
+        stats.valid
+        ??
+        stats.valid_invoices
+        ??
+        0;
+
+    const review =
+        stats.review_required
+        ??
+        stats.review
+        ??
+        0;
+
+    const errors =
+        stats.processing_errors
+        ??
+        stats.errors
+        ??
+        0;
+
+    grid.innerHTML = `
+
+        ${statCard(
+            "Documents processed",
+            formatNumber(total),
+            "Total invoices in database"
+        )}
+
+        ${statCard(
+            "Valid",
+            formatNumber(valid),
+            "Passed validation"
+        )}
+
+        ${statCard(
+            "Review required",
+            formatNumber(review),
+            "Need human attention"
+        )}
+
+        ${statCard(
+            "Processing errors",
+            formatNumber(errors),
+            "Failed processing jobs"
+        )}
+
+    `;
+
+}
+
+
+function renderRecentInvoices() {
+
+    const target =
+        document
+            .getElementById(
+                "recentInvoices"
+            );
+
+    if (
+        !target
+    ) {
+
+        return;
+
+    }
+
+    if (
+        !state.invoices.length
+    ) {
+
+        target.innerHTML =
+            emptyState(
+                "No invoices yet",
+                "Process your first invoice to get started."
+            );
+
+        return;
+
+    }
+
+    target.innerHTML =
+        invoiceTable(
+            state.invoices
+        );
+
+}
+
+
+/* ============================================================
+   INVOICES
+   ============================================================ */
+
+function renderInvoices() {
+
+    return `
+
+        <div class="page-header">
+
+            <div>
+
+                <h2>
+                    Invoices
+                </h2>
+
+                <p>
+                    Search and inspect your structured invoice database.
+                </p>
+
+            </div>
+
+            <button
+                class="btn btn-primary"
+                onclick="openUploadModal()"
+            >
+                + Process invoices
+            </button>
+
+        </div>
+
+        <div class="card table-card">
+
+            <div class="table-toolbar">
+
+                <input
+                    id="invoiceSearch"
+                    class="search"
+                    placeholder="Search invoice number, vendor, GSTIN, product, HSN, SKU..."
+                    value="${escapeHtml(state.search)}"
+                    onkeydown="if(event.key==='Enter') loadInvoices()"
+                >
+
+                <select
+                    id="invoiceStatus"
+                >
+
+                    <option value="">
+                        All statuses
+                    </option>
+
+                    <option value="Valid">
+                        Valid
+                    </option>
+
+                    <option value="Warning">
+                        Warning
+                    </option>
+
+                    <option value="Invalid">
+                        Invalid
+                    </option>
+
+                </select>
+
+                <button
+                    class="btn btn-primary"
+                    onclick="loadInvoices()"
+                >
+                    Search
+                </button>
+
+            </div>
+
+            <div
+                id="invoiceTable"
+                class="table-wrap"
+            >
+
+                <div class="empty">
+                    Loading invoices...
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+async function loadInvoices() {
+
+    const search =
+        document
+            .getElementById(
+                "invoiceSearch"
+            );
+
+    const status =
+        document
+            .getElementById(
+                "invoiceStatus"
+            );
+
+    if (
+        search
+    ) {
+
+        state.search =
+            search.value.trim();
+
+    }
+
+    if (
+        status
+    ) {
+
+        state.status =
+            status.value;
+
+    }
+
+    const params =
+        new URLSearchParams();
+
+    if (
+        state.search
+    ) {
+
+        params.set(
+            "q",
+            state.search
+        );
+
+    }
+
+    if (
+        state.status
+    ) {
+
+        params.set(
+            "status",
+            state.status
+        );
+
+    }
+
+    params.set(
+        "page",
+        "1"
+    );
+
+    params.set(
+        "page_size",
+        "100"
+    );
+
+    try {
+
+        const data =
+            await apiRequest(
+                `/search?${params.toString()}`
+            );
+
+        state.invoices =
+            extractInvoiceArray(
+                data
+            );
+
+        const target =
+            document
+                .getElementById(
+                    "invoiceTable"
+                );
+
+        if (
+            target
+        ) {
+
+            target.innerHTML =
+                state.invoices.length
+                    ? invoiceTable(
+                        state.invoices
+                    )
+                    : emptyState(
+                        "No invoices found",
+                        "Try a different search or process a new invoice."
+                    );
+
+        }
+
+    } catch (error) {
+
+        const target =
+            document
+                .getElementById(
+                    "invoiceTable"
+                );
+
+        if (
+            target
+        ) {
+
+            target.innerHTML =
+                emptyState(
+                    "Search failed",
+                    readableError(error)
+                );
+
+        }
+
+    }
+
+}
+
+
+/* ============================================================
+   INVOICE TABLE
+   ============================================================ */
+
+function extractInvoiceArray(data) {
+
+    if (
+        Array.isArray(data)
+    ) {
+
+        return data;
+
+    }
+
+    if (
+        Array.isArray(data.results)
+    ) {
+
+        return data.results;
+
+    }
+
+    if (
+        Array.isArray(data.invoices)
+    ) {
+
+        return data.invoices;
+
+    }
+
+    if (
+        Array.isArray(data.items)
+    ) {
+
+        return data.items;
+
+    }
+
+    return [];
+
+}
+
+
+function invoiceTable(
+    invoices
+) {
+
+    return `
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Invoice
+                    </th>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Seller
+                    </th>
+
+                    <th>
+                        Amount
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Confidence
+                    </th>
+
+                    <th></th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                ${invoices
+                    .map(
+                        invoiceRow
+                    )
+                    .join("")}
+
+            </tbody>
+
+        </table>
+
+    `;
+
+}
+
+
+function invoiceRow(
+    invoice
+) {
+
+    const id =
+        invoice.id;
+
+    const number =
+        invoice.invoice_number
+        ??
+        "Unknown";
+
+    const date =
+        invoice.invoice_date
+        ??
+        "—";
+
+    const seller =
+        invoice.seller_gstin
+        ??
+        "—";
+
+    const amount =
+        formatAmount(
+            invoice.total_amount,
+            invoice.currency
+        );
+
+    const status =
+        invoice.status
+        ??
+        "Unknown";
+
+    const confidence =
+        invoice.confidence;
+
+    return `
+
+        <tr>
+
+            <td>
+
+                <div class="invoice-number">
+                    ${escapeHtml(number)}
+                </div>
+
+                <div class="sub">
+                    ${escapeHtml(
+                        invoice.file_name
+                        ??
+                        ""
+                    )}
+                </div>
+
+            </td>
+
+            <td>
+                ${escapeHtml(date)}
+            </td>
+
+            <td>
+                ${escapeHtml(seller)}
+            </td>
+
+            <td>
+                ${escapeHtml(amount)}
+            </td>
+
+            <td>
+                ${statusBadge(status)}
+            </td>
+
+            <td>
+                ${
+                    Number.isFinite(
+                        Number(confidence)
+                    )
+                        ? `${escapeHtml(confidence)}%`
+                        : "—"
+                }
+            </td>
+
+            <td>
+
+                <button
+                    class="menu-btn"
+                    onclick="openContextMenu(event, ${Number(id)})"
+                >
+                    ⋮
+                </button>
+
+            </td>
+
+        </tr>
+
+    `;
+
+}
+
+
+function statusBadge(
+    status
+) {
+
+    const normalized =
+        String(status)
+            .toLowerCase();
+
+    let cls =
+        "status-processing";
+
+    if (
+        normalized === "valid"
+    ) {
+
+        cls =
+            "status-valid";
+
+    } else if (
+        normalized === "warning"
+    ) {
+
+        cls =
+            "status-warning";
+
+    } else if (
+        normalized === "invalid"
+    ) {
+
+        cls =
+            "status-invalid";
+
+    } else if (
+        normalized === "failed"
+    ) {
+
+        cls =
+            "status-failed";
+
+    }
+
+    return `
+
+        <span class="status ${cls}">
+            ${escapeHtml(status)}
+        </span>
+
+    `;
+
+}
+
+
+/* ============================================================
+   PROCESSING PAGE
+   ============================================================ */
+
+function renderProcessing() {
+
+    return `
+
+        <div class="page-header">
+
+            <div>
+
+                <h2>
+                    Processing
+                </h2>
+
+                <p>
+                    Track active invoice processing jobs and retrieve generated Excel files.
+                </p>
+
+            </div>
+
+            <button
+                class="btn btn-primary"
+                onclick="openUploadModal()"
+            >
+                + New processing job
+            </button>
+
+        </div>
+
+        <div
+            id="processingList"
+            class="processing-list"
+        ></div>
+
+    `;
+
+}
+
+
+function renderJobs() {
+
+    const target =
+        document
+            .getElementById(
+                "processingList"
+            );
+
+    if (
+        !target
+    ) {
+
+        return;
+
+    }
+
+    const jobs =
+        Object.values(
+            state.jobs
+        );
+
+    if (
+        !jobs.length
+    ) {
+
+        target.innerHTML =
+            emptyState(
+                "No processing jobs",
+                "Start a new processing job to see it here."
+            );
+
+        return;
+
+    }
+
+    target.innerHTML =
+        jobs
+            .slice()
+            .reverse()
+            .map(
+                renderJobCard
+            )
+            .join("");
+
+}
+
+
+function renderJobCard(
+    job
+) {
+
+    const status =
+        job.status
+        ??
+        "processing";
+
+    const fileName =
+        job.file_name
+        ??
+        "Invoice";
+
+    const errorText =
+        readableError(
+            job.error
+        );
+
+    const completed =
+        status === "completed";
+
+    const failed =
+        status === "failed";
+
+    return `
+
+        <div class="job-card">
+
+            <div class="job-top">
+
+                <div>
+
+                    <div class="job-name">
+                        ${escapeHtml(fileName)}
+                    </div>
+
+                    <div class="job-id">
+                        ${escapeHtml(job.job_id)}
+                    </div>
+
+                </div>
+
+                ${statusBadge(
+                    status
+                )}
+
+            </div>
+
+            <div class="job-message">
+
+                ${
+                    completed
+                        ? "Processing complete. Your Excel file is ready."
+                        : failed
+                            ? escapeHtml(errorText)
+                            : "Sending invoice to Invoice Engine."
+                }
+
+            </div>
+
+            <div class="job-actions">
+
+                ${
+                    completed
+                        ? `
+
+                            <button
+                                class="btn btn-primary btn-small"
+                                onclick="downloadJobExcel('${escapeHtml(job.job_id)}')"
+                            >
+                                ↓ Download Excel
+                            </button>
+
+                            <button
+                                class="btn btn-small"
+                                onclick="openAppendExcel('${escapeHtml(job.job_id)}')"
+                            >
+                                + Add to existing Excel
+                            </button>
+
+                        `
+                        : ""
+                }
+
+                ${
+                    failed
+                        ? `
+
+                            <button
+                                class="btn btn-small"
+                                onclick="retryJobFromDashboard('${escapeHtml(job.job_id)}')"
+                            >
+                                Retry
+                            </button>
+
+                        `
+                        : ""
+                }
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ============================================================
+   UPLOAD MODAL
+   ============================================================ */
+
+function openUploadModal() {
+
+    state.selectedFiles =
+        [];
+
+    renderSelectedFiles();
+
+    document
+        .getElementById(
+            "uploadModal"
+        )
+        .classList
+        .add("show");
+
+}
+
+
+function closeModal(
+    id
+) {
+
+    document
+        .getElementById(
+            id
+        )
+        .classList
+        .remove("show");
+
+}
+
+
+document
+    .getElementById(
+        "fileInput"
+    )
+    .addEventListener(
+        "change",
+        event => {
+
+            state.selectedFiles =
+                Array.from(
+                    event.target.files
+                );
+
+            renderSelectedFiles();
 
         }
     );
 
 
-    signUpTab.addEventListener(
-        "click",
-        function() {
+function renderSelectedFiles() {
 
-            setMode("signup");
+    const target =
+        document
+            .getElementById(
+                "selectedFiles"
+            );
 
-        }
-    );
+    const button =
+        document
+            .getElementById(
+                "startProcessingBtn"
+            );
+
+    if (
+        !state.selectedFiles.length
+    ) {
+
+        target.innerHTML =
+            "";
+
+        button.disabled =
+            true;
+
+        return;
+
+    }
+
+    button.disabled =
+        false;
+
+    target.innerHTML =
+        state.selectedFiles
+            .map(
+                file => `
+
+                    <div class="selected-file">
+
+                        <span>
+                            ${escapeHtml(file.name)}
+                        </span>
+
+                        <span style="color:var(--muted-2)">
+                            ${formatFileSize(file.size)}
+                        </span>
+
+                    </div>
+
+                `
+            )
+            .join("");
+
+}
 
 
-    authForm.addEventListener(
-        "submit",
-        async function(event) {
+function formatFileSize(
+    bytes
+) {
 
-            event.preventDefault();
+    if (
+        bytes < 1024
+    ) {
+
+        return `${bytes} B`;
+
+    }
+
+    if (
+        bytes < 1024 * 1024
+    ) {
+
+        return `${(
+            bytes / 1024
+        ).toFixed(1)} KB`;
+
+    }
+
+    return `${(
+        bytes / 1024 / 1024
+    ).toFixed(1)} MB`;
+
+}
 
 
-            const email =
-                emailInput.value.trim();
+/* ============================================================
+   DRAG AND DROP
+   ============================================================ */
+
+const uploadZone =
+    document
+        .getElementById(
+            "uploadZone"
+        );
 
 
-            const password =
-                passwordInput.value;
+uploadZone.addEventListener(
+    "dragover",
+    event => {
+
+        event.preventDefault();
+
+        uploadZone
+            .classList
+            .add("dragover");
+
+    }
+);
 
 
-            submitButton.disabled = true;
+uploadZone.addEventListener(
+    "dragleave",
+    () => {
+
+        uploadZone
+            .classList
+            .remove("dragover");
+
+    }
+);
 
 
-            showMessage(
-                mode === "signin"
-                    ? "Signing in..."
-                    : "Creating account..."
+uploadZone.addEventListener(
+    "drop",
+    event => {
+
+        event.preventDefault();
+
+        uploadZone
+            .classList
+            .remove("dragover");
+
+        state.selectedFiles =
+            Array.from(
+                event.dataTransfer.files
+            )
+            .filter(
+                file => {
+
+                    const ext =
+                        file.name
+                            .split(".")
+                            .pop()
+                            .toLowerCase();
+
+                    return [
+                        "pdf",
+                        "png",
+                        "jpg",
+                        "jpeg"
+                    ].includes(ext);
+
+                }
+            );
+
+        renderSelectedFiles();
+
+    }
+);
+
+
+/* ============================================================
+   START PROCESSING
+   ============================================================ */
+
+async function startProcessing() {
+
+    if (
+        !state.selectedFiles.length
+    ) {
+
+        return;
+
+    }
+
+    const button =
+        document
+            .getElementById(
+                "startProcessingBtn"
+            );
+
+    button.disabled =
+        true;
+
+    button.textContent =
+        "Uploading...";
+
+    const formData =
+        new FormData();
+
+
+    /*
+       CRITICAL:
+
+       The FastAPI backend accepts:
+
+           files: list[UploadFile]
+
+       Therefore the frontend MUST append
+       every invoice under the field name:
+
+           "files"
+
+       This is the important fix.
+    */
+
+    state.selectedFiles
+        .forEach(
+            file => {
+
+                formData.append(
+                    "files",
+                    file,
+                    file.name
+                );
+
+            }
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/upload`,
+                {
+                    method:
+                        "POST",
+
+                    body:
+                        formData
+                }
             );
 
 
-            try {
+        const contentType =
+            response.headers.get(
+                "content-type"
+            )
+            || "";
 
 
-                if (mode === "signup") {
+        let data;
 
 
-                    const {
-                        data,
-                        error
-                    } = await client.auth.signUp({
+        if (
+            contentType.includes(
+                "application/json"
+            )
+        ) {
 
-                        email,
-                        password,
+            data =
+                await response.json();
 
-                        options: {
+        } else {
 
-                            emailRedirectTo:
-                                window.location.origin +
-                                "/frontend/dashboard.html"
-
-                        }
-
-                    });
-
-
-                    if (error) {
-
-                        throw error;
-
-                    }
-
-
-                    if (data.session) {
-
-                        window.location.href =
-                            "/frontend/dashboard.html";
-
-                        return;
-
-                    }
-
-
-                    showMessage(
-                        "Account created. Check your email to confirm your account."
-                    );
-
-
-                } else {
-
-
-                    const {
-                        data,
-                        error
-                    } = await client.auth.signInWithPassword({
-
-                        email,
-                        password
-
-                    });
-
-
-                    if (error) {
-
-                        throw error;
-
-                    }
-
-
-                    if (!data.session) {
-
-                        throw new Error(
-                            "Login succeeded but no session was returned."
-                        );
-
-                    }
-
-
-                    window.location.href =
-                        "/frontend/dashboard.html";
-
-                }
-
-
-            } catch (error) {
-
-
-                console.error(
-                    "Authentication error:",
-                    error
-                );
-
-
-                showMessage(
-                    error.message ||
-                    "Authentication failed."
-                );
-
-
-            } finally {
-
-                submitButton.disabled = false;
-
-            }
+            data =
+                await response.text();
 
         }
+
+
+        if (
+            !response.ok
+        ) {
+
+            throw new Error(
+                readableError(
+                    data
+                )
+            );
+
+        }
+
+
+        /*
+           API response:
+
+           {
+               status: "uploaded",
+               count: 1,
+               jobs_created: 1,
+               files: [
+                   {
+                       file_name: "...",
+                       job_id: "...",
+                       file_hash: "..."
+                   }
+               ],
+               job_ids: ["..."]
+           }
+        */
+
+
+        const returnedFiles =
+            Array.isArray(
+                data.files
+            )
+                ? data.files
+                : [];
+
+
+        const returnedJobIds =
+            Array.isArray(
+                data.job_ids
+            )
+                ? data.job_ids
+                : returnedFiles
+                    .map(
+                        item =>
+                            item.job_id
+                    )
+                    .filter(Boolean);
+
+
+        if (
+            !returnedJobIds.length
+        ) {
+
+            throw new Error(
+                "The API accepted the upload but returned no processing job ID."
+            );
+
+        }
+
+
+        returnedJobIds.forEach(
+            (jobId, index) => {
+
+                const fileInfo =
+                    returnedFiles[index]
+                    || {};
+
+                state.jobs[jobId] = {
+
+                    job_id:
+                        jobId,
+
+                    file_name:
+                        fileInfo.file_name
+                        ??
+                        state.selectedFiles[index]?.name
+                        ??
+                        "Invoice",
+
+                    status:
+                        "processing",
+
+                    error:
+                        null
+
+                };
+
+            }
+        );
+
+
+        closeModal(
+            "uploadModal"
+        );
+
+
+        /*
+           Immediately switch to processing page.
+        */
+
+        navigate(
+            "processing"
+        );
+
+
+        showToast(
+            "Processing started",
+            `${returnedJobIds.length} invoice job(s) created successfully.`
+        );
+
+
+        /*
+           Start polling every job.
+        */
+
+        returnedJobIds.forEach(
+            jobId => {
+
+                pollJob(
+                    jobId
+                );
+
+            }
+        );
+
+
+    } catch (error) {
+
+        showToast(
+            "Upload failed",
+            readableError(error),
+            true
+        );
+
+    } finally {
+
+        button.disabled =
+            state.selectedFiles.length === 0;
+
+        button.textContent =
+            "Start processing";
+
+    }
+
+}
+
+
+/* ============================================================
+   JOB POLLING
+   ============================================================ */
+
+const activePolls =
+    new Set();
+
+
+async function pollJob(
+    jobId
+) {
+
+    if (
+        activePolls.has(
+            jobId
+        )
+    ) {
+
+        return;
+
+    }
+
+    activePolls.add(
+        jobId
     );
 
 
-    async function checkExistingSession() {
+    let finished =
+        false;
+
+    let attempts =
+        0;
+
+    const maxAttempts =
+        600;
+
+
+    while (
+        !finished &&
+        attempts < maxAttempts
+    ) {
+
+        attempts += 1;
 
 
         try {
 
+            const job =
+                await apiRequest(
+                    `/jobs/${encodeURIComponent(jobId)}`
+                );
 
-            const {
-                data
-            } = await client.auth.getSession();
 
+            state.jobs[jobId] = {
+
+                ...state.jobs[jobId],
+
+                ...job,
+
+                job_id:
+                    job.job_id
+                    ??
+                    jobId
+
+            };
+
+
+            /*
+               These are the actual terminal states
+               used by the worker.
+            */
 
             if (
-                data &&
-                data.session
+                job.status === "completed"
             ) {
 
-                window.location.href =
-                    "/frontend/dashboard.html";
+                finished =
+                    true;
+
+
+                state.jobs[jobId].status =
+                    "completed";
+
+
+                showToast(
+                    "Processing complete",
+                    `${job.file_name || "Invoice"} is ready for download.`
+                );
+
+
+                refreshCurrentPage();
+
+                break;
 
             }
 
 
+            if (
+                job.status === "failed"
+            ) {
+
+                finished =
+                    true;
+
+
+                state.jobs[jobId].status =
+                    "failed";
+
+
+                showToast(
+                    "Processing failed",
+                    readableError(
+                        job.error
+                    ),
+                    true
+                );
+
+
+                refreshCurrentPage();
+
+                break;
+
+            }
+
+
+            /*
+               Still processing / retrying / pending.
+            */
+
+            refreshProcessingIfVisible();
+
+
         } catch (error) {
 
-            console.error(
-                "Session check failed:",
-                error
-            );
+            /*
+               Do NOT immediately mark the job failed.
+
+               A temporary API request failure is different
+               from the worker reporting status = failed.
+            */
+
+            state.jobs[jobId] = {
+
+                ...state.jobs[jobId],
+
+                status:
+                    "processing",
+
+                error:
+                    readableError(error)
+
+            };
 
         }
+
+
+        await sleep(
+            1500
+        );
 
     }
 
 
-    checkExistingSession();
+    if (
+        attempts >= maxAttempts &&
+        !finished
+    ) {
+
+        state.jobs[jobId] = {
+
+            ...state.jobs[jobId],
+
+            status:
+                "failed",
+
+            error:
+                "Processing timed out while waiting for the worker."
+
+        };
+
+
+        showToast(
+            "Processing timeout",
+            "The worker did not finish within the expected time.",
+            true
+        );
+
+
+        refreshCurrentPage();
+
+    }
+
+
+    activePolls.delete(
+        jobId
+    );
+
+}
+
+
+/* ============================================================
+   PROCESSING REFRESH
+   ============================================================ */
+
+function refreshProcessingIfVisible() {
+
+    if (
+        state.page !== "processing"
+    ) {
+
+        return;
+
+    }
+
+    renderJobs();
+
+}
+
+
+function refreshCurrentPage() {
+
+    renderPage();
+
+}
+
+
+/* ============================================================
+   DOWNLOAD EXCEL
+   ============================================================ */
+
+function buildDownloadUrl(
+    job
+) {
+
+    if (
+        job.download_url
+    ) {
+
+        if (
+            String(
+                job.download_url
+            ).startsWith("http")
+        ) {
+
+            return job.download_url;
+
+        }
+
+        return (
+            API_BASE
+            +
+            (
+                String(
+                    job.download_url
+                ).startsWith("/")
+                    ? job.download_url
+                    : `/${job.download_url}`
+            )
+        );
+
+    }
+
+    return (
+        `${API_BASE}/download/${encodeURIComponent(job.job_id)}`
+    );
+
+}
+
+
+function downloadJobExcel(
+    jobId
+) {
+
+    const job =
+        state.jobs[jobId];
+
+
+    if (
+        !job
+    ) {
+
+        showToast(
+            "Download unavailable",
+            "Processing job information was not found.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    const url =
+        buildDownloadUrl(
+            job
+        );
+
+
+    /*
+       Use a normal browser navigation.
+
+       This is more reliable for FileResponse downloads
+       than trying to parse the response as JSON/blob.
+    */
+
+    const anchor =
+        document.createElement(
+            "a"
+        );
+
+
+    anchor.href =
+        url;
+
+    anchor.target =
+        "_blank";
+
+    anchor.rel =
+        "noopener";
+
+    document
+        .body
+        .appendChild(
+            anchor
+        );
+
+    anchor.click();
+
+    anchor.remove();
+
+
+    showToast(
+        "Excel ready",
+        "The generated workbook has been opened for download."
+    );
+
+}
+
+
+/* ============================================================
+   ADD TO EXISTING EXCEL
+   ============================================================ */
+
+function openAppendExcel(
+    jobId
+) {
+
+    state.selectedJob =
+        state.jobs[jobId];
+
+    if (
+        !state.selectedJob
+    ) {
+
+        return;
+
+    }
+
+    document
+        .getElementById(
+            "excelAppendStatus"
+        )
+        .textContent =
+            "";
+
+    document
+        .getElementById(
+            "excelModal"
+        )
+        .classList
+        .add("show");
+
+}
+
+
+function chooseExistingExcel() {
+
+    if (
+        window.showOpenFilePicker
+    ) {
+
+        chooseExistingExcelModern();
+
+        return;
+
+    }
+
+
+    /*
+       Fallback for browsers without File System Access API.
+    */
+
+    const input =
+        document.createElement(
+            "input"
+        );
+
+    input.type =
+        "file";
+
+    input.accept =
+        ".xlsx,.xls";
+
+    input.onchange =
+        event => {
+
+            const file =
+                event.target.files[0];
+
+            if (
+                file
+            ) {
+
+                appendInvoiceToWorkbook(
+                    file
+                );
+
+            }
+
+        };
+
+    input.click();
+
+}
+
+
+async function chooseExistingExcelModern() {
+
+    try {
+
+        const handles =
+            await window.showOpenFilePicker(
+                {
+                    multiple:
+                        false,
+
+                    types: [
+                        {
+                            description:
+                                "Excel workbook",
+
+                            accept: {
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                                    [".xlsx"],
+
+                                "application/vnd.ms-excel":
+                                    [".xls"]
+                            }
+                        }
+                    ]
+                }
+            );
+
+
+        if (
+            !handles.length
+        ) {
+
+            return;
+
+        }
+
+
+        const file =
+            await handles[0].getFile();
+
+
+        await appendInvoiceToWorkbook(
+            file,
+            handles[0]
+        );
+
+
+    } catch (error) {
+
+        if (
+            error?.name === "AbortError"
+        ) {
+
+            return;
+
+        }
+
+        showToast(
+            "Excel error",
+            readableError(error),
+            true
+        );
+
+    }
+
+}
+
+
+async function appendInvoiceToWorkbook(
+    file,
+    handle = null
+) {
+
+    if (
+        !window.XLSX
+    ) {
+
+        showToast(
+            "Excel unavailable",
+            "The workbook library has not loaded yet.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    const status =
+        document
+            .getElementById(
+                "excelAppendStatus"
+            );
+
+
+    status.textContent =
+        "Reading workbook...";
+
+
+    try {
+
+        const arrayBuffer =
+            await file.arrayBuffer();
+
+
+        const workbook =
+            XLSX.read(
+                arrayBuffer,
+                {
+                    type:
+                        "array"
+                }
+            );
+
+
+        const invoice =
+            await fetchInvoiceForJob(
+                state.selectedJob
+            );
+
+
+        const rows =
+            invoiceRowsForWorkbook(
+                invoice
+            );
+
+
+        let sheetName =
+            workbook.SheetNames[0];
+
+
+        if (
+            !sheetName
+        ) {
+
+            sheetName =
+                "Invoices";
+
+            workbook.SheetNames.push(
+                sheetName
+            );
+
+            workbook.Sheets[sheetName] =
+                XLSX.utils.aoa_to_sheet(
+                    []
+                );
+
+        }
+
+
+        const worksheet =
+            workbook.Sheets[
+                sheetName
+            ];
+
+
+        const existingRows =
+            XLSX.utils.sheet_to_json(
+                worksheet,
+                {
+                    header:
+                        1,
+
+                    defval:
+                        ""
+                }
+            );
+
+
+        if (
+            existingRows.length === 0
+        ) {
+
+            XLSX.utils.sheet_add_json(
+                worksheet,
+                rows,
+                {
+                    origin:
+                        "A1",
+
+                    skipHeader:
+                        false
+                }
+            );
+
+        } else {
+
+            XLSX.utils.sheet_add_json(
+                worksheet,
+                rows,
+                {
+                    origin:
+                        -1,
+
+                    skipHeader:
+                        true
+                }
+            );
+
+        }
+
+
+        /*
+           Modern browser:
+           write directly back to chosen workbook.
+        */
+
+        if (
+            handle &&
+            handle.createWritable
+        ) {
+
+            const output =
+                XLSX.write(
+                    workbook,
+                    {
+                        bookType:
+                            "xlsx",
+
+                        type:
+                            "array"
+                    }
+                );
+
+
+            const writable =
+                await handle.createWritable();
+
+
+            await writable.write(
+                output
+            );
+
+            await writable.close();
+
+
+            status.textContent =
+                "Invoice successfully added to the existing workbook.";
+
+
+            showToast(
+                "Excel updated",
+                "The invoice was appended to your selected workbook."
+            );
+
+
+            return;
+
+        }
+
+
+        /*
+           Fallback:
+           download updated workbook.
+        */
+
+        XLSX.writeFile(
+            workbook,
+            file.name.replace(
+                /\.(xlsx|xls)$/i,
+                ""
+            )
+            +
+            "_updated.xlsx"
+        );
+
+
+        status.textContent =
+            "Updated workbook downloaded.";
+
+
+        showToast(
+            "Excel updated",
+            "The updated workbook has been downloaded."
+        );
+
+
+    } catch (error) {
+
+        status.textContent =
+            "";
+
+
+        showToast(
+            "Excel update failed",
+            readableError(error),
+            true
+        );
+
+    }
+
+}
+
+
+async function fetchInvoiceForJob(
+    job
+) {
+
+    /*
+       First try to locate the invoice by searching
+       its filename.
+
+       This avoids requiring a new backend endpoint.
+    */
+
+    const params =
+        new URLSearchParams();
+
+    params.set(
+        "q",
+        job.file_name
+        ??
+        ""
+    );
+
+    params.set(
+        "page",
+        "1"
+    );
+
+    params.set(
+        "page_size",
+        "20"
+    );
+
+
+    const data =
+        await apiRequest(
+            `/search?${params.toString()}`
+        );
+
+
+    const invoices =
+        extractInvoiceArray(
+            data
+        );
+
+
+    if (
+        invoices.length
+    ) {
+
+        return invoices[0];
+
+    }
+
+
+    throw new Error(
+        "The processed invoice could not be found in the database yet."
+    );
+
+}
+
+
+function invoiceRowsForWorkbook(
+    invoice
+) {
+
+    return [
+        {
+            Invoice_Number:
+                invoice.invoice_number
+                ?? "",
+
+            Invoice_Date:
+                invoice.invoice_date
+                ?? "",
+
+            Portal_Invoice_Number:
+                invoice.portal_invoice_number
+                ?? "",
+
+            Portal_Invoice_Date:
+                invoice.portal_invoice_date
+                ?? "",
+
+            Currency:
+                invoice.currency
+                ?? "",
+
+            Seller_GSTIN:
+                invoice.seller_gstin
+                ?? "",
+
+            Buyer_GSTIN:
+                invoice.buyer_gstin
+                ?? "",
+
+            Subtotal:
+                invoice.subtotal
+                ?? "",
+
+            Taxable_Amount:
+                invoice.taxable_amount
+                ?? "",
+
+            Tax_Rate:
+                invoice.tax_rate
+                ?? "",
+
+            Tax_Amount:
+                invoice.tax_amount
+                ?? "",
+
+            IGST:
+                invoice.igst
+                ?? "",
+
+            Total_Amount:
+                invoice.total_amount
+                ?? "",
+
+            File_Name:
+                invoice.file_name
+                ?? "",
+
+            Status:
+                invoice.status
+                ?? "",
+
+            Confidence:
+                invoice.confidence
+                ?? "",
+
+            Review_Required:
+                invoice.review_required
+                ?? "",
+
+            Completeness:
+                invoice.completeness
+                ?? "",
+
+            Errors:
+                invoice.errors
+                ?? "",
+
+            Warnings:
+                invoice.warnings
+                ?? ""
+        }
+    ];
+
+}
+
+
+/* ============================================================
+   INVOICE DETAILS
+   ============================================================ */
+
+async function openInvoice(
+    invoiceId
+) {
+
+    document
+        .getElementById(
+            "invoiceModal"
+        )
+        .classList
+        .add("show");
+
+
+    document
+        .getElementById(
+            "invoiceDetails"
+        )
+        .innerHTML =
+            `<div class="empty">Loading invoice...</div>`;
+
+
+    try {
+
+        const invoice =
+            await apiRequest(
+                `/invoices/${invoiceId}`
+            );
+
+
+        document
+            .getElementById(
+                "invoiceModalTitle"
+            )
+            .textContent =
+                invoice.invoice_number
+                ??
+                "Invoice";
+
+
+        document
+            .getElementById(
+                "invoiceModalSubtitle"
+            )
+            .textContent =
+                invoice.file_name
+                ??
+                "Invoice details";
+
+
+        renderInvoiceDetails(
+            invoice
+        );
+
+
+    } catch (error) {
+
+        document
+            .getElementById(
+                "invoiceDetails"
+            )
+            .innerHTML =
+                emptyState(
+                    "Unable to open invoice",
+                    readableError(error)
+                );
+
+    }
+
+}
+
+
+function renderInvoiceDetails(
+    invoice
+) {
+
+    const fields = [
+
+        ["Invoice number", invoice.invoice_number],
+
+        ["Invoice date", invoice.invoice_date],
+
+        ["Portal invoice number", invoice.portal_invoice_number],
+
+        ["Portal invoice date", invoice.portal_invoice_date],
+
+        ["Currency", invoice.currency],
+
+        ["Seller GSTIN", invoice.seller_gstin],
+
+        ["Buyer GSTIN", invoice.buyer_gstin],
+
+        ["Subtotal", formatAmount(invoice.subtotal, invoice.currency)],
+
+        ["Taxable amount", formatAmount(invoice.taxable_amount, invoice.currency)],
+
+        ["Tax rate", invoice.tax_rate],
+
+        ["Tax amount", formatAmount(invoice.tax_amount, invoice.currency)],
+
+        ["IGST", formatAmount(invoice.igst, invoice.currency)],
+
+        ["Total amount", formatAmount(invoice.total_amount, invoice.currency)],
+
+        ["Status", invoice.status],
+
+        ["Confidence", invoice.confidence],
+
+        ["Completeness", invoice.completeness],
+
+        ["Review required", invoice.review_required ? "Yes" : "No"],
+
+        ["File", invoice.file_name]
+
+    ];
+
+
+    let html = `
+
+        <div class="detail-grid">
+
+            ${fields
+                .map(
+                    ([label, value]) => `
+
+                        <div class="detail">
+
+                            <div class="detail-label">
+                                ${escapeHtml(label)}
+                            </div>
+
+                            <div class="detail-value">
+                                ${escapeHtml(
+                                    value ?? "—"
+                                )}
+                            </div>
+
+                        </div>
+
+                    `
+                )
+                .join("")}
+
+        </div>
+
+    `;
+
+
+    const lineItems =
+        Array.isArray(
+            invoice.line_items
+        )
+            ? invoice.line_items
+            : [];
+
+
+    if (
+        lineItems.length
+    ) {
+
+        html += `
+
+            <div class="line-items">
+
+                <h4>
+                    Line items
+                </h4>
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Description
+                                </th>
+
+                                <th>
+                                    Quantity
+                                </th>
+
+                                <th>
+                                    Unit price
+                                </th>
+
+                                <th>
+                                    Amount
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            ${lineItems
+                                .map(
+                                    item => `
+
+                                        <tr>
+
+                                            <td>
+                                                ${escapeHtml(
+                                                    item.description
+                                                    ??
+                                                    item.product_name
+                                                    ??
+                                                    "—"
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                                    item.quantity
+                                                    ??
+                                                    "—"
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                                    item.unit_price
+                                                    ??
+                                                    "—"
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                                    item.amount
+                                                    ??
+                                                    "—"
+                                                )}
+                                            </td>
+
+                                        </tr>
+
+                                    `
+                                )
+                                .join("")}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    if (
+        invoice.errors
+    ) {
+
+        html += `
+
+            <div style="margin-top:18px">
+
+                <div class="detail-label">
+                    Errors
+                </div>
+
+                <div
+                    style="
+                        margin-top:7px;
+                        color:#ff8497;
+                        font-size:11px;
+                        line-height:1.5
+                    "
+                >
+                    ${escapeHtml(invoice.errors)}
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    if (
+        invoice.warnings
+    ) {
+
+        html += `
+
+            <div style="margin-top:18px">
+
+                <div class="detail-label">
+                    Warnings
+                </div>
+
+                <div
+                    style="
+                        margin-top:7px;
+                        color:#f4ca64;
+                        font-size:11px;
+                        line-height:1.5
+                    "
+                >
+                    ${escapeHtml(invoice.warnings)}
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    document
+        .getElementById(
+            "invoiceDetails"
+        )
+        .innerHTML =
+            html;
+
+}
+
+
+/* ============================================================
+   CONTEXT MENU
+   ============================================================ */
+
+function openContextMenu(
+    event,
+    invoiceId
+) {
+
+    event.stopPropagation();
+
+    state.contextInvoiceId =
+        invoiceId;
+
+
+    const menu =
+        document
+            .getElementById(
+                "contextMenu"
+            );
+
+
+    menu.classList.add(
+        "show"
+    );
+
+
+    let x =
+        event.clientX;
+
+    let y =
+        event.clientY;
+
+
+    const width =
+        190;
+
+    const height =
+        160;
+
+
+    if (
+        x + width >
+        window.innerWidth
+    ) {
+
+        x =
+            window.innerWidth
+            -
+            width
+            -
+            10;
+
+    }
+
+
+    if (
+        y + height >
+        window.innerHeight
+    ) {
+
+        y =
+            window.innerHeight
+            -
+            height
+            -
+            10;
+
+    }
+
+
+    menu.style.left =
+        `${x}px`;
+
+    menu.style.top =
+        `${y}px`;
+
+}
+
+
+document.addEventListener(
+    "click",
+    () => {
+
+        document
+            .getElementById(
+                "contextMenu"
+            )
+            .classList
+            .remove("show");
+
+    }
+);
+
+
+function contextOpenInvoice() {
+
+    const id =
+        state.contextInvoiceId;
+
+    if (
+        id
+    ) {
+
+        openInvoice(
+            id
+        );
+
+    }
+
+}
+
+
+function contextReviewInvoice() {
+
+    const id =
+        state.contextInvoiceId;
+
+    if (
+        !id
+    ) {
+
+        return;
+
+    }
+
+    state.reviewIds.add(
+        String(id)
+    );
+
+    saveReviewIds();
+
+    showToast(
+        "Marked for review",
+        "The invoice has been added to your review queue."
+    );
+
+    navigate(
+        "review"
+    );
+
+}
+
+
+async function contextDuplicateInvoice() {
+
+    const id =
+        state.contextInvoiceId;
+
+    if (
+        !id
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const invoice =
+            await apiRequest(
+                `/invoices/${id}`
+            );
+
+
+        /*
+           Local duplicate record.
+
+           The backend currently does not expose
+           a duplicate-invoice creation endpoint,
+           so we keep this action as a safe local
+           record copy rather than pretending it
+           was inserted into SQLite.
+        */
+
+        const duplicate = {
+
+            ...invoice,
+
+            id:
+                `local-${Date.now()}`,
+
+            file_name:
+                `Duplicate — ${invoice.file_name || ""}`,
+
+            status:
+                "Review"
+
+        };
+
+
+        state.invoices.unshift(
+            duplicate
+        );
+
+
+        showToast(
+            "Duplicate record created",
+            "A dashboard copy was created. It is not written to the database."
+        );
+
+
+    } catch (error) {
+
+        showToast(
+            "Duplicate failed",
+            readableError(error),
+            true
+        );
+
+    }
+
+}
+
+
+async function contextDeleteInvoice() {
+
+    const id =
+        state.contextInvoiceId;
+
+    if (
+        !id
+    ) {
+
+        return;
+
+    }
+
+
+    const confirmed =
+        window.confirm(
+            "Remove this invoice from the dashboard view?"
+        );
+
+
+    if (
+        !confirmed
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+       The current backend intentionally has no DELETE
+       endpoint. Do not fake a server deletion.
+
+       Remove from the current UI instead.
+    */
+
+    state.invoices =
+        state.invoices.filter(
+            invoice =>
+                String(invoice.id)
+                !==
+                String(id)
+        );
+
+
+    renderPage();
+
+
+    showToast(
+        "Removed from view",
+        "The invoice was removed from the current dashboard view. The database record remains unchanged."
+    );
+
+}
+
+
+/* ============================================================
+   REVIEW
+   ============================================================ */
+
+function renderReview() {
+
+    return `
+
+        <div class="page-header">
+
+            <div>
+
+                <h2>
+                    Review
+                </h2>
+
+                <p>
+                    Invoices you've flagged for human attention.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div
+            id="reviewContent"
+            class="card table-card"
+        >
+
+            <div class="empty">
+                Loading review queue...
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+async function loadReview() {
+
+    const target =
+        document
+            .getElementById(
+                "reviewContent"
+            );
+
+    if (
+        !target
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const data =
+            await apiRequest(
+                "/search?page=1&page_size=200"
+            );
+
+
+        const invoices =
+            extractInvoiceArray(
+                data
+            );
+
+
+        const review =
+            invoices.filter(
+                invoice => {
+
+                    return (
+                        invoice.review_required
+                        ||
+                        state.reviewIds.has(
+                            String(
+                                invoice.id
+                            )
+                        )
+                    );
+
+                }
+            );
+
+
+        if (
+            !review.length
+        ) {
+
+            target.innerHTML =
+                emptyState(
+                    "Review queue is clear",
+                    "No invoices currently require your attention."
+                );
+
+            return;
+
+        }
+
+
+        target.innerHTML =
+            invoiceTable(
+                review
+            );
+
+
+    } catch (error) {
+
+        target.innerHTML =
+            emptyState(
+                "Unable to load review queue",
+                readableError(error)
+            );
+
+    }
+
+}
+
+
+/* ============================================================
+   REPORTS
+   ============================================================ */
+
+function renderReports() {
+
+    return `
+
+        <div class="page-header">
+
+            <div>
+
+                <h2>
+                    Reports
+                </h2>
+
+                <p>
+                    High-level information from your processed invoice database.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div
+            id="reportContent"
+            class="report-grid"
+        >
+
+            <div class="card report-card">
+                Loading...
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+async function loadReports() {
+
+    const target =
+        document
+            .getElementById(
+                "reportContent"
+            );
+
+    if (
+        !target
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const stats =
+            await apiRequest(
+                "/stats"
+            );
+
+
+        target.innerHTML = `
+
+            <div class="card report-card">
+
+                <h3>
+                    Total invoices
+                </h3>
+
+                <p>
+                    Structured records currently stored.
+                </p>
+
+                <div class="report-number">
+                    ${formatNumber(
+                        stats.total_invoices
+                        ??
+                        stats.total
+                        ??
+                        0
+                    )}
+                </div>
+
+            </div>
+
+            <div class="card report-card">
+
+                <h3>
+                    Valid invoices
+                </h3>
+
+                <p>
+                    Records passing validation.
+                </p>
+
+                <div class="report-number">
+                    ${formatNumber(
+                        stats.valid
+                        ??
+                        stats.valid_invoices
+                        ??
+                        0
+                    )}
+                </div>
+
+            </div>
+
+            <div class="card report-card">
+
+                <h3>
+                    Review required
+                </h3>
+
+                <p>
+                    Records needing human attention.
+                </p>
+
+                <div class="report-number">
+                    ${formatNumber(
+                        stats.review_required
+                        ??
+                        stats.review
+                        ??
+                        0
+                    )}
+                </div>
+
+            </div>
+
+            <div class="card report-card">
+
+                <h3>
+                    Processing errors
+                </h3>
+
+                <p>
+                    Jobs that failed processing.
+                </p>
+
+                <div class="report-number">
+                    ${formatNumber(
+                        stats.processing_errors
+                        ??
+                        stats.errors
+                        ??
+                        0
+                    )}
+                </div>
+
+            </div>
+
+        `;
+
+
+    } catch (error) {
+
+        target.innerHTML =
+            `<div class="card report-card">
+                ${escapeHtml(
+                    readableError(error)
+                )}
+            </div>`;
+
+    }
+
+}
+
+
+/* ============================================================
+   FILES / FOLDERS
+   ============================================================ */
+
+function renderFiles() {
+
+    const folders =
+        state.folders;
+
+
+    return `
+
+        <div class="page-header">
+
+            <div>
+
+                <h2>
+                    Files
+                </h2>
+
+                <p>
+                    Organize generated workbooks into your own folders.
+                </p>
+
+            </div>
+
+            <button
+                class="btn btn-primary"
+                onclick="createFolder()"
+            >
+                + New folder
+            </button>
+
+        </div>
+
+        <div class="folder-toolbar">
+
+            <div
+                style="
+                    color:var(--muted);
+                    font-size:11px
+                "
+            >
+                ${folders.length}
+                folder${folders.length === 1 ? "" : "s"}
+            </div>
+
+        </div>
+
+        ${
+            folders.length
+                ? `
+
+                    <div class="folder-grid">
+
+                        ${folders
+                            .map(
+                                folder => `
+
+                                    <div
+                                        class="card folder-card"
+                                        onclick="openFolder('${escapeHtml(folder.id)}')"
+                                    >
+
+                                        <div class="folder-icon">
+                                            ▰
+                                        </div>
+
+                                        <div class="folder-name">
+                                            ${escapeHtml(folder.name)}
+                                        </div>
+
+                                        <div class="folder-count">
+                                            ${folder.files.length}
+                                            file${folder.files.length === 1 ? "" : "s"}
+                                        </div>
+
+                                    </div>
+
+                                `
+                            )
+                            .join("")}
+
+                    </div>
+
+                `
+                : emptyState(
+                    "No folders yet",
+                    "Create a folder to organize your generated Excel files."
+                )
+        }
+
+    `;
+
+}
+
+
+function createFolder() {
+
+    const name =
+        window.prompt(
+            "Folder name:"
+        );
+
+
+    if (
+        !name ||
+        !name.trim()
+    ) {
+
+        return;
+
+    }
+
+
+    const folder = {
+
+        id:
+            `folder-${Date.now()}`,
+
+        name:
+            name.trim(),
+
+        files:
+            []
+
+    };
+
+
+    state.folders.push(
+        folder
+    );
+
+    saveFolders();
+
+    renderPage();
+
+
+    showToast(
+        "Folder created",
+        `"${folder.name}" is ready.`
+    );
+
+}
+
+
+function openFolder(
+    folderId
+) {
+
+    const folder =
+        state.folders.find(
+            item =>
+                item.id === folderId
+        );
+
+
+    if (
+        !folder
+    ) {
+
+        return;
+
+    }
+
+
+    let html = `
+
+        <div class="page-header">
+
+            <div>
+
+                <h2>
+                    ${escapeHtml(folder.name)}
+                </h2>
+
+                <p>
+                    Generated Excel files
+                </p>
+
+            </div>
+
+            <button
+                class="btn"
+                onclick="navigate('files')"
+            >
+                ← Back
+            </button>
+
+        </div>
+
+    `;
+
+
+    if (
+        !folder.files.length
+    ) {
+
+        html +=
+            emptyState(
+                "Folder is empty",
+                "Generated workbooks can be organized here."
+            );
+
+    } else {
+
+        html += `
+
+            <div class="card table-card">
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    File
+                                </th>
+
+                                <th>
+                                    Added
+                                </th>
+
+                                <th></th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            ${folder.files
+                                .map(
+                                    file => `
+
+                                        <tr>
+
+                                            <td>
+                                                ${escapeHtml(file.name)}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(file.createdAt)}
+                                            </td>
+
+                                            <td>
+                                                ${
+                                                    file.url
+                                                        ? `
+
+                                                            <a
+                                                                class="btn btn-small"
+                                                                href="${escapeHtml(file.url)}"
+                                                                target="_blank"
+                                                            >
+                                                                Open
+                                                            </a>
+
+                                                        `
+                                                        : ""
+                                                }
+                                            </td>
+
+                                        </tr>
+
+                                    `
+                                )
+                                .join("")}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    document
+        .getElementById(
+            "content"
+        )
+        .innerHTML =
+            html;
+
+}
+
+
+/* ============================================================
+   LOCAL STORAGE
+   ============================================================ */
+
+function loadFolders() {
+
+    try {
+
+        const value =
+            localStorage.getItem(
+                "invoiceEngineFolders"
+            );
+
+
+        if (
+            value
+        ) {
+
+            const parsed =
+                JSON.parse(
+                    value
+                );
+
+
+            if (
+                Array.isArray(parsed)
+            ) {
+
+                return parsed;
+
+            }
+
+        }
+
+    } catch {}
+
+    return [
+
+        {
+            id:
+                "folder-general",
+
+            name:
+                "General",
+
+            files:
+                []
+
+        }
+
+    ];
+
+}
+
+
+function saveFolders() {
+
+    localStorage.setItem(
+
+        "invoiceEngineFolders",
+
+        JSON.stringify(
+            state.folders
+        )
+
+    );
+
+}
+
+
+function loadReviewIds() {
+
+    try {
+
+        const value =
+            localStorage.getItem(
+                "invoiceEngineReviewIds"
+            );
+
+
+        if (
+            value
+        ) {
+
+            return new Set(
+                JSON.parse(
+                    value
+                )
+            );
+
+        }
+
+    } catch {}
+
+    return new Set();
+
+}
+
+
+function saveReviewIds() {
+
+    localStorage.setItem(
+
+        "invoiceEngineReviewIds",
+
+        JSON.stringify(
+            Array.from(
+                state.reviewIds
+            )
+        )
+
+    );
+
+}
+
+
+/* ============================================================
+   RETRY
+   ============================================================ */
+
+async function retryJobFromDashboard(
+    jobId
+) {
+
+    /*
+       The current API does not expose a retry endpoint.
+
+       We therefore explain this instead of pretending
+       the button can call a nonexistent route.
+    */
+
+    showToast(
+        "Retry",
+        "Use the New processing job button to upload the invoice again."
+    );
+
+}
+
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+
+function showToast(
+    title,
+    message,
+    error = false
+) {
+
+    const container =
+        document
+            .getElementById(
+                "toastContainer"
+            );
+
+
+    const toast =
+        document.createElement(
+            "div"
+        );
+
+
+    toast.className =
+        "toast";
+
+
+    toast.style.borderColor =
+        error
+            ? "rgba(255,100,124,.3)"
+            : "rgba(255,255,255,.08)";
+
+
+    toast.innerHTML = `
+
+        <div class="toast-title">
+            ${escapeHtml(title)}
+        </div>
+
+        <div class="toast-message">
+            ${escapeHtml(message)}
+        </div>
+
+    `;
+
+
+    container.appendChild(
+        toast
+    );
+
+
+    setTimeout(
+        () => {
+
+            toast.remove();
+
+        },
+        5000
+    );
+
+}
+
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
+function emptyState(
+    title,
+    text
+) {
+
+    return `
+
+        <div class="empty">
+
+            <div class="empty-icon">
+                ◌
+            </div>
+
+            <div class="empty-title">
+                ${escapeHtml(title)}
+            </div>
+
+            <div class="empty-text">
+                ${escapeHtml(text)}
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ============================================================
+   SLEEP
+   ============================================================ */
+
+function sleep(
+    ms
+) {
+
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                ms
+            )
+    );
+
+}
+
+
+/* ============================================================
+   OPEN APPEND MODAL
+   ============================================================ */
+
+function openAppendExcel(
+    jobId
+) {
+
+    state.selectedJob =
+        state.jobs[jobId];
+
+
+    if (
+        !state.selectedJob
+    ) {
+
+        showToast(
+            "Excel unavailable",
+            "Job information is missing.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    document
+        .getElementById(
+            "excelAppendStatus"
+        )
+        .textContent =
+            `Ready to append "${state.selectedJob.file_name}".`;
+
+
+    document
+        .getElementById(
+            "excelModal"
+        )
+        .classList
+        .add("show");
+
+}
+
+
+function replayTutorial() {
+
+    const video =
+        document.getElementById("tutorialVideo");
+
+    if (!video) {
+        return;
+    }
+
+    video.currentTime = 0;
+
+    const playPromise = video.play();
+
+    if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {
+            showToast(
+                "Tutorial ready",
+                "Use the video play control to start the tutorial."
+            );
+        });
+    }
+
+}
+
+
+/* ============================================================
+   INITIALIZATION
+   ============================================================ */
+
+async function initialize() {
+
+    if (
+        state.initialized
+    ) {
+
+        return;
+
+    }
+
+    state.initialized =
+        true;
+
+
+    await checkApi();
+
+
+    renderPage();
+
+
+    /*
+       Keep API indicator alive.
+    */
+
+    setInterval(
+        checkApi,
+        15000
+    );
+
+
+    /*
+       If the user changes page while a job is running,
+       the job remains in state and polling continues.
+    */
+
+}
+
+
+/* ============================================================
+   CLOSE MODALS ON BACKDROP
+   ============================================================ */
+
+document
+    .querySelectorAll(
+        ".modal-backdrop"
+    )
+    .forEach(
+        backdrop => {
+
+            backdrop.addEventListener(
+                "click",
+                event => {
+
+                    if (
+                        event.target === backdrop
+                    ) {
+
+                        backdrop.classList.remove(
+                            "show"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+/* ============================================================
+   START
+   ============================================================ */
+
+initialize();
 
 </script>
 
-
 </body>
-
 </html>
