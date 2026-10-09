@@ -10,6 +10,10 @@
 
     <title>Invoice Engine — Dashboard</title>
 
+    <!-- Supabase authentication -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/frontend/supabase-config.js"></script>
+
     <!-- =====================================================
          SHEETJS
          ===================================================== -->
@@ -1973,6 +1977,29 @@
             }
         }
 
+    
+        .signout-button {
+            margin-left: 14px;
+            padding: 8px 12px;
+            border: 1px solid var(--border-strong);
+            border-radius: 8px;
+            background: var(--panel-2);
+            color: var(--text);
+            font: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .signout-button:hover {
+            background: var(--panel-3);
+        }
+
+        .signout-button:disabled {
+            opacity: .6;
+            cursor: wait;
+        }
+
     </style>
 </head>
 
@@ -2114,6 +2141,12 @@
                 <span id="apiText">
                     API checking...
                 </span>
+
+                <button
+                    id="logoutButton"
+                    class="signout-button"
+                    type="button"
+                >Sign out</button>
 
             </div>
 
@@ -6899,10 +6932,57 @@ document
 
 
 /* ============================================================
-   START
+   AUTHENTICATION + START
    ============================================================ */
 
-initialize();
+async function protectDashboard() {
+
+    try {
+
+        const { data, error } = await supabaseClient.auth.getSession();
+
+        if (error) {
+            throw error;
+        }
+
+        if (!data || !data.session) {
+            window.location.replace("/frontend/auth.html");
+            return;
+        }
+
+        const logoutButton = document.getElementById("logoutButton");
+
+        if (logoutButton) {
+            logoutButton.addEventListener("click", async () => {
+                logoutButton.disabled = true;
+                logoutButton.textContent = "Signing out...";
+
+                try {
+                    const { error: signOutError } = await supabaseClient.auth.signOut();
+                    if (signOutError) {
+                        throw signOutError;
+                    }
+                } catch (signOutError) {
+                    console.error("Invoice Engine sign-out error:", signOutError);
+                    logoutButton.disabled = false;
+                    logoutButton.textContent = "Sign out";
+                    showToast("Sign out failed", signOutError.message || "Please try again.", true);
+                    return;
+                }
+
+                window.location.replace("/frontend/auth.html");
+            });
+        }
+
+        await initialize();
+
+    } catch (error) {
+        console.error("Invoice Engine session check failed:", error);
+        window.location.replace("/frontend/auth.html");
+    }
+}
+
+protectDashboard();
 
 </script>
 
