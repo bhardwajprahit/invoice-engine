@@ -14,4 +14,4 @@ COPY . .
 
 ENV TESSERACT_PATH=/usr/bin/tesseract
 
-CMD ["sh", "-c", "uvicorn api:app --host 0.0.0.0 --port ${PORT}"]
+CMD ["sh", "-c", "python -u worker.py & exec uvicorn api:app --host 0.0.0.0 --port ${PORT}"]
