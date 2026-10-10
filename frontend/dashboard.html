@@ -3409,6 +3409,8 @@ function renderInvoices() {
                     Search
                 </button>
 
+                <button class="btn btn-small" onclick="createProductReport()" title="Generate a product-level quantity, spend and GST report">Create report</button>
+
             </div>
 
             <div
@@ -3558,6 +3560,47 @@ async function loadInvoices() {
 /* ============================================================
    INVOICE TABLE
    ============================================================ */
+
+async function createProductReport() {
+    const query = (document.getElementById("invoiceSearch")?.value || "").trim().toLowerCase();
+    const target = document.getElementById("invoiceTable");
+    if (target) target.innerHTML = '<div class="empty">Building product report…</div>';
+    try {
+        const data = await apiRequest("/search?page=1&page_size=1000");
+        const invoices = extractInvoiceArray(data);
+        const products = new Map();
+        for (const invoice of invoices) {
+            for (const item of (Array.isArray(invoice.line_items) ? invoice.line_items : [])) {
+                const product = String(item.product_name || item.item_name || item.description || item.name || "Unidentified item").trim();
+                const model = String(item.model || item.model_number || "").trim();
+                const supplier = String(invoice.seller_name || invoice.vendor_name || "Unknown supplier");
+                const hsn = String(item.hsn_sac || item.hsn || item.sac || "");
+                const haystack = [product, model, item.sku, hsn, supplier, invoice.seller_gstin].join(" ").toLowerCase();
+                if (query && !haystack.includes(query)) continue;
+                const key = [product.toLowerCase(), model.toLowerCase(), supplier.toLowerCase()].join("|");
+                if (!products.has(key)) products.set(key,{product,model,supplier,quantity:0,beforeTax:0,cgst:0,sgst:0,igst:0,total:0,invoices:new Set()});
+                const r=products.get(key); const taxable=Number(item.taxable_amount ?? item.gross_amount ?? item.amount ?? 0);
+                const cgst=Number(item.cgst||0),sgst=Number(item.sgst||0),igst=Number(item.item_igst ?? item.igst ?? 0);
+                r.quantity+=Number(item.quantity||0); r.beforeTax+=taxable; r.cgst+=cgst; r.sgst+=sgst; r.igst+=igst;
+                r.total+=Number(item.amount ?? item.total_amount ?? (taxable+cgst+sgst+igst));
+                r.invoices.add(String(invoice.invoice_number||invoice.id||invoice.file_name||"Unknown"));
+            }
+        }
+        const rows=[...products.values()].sort((a,b)=>b.total-a.total);
+        if(!target) return;
+        if(!rows.length){target.innerHTML=emptyState("No product line items found","The API must return line_items for product-level reporting. Try another search or process invoices with item details.");return;}
+        const money=n=>Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+        const esc=v=>escapeHtml(String(v??""));
+        target.innerHTML=`<div style="padding:12px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><strong>Product report · ${rows.length} product/supplier combinations</strong><button class="btn btn-small btn-primary" onclick="downloadProductReportCsv()">Download report CSV</button><span style="color:var(--muted);font-size:12px">GST totals reflect extracted item-level fields.</span></div><div class="table-wrap"><table><thead><tr><th>Product</th><th>Model</th><th>Supplier</th><th>Quantity</th><th>Spend before GST</th><th>CGST</th><th>SGST</th><th>IGST</th><th>Total incl. GST</th><th>Invoice refs</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.product)}</td><td>${esc(r.model||"—")}</td><td>${esc(r.supplier)}</td><td>${money(r.quantity)}</td><td>${money(r.beforeTax)}</td><td>${money(r.cgst)}</td><td>${money(r.sgst)}</td><td>${money(r.igst)}</td><td>${money(r.total)}</td><td>${esc([...r.invoices].join(", "))}</td></tr>`).join("")}</tbody></table></div>`;
+        window.__invoiceEngineProductReport=rows.map(r=>({product:r.product,model:r.model,supplier:r.supplier,quantity:r.quantity,spend_before_gst:r.beforeTax,cgst:r.cgst,sgst:r.sgst,igst:r.igst,total_including_gst:r.total,invoice_references:[...r.invoices].join("; ")}));
+    } catch(error) { if(target) target.innerHTML=emptyState("Report could not be created",readableError(error)); }
+}
+function downloadProductReportCsv(){
+    const rows=window.__invoiceEngineProductReport||[]; if(!rows.length){showToast("No report","Create a report first.",true);return;}
+    const cols=Object.keys(rows[0]); const cell=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+    const csv=[cols.map(cell).join(","),...rows.map(r=>cols.map(k=>cell(r[k])).join(","))].join("\r\n");
+    const blob=new Blob(["\ufeff",csv],{type:"text/csv;charset=utf-8;"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="invoice-engine-product-report.csv";document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
 
 function extractInvoiceArray(data) {
 
