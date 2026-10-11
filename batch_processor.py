@@ -1833,48 +1833,104 @@ def style_summary_sheet(
 
 
 def create_excel(invoices, processing_errors):
-    """Create a formatted workbook with four useful sheets."""
+    """Create a clean, presentation-ready workbook with four useful sheets."""
     if not invoices and not processing_errors:
         return False
+
     invoice_df = create_invoice_dataframe(invoices)
     line_item_df = create_line_item_dataframe(invoices)
     summary_df = create_summary_dataframe(invoices, processing_errors)
     issues_df = pd.DataFrame(
         [{"file_name": e.get("file_name", ""), "error": e.get("error", str(e))}
-         for e in (processing_errors or [])], columns=["file_name", "error"]
+         for e in (processing_errors or [])],
+        columns=["file_name", "error"]
     )
+
     with pd.ExcelWriter(OUTPUT_FILE, engine="openpyxl") as writer:
-        summary_df.to_excel(writer, index=False, sheet_name="Summary")
+        summary_df.to_excel(writer, index=False, sheet_name="Summary", startrow=1)
         invoice_df.to_excel(writer, index=False, sheet_name="Invoices")
         line_item_df.to_excel(writer, index=False, sheet_name="Line Items")
         issues_df.to_excel(writer, index=False, sheet_name="Processing Issues")
+
     workbook = load_workbook(OUTPUT_FILE)
+    navy = "172554"
+    blue = "2563EB"
+    pale = "F3F6FB"
+    border = Border(bottom=Side(style="thin", color="DCE4EF"))
+
     for ws in workbook.worksheets:
         ws.sheet_view.showGridLines = False
         ws.freeze_panes = "A3" if ws.title == "Summary" else "A2"
-        if ws.max_row >= 2:
-            ws.auto_filter.ref = ws.dimensions
         header_row = 2 if ws.title == "Summary" else 1
-        for cell in ws[header_row]:
-            cell.font = Font(bold=True, color="FFFFFF")
-            cell.fill = PatternFill("solid", fgColor="183153")
-            cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+
         if ws.title == "Summary":
-            for cell in ws[1]:
-                cell.font = Font(bold=True, size=16, color="183153")
-            ws.row_dimensions[1].height = 30
-        ws.row_dimensions[header_row].height = 30
+            ws["A1"] = "INVOICE ENGINE | BATCH PROCESSING SUMMARY"
+            ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=max(2, ws.max_column))
+            ws["A1"].font = Font(name="Aptos Display", bold=True, size=16, color="FFFFFF")
+            ws["A1"].fill = PatternFill("solid", fgColor=navy)
+            ws["A1"].alignment = Alignment(vertical="center")
+            ws.row_dimensions[1].height = 34
+
+        for cell in ws[header_row]:
+            cell.font = Font(name="Aptos", bold=True, color="FFFFFF", size=10)
+            cell.fill = PatternFill("solid", fgColor=blue if ws.title == "Summary" else navy)
+            cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+            cell.border = border
+        ws.row_dimensions[header_row].height = 32
+
+        if ws.max_row >= header_row + 1:
+            ws.auto_filter.ref = f"A{header_row}:{get_column_letter(ws.max_column)}{ws.max_row}"
+
+        headers = {
+            cell.column: str(cell.value or "")
+            for cell in ws[header_row]
+        }
+        for row in ws.iter_rows(min_row=header_row + 1):
+            for cell in row:
+                cell.font = Font(name="Aptos", size=10, color="263449")
+                cell.fill = PatternFill("solid", fgColor="FFFFFF" if cell.row % 2 else pale)
+                cell.border = border
+                cell.alignment = Alignment(vertical="top", wrap_text=True)
+                header = headers.get(cell.column, "").lower().replace("_", "")
+                if any(k in header for k in ("subtotal", "taxableamount", "taxamount", "cgst", "sgst", "igst", "totalamount", "unitprice", "grossamount", "discount", "cess", "amount")):
+                    cell.number_format = '#,##0.00;[Red]-#,##0.00'
+                elif any(k in header for k in ("quantity", "freequantity")):
+                    cell.number_format = '#,##0.###'
+                elif header in ("confidence", "completeness"):
+                    cell.number_format = '0.0"%"'
+                if header in ("status",):
+                    value = str(cell.value or "").lower()
+                    if value == "valid":
+                        cell.fill = PatternFill("solid", fgColor="E2F0D9")
+                    elif value == "warning":
+                        cell.fill = PatternFill("solid", fgColor="FFF2CC")
+                    elif value == "invalid":
+                        cell.fill = PatternFill("solid", fgColor="FCE4D6")
+
+        # Useful widths by field, with a capped content-based fallback.
         for idx in range(1, ws.max_column + 1):
             letter = get_column_letter(idx)
-            width = 12
-            for cells in ws.iter_rows(min_col=idx, max_col=idx):
-                val = cells[0].value
-                if val is not None:
-                    width = max(width, min(len(str(val)) + 2, 34))
+            header = headers.get(idx, "").lower().replace("_", "")
+            if header in ("errors", "warnings", "error"):
+                width = 42
+            elif "address" in header or "description" in header or header in ("sellername", "buyername", "productname"):
+                width = 30
+            elif "filename" in header:
+                width = 32
+            elif "gstin" in header or "invoicenumber" in header or "date" in header:
+                width = 20
+            elif header in ("metric",):
+                width = 28
+            elif header in ("value",):
+                width = 24
+            else:
+                width = 14
+                for cells in ws.iter_rows(min_col=idx, max_col=idx, min_row=header_row):
+                    value = cells[0].value
+                    if value is not None:
+                        width = max(width, min(len(str(value)) + 3, 24))
             ws.column_dimensions[letter].width = width
-        for row in ws.iter_rows():
-            for cell in row:
-                cell.alignment = Alignment(vertical="top", wrap_text=cell.column in (1, 2))
+
     workbook.save(OUTPUT_FILE)
     return True
 

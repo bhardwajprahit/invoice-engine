@@ -1178,56 +1178,23 @@
         /* =====================================================
            TUTORIALS
            ===================================================== */
-        .tutorials {
-            padding: 54px 24px 86px;
-            background: linear-gradient(180deg, rgba(12,18,29,.86), rgba(7,11,18,.98));
-            border-top: 1px solid rgba(255,255,255,.045);
-            border-bottom: 1px solid rgba(255,255,255,.045);
-            scroll-margin-top: 80px;
-        }
-        .tutorials-inner { max-width: 1100px; margin: 0 auto; }
-        .tutorials-heading { margin-bottom: 28px; }
-        .tutorial-feature {
-            display: grid;
-            grid-template-columns: .72fr 1.28fr;
-            gap: 26px;
-            align-items: center;
-            padding: 22px;
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            background: rgba(13,17,26,.88);
-            box-shadow: var(--shadow);
-            margin-bottom: 18px;
-        }
-        .tutorial-feature-copy { padding: 8px 6px 8px 10px; }
-        .tutorial-tag {
-            color: var(--green);
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 1.3px;
-        }
-        .tutorial-feature h3 { margin-top: 12px; font-size: clamp(24px,3vw,34px); letter-spacing: -1px; }
-        .tutorial-feature p, .tutorial-card p { color: var(--text-muted); font-size: 14px; line-height: 1.7; margin-top: 10px; }
-        .tutorials video { display: block; width: 100%; aspect-ratio: 16/9; background: #03060b; border: 1px solid var(--border); border-radius: 12px; }
-        .tutorial-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
-        .tutorial-card { overflow: hidden; border: 1px solid var(--border); border-radius: 15px; background: rgba(13,17,26,.88); }
-        .tutorial-card video { border: 0; border-radius: 0; }
-        .tutorial-card-copy { padding: 19px; }
-        .tutorial-card h3 { margin-top: 8px; font-size: 21px; letter-spacing: -.5px; }
-        .tutorial-disclaimer { color: var(--text-muted); font-size: 11px; line-height: 1.6; margin-top: 18px; }
-        @media(max-width:800px) {
-            .tutorial-feature { grid-template-columns: 1fr; padding: 16px; }
-            .tutorial-grid { grid-template-columns: 1fr; }
-            .tutorials { padding: 40px 18px 60px; }
-        }
-
+        .tutorials { max-width: 1100px; margin: 0 auto; padding: 80px 24px; }
+        .tutorials-inner { width: 100%; }
+        .tutorials-heading { max-width: 700px; margin: 0 auto 36px; text-align: center; }
+        .tutorial-tag { display: inline-block; color: var(--blue-light); font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; }
+        .tutorials-heading h2 { margin-top: 12px; font-size: clamp(28px, 4vw, 40px); letter-spacing: -1.5px; line-height: 1.15; }
+        .tutorials-heading p { margin-top: 12px; color: var(--text-muted); line-height: 1.7; }
+        .tutorial-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+        .tutorial-card { overflow: hidden; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+        .tutorial-card video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #05070b; object-fit: contain; }
+        .tutorial-card-copy { padding: 20px; }
+        .tutorial-card-copy h3 { margin-top: 10px; font-size: 18px; }
+        .tutorial-card-copy p { margin-top: 8px; color: var(--text-muted); font-size: 13px; line-height: 1.65; }
+        .tutorial-disclaimer { margin-top: 22px; color: var(--text-muted); font-size: 12px; line-height: 1.6; }
+        @media (max-width: 800px) { .tutorial-grid { grid-template-columns: 1fr; } }
     </style>
-
 </head>
-
-
 <body>
-
 
 <!-- =========================================================
      NAVIGATION
@@ -1623,62 +1590,51 @@
 </section>
 
 <!-- =========================================================
-     PRODUCT TUTORIALS
-     ========================================================= -->
-
+      PRODUCT TUTORIALS
+      ========================================================= -->
 <section class="tutorials" id="tutorials">
     <div class="tutorials-inner">
-        <div class="section-heading tutorials-heading">
-            <span>Watch the walkthroughs</span>
-            <h2>See how Invoice Engine fits your workflow.</h2>
-            <p>Short, narrated product tours for the complete suite and each core module. Each video is 45 seconds.</p>
+        <div class="tutorials-heading">
+            <span class="tutorial-tag">THE QUICK TOUR</span>
+            <h2>Less admin. More main character energy.</h2>
+            <p>Three quick looks at what Invoice Engine can do.</p>
         </div>
-
-        <article class="tutorial-feature">
-            <div class="tutorial-feature-copy">
-                <span class="tutorial-tag">START HERE · 45 SEC</span>
-                <h3>The Complete Retail Suite</h3>
-                <p>Get the big picture: Purchasing, Billing and Sales in one connected workspace.</p>
-            </div>
-            <video controls preload="metadata" playsinline poster="tutorials/posters/invoice-engine-overview.jpg" aria-label="45-second narrated overview of Invoice Engine">
-                <source src="tutorials/invoice-engine-overview.mp4" type="video/mp4">
-                Your browser does not support embedded video.
-            </video>
-        </article>
-
         <div class="tutorial-grid">
             <article class="tutorial-card">
-                <video controls preload="metadata" playsinline poster="tutorials/posters/invoice-engine-purchasing.jpg" aria-label="45-second narrated Purchasing tutorial">
-                    <source src="tutorials/invoice-engine-purchasing.mp4" type="video/mp4">
+                <video controls playsinline preload="metadata">
+                    <source src="tutorials/invoice-engine-overview-genz.mp4" type="video/mp4">
+                    Your browser does not support embedded video.
                 </video>
                 <div class="tutorial-card-copy">
-                    <span class="tutorial-tag">MODULE 01 · 45 SEC</span>
-                    <h3>Purchasing</h3>
-                    <p>Upload supplier invoices, extract fields, review warnings, search records and export a combined workbook.</p>
+                    <span class="tutorial-tag">01 / OVERVIEW</span>
+                    <h3>Invoice Engine, unlocked.</h3>
+                    <p>The full workflow. Spreadsheet chaos? Not the vibe.</p>
                 </div>
             </article>
             <article class="tutorial-card">
-                <video controls preload="metadata" playsinline poster="tutorials/posters/invoice-engine-billing.jpg" aria-label="45-second narrated Billing tutorial">
-                    <source src="tutorials/invoice-engine-billing.mp4" type="video/mp4">
+                <video controls playsinline preload="metadata">
+                    <source src="tutorials/invoice-engine-purchasing-genz-music.mp4" type="video/mp4">
+                    Your browser does not support embedded video.
                 </video>
                 <div class="tutorial-card-copy">
-                    <span class="tutorial-tag">MODULE 02 · 45 SEC</span>
-                    <h3>Billing</h3>
-                    <p>Learn the intended catalogue-to-bill flow, final checks, transaction recording and customer receipts.</p>
+                    <span class="tutorial-tag">02 / PURCHASING</span>
+                    <h3>Invoices in. Chaos out.</h3>
+                    <p>Batch uploads, AI extraction, review and combined Excel export.</p>
                 </div>
             </article>
             <article class="tutorial-card">
-                <video controls preload="metadata" playsinline poster="tutorials/posters/invoice-engine-sales.jpg" aria-label="45-second narrated Sales tutorial">
-                    <source src="tutorials/invoice-engine-sales.mp4" type="video/mp4">
+                <video controls playsinline preload="metadata">
+                    <source src="tutorials/invoice-engine-billing-sales-genz-music.mp4" type="video/mp4">
+                    Your browser does not support embedded video.
                 </video>
                 <div class="tutorial-card-copy">
-                    <span class="tutorial-tag">MODULE 03 · 45 SEC</span>
-                    <h3>Sales</h3>
-                    <p>Explore the intended sales-history, summaries, transaction checks and reporting workflow.</p>
+                    <span class="tutorial-tag">03 / BILLING + SALES</span>
+                    <h3>Checkout. Know your numbers.</h3>
+                    <p>Create bills, track sales history and review recorded summaries.</p>
                 </div>
             </article>
         </div>
-        <p class="tutorial-disclaimer">Some Billing and Sales capabilities depend on backend integration and configuration. Confirm availability in your deployment before using live business data.</p>
+        <p class="tutorial-disclaimer">Review extracted invoice details and verify business records before relying on reports.</p>
     </div>
 </section>
 

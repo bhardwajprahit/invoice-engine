@@ -2952,9 +2952,16 @@ function renderOverview() {
           <article class="card suite-card"><div class="suite-icon">▣</div><div class="suite-eyebrow">RETAIL CHECKOUT</div><h3>Billing + Sales</h3><p>Create customer bills and print receipts with saved product details automatically filled in.</p><ul><li>Product catalogue with prices, tax and stock</li><li>Current bill with fast product lookup</li><li>Discounts, GST and payment methods</li><li>Customer records, sales history and reports</li></ul><button class="btn btn-primary" onclick="setModule('billing')">Open Billing</button></article>
           <article class="card suite-card suite-card-featured"><div class="suite-icon">✦</div><div class="suite-eyebrow">ALL-IN-ONE RETAIL</div><h3>Complete Retail Suite</h3><p>Connect supplier purchases, stock and checkout in one retail workflow.</p><ul><li>Purchasing + Billing + Sales</li><li>Shared inventory and stock movements</li><li>Supplier and customer records</li><li>Combined purchase, stock and sales reports</li></ul><button class="btn" onclick="setModule('billing')">Explore Retail Suite</button></article>
         </div>
+      </section>
+      <section class="ie-tutorials" aria-labelledby="ie-tutorials-title">
+        <div class="ie-tutorials-heading"><div><span class="ie-kicker">THE QUICK TOUR</span><h2 id="ie-tutorials-title">See the workflow. Skip the manual.</h2><p>Three short walkthroughs. Captions on, music on, corporate snoozefest off.</p></div><span class="ie-sound-chip">♫ SOUND ON · CAPTIONS INCLUDED</span></div>
+        <div class="ie-video-grid">
+          <article class="ie-video-card"><div class="ie-video-frame"><video controls playsinline preload="metadata" poster="/frontend/tutorials/invoice-engine-overview-preview.jpg"><source src="/frontend/tutorials/invoice-engine-overview-genz.mp4" type="video/mp4">Your browser does not support embedded video.</video></div><div class="ie-video-copy"><span class="ie-video-tag">01 / THE BIG PICTURE</span><h3>Invoice Engine, unlocked.</h3><p>The 30-second-ish vibe check: what connects the whole workflow.</p></div></article>
+          <article class="ie-video-card"><div class="ie-video-frame"><video controls playsinline preload="metadata" poster="/frontend/tutorials/invoice-engine-purchasing-preview.jpg"><source src="/frontend/tutorials/invoice-engine-purchasing-genz-music.mp4" type="video/mp4">Your browser does not support embedded video.</video></div><div class="ie-video-copy"><span class="ie-video-tag">02 / PURCHASES</span><h3>Invoices in. Spreadsheet chaos out.</h3><p>Batch upload, AI extraction, review, then one combined Excel export.</p></div></article>
+          <article class="ie-video-card"><div class="ie-video-frame"><video controls playsinline preload="metadata" poster="/frontend/tutorials/invoice-engine-billing-sales-preview.jpg"><source src="/frontend/tutorials/invoice-engine-billing-sales-genz-music.mp4" type="video/mp4">Your browser does not support embedded video.</video></div><div class="ie-video-copy"><span class="ie-video-tag">03 / BILLING + SALES</span><h3>Checkout, then know your numbers.</h3><p>Create bills, keep sales history, and review the recorded summaries.</p></div></article>
+        </div>
       </section>`;
 }
-
 async function loadOverviewData() {
 
     try {
@@ -7086,7 +7093,26 @@ function printRetailSale(sale) {
     const printWindow = window.open('', '_blank', 'width=900,height=700');
     if (!printWindow) { showToast("Print window blocked", "Allow pop-ups for this site, then open Sales and print the bill again.", true); return; }
     printWindow.document.open();
-    printWindow.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(sale.billNumber)}</title><style>body{font-family:Arial,sans-serif;color:#111;margin:20px}.receipt{max-width:760px;margin:0 auto 28px;padding:22px;border:1px dashed #888;page-break-after:always}.receipt:last-child{page-break-after:auto}header{text-align:center;border-bottom:1px solid #bbb;padding-bottom:10px}h1{font-size:21px;margin:0 0 6px}h2{font-size:13px;margin:9px 0 0;text-transform:uppercase}p{margin:5px 0}header p,small{font-size:10px;color:#555}.meta{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;margin:14px 0}table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;padding:8px 5px;border-bottom:1px solid #ddd}th{background:#f2f2f2}.receipt-totals{width:min(320px,100%);margin:14px 0 0 auto}.receipt-totals p{display:flex;justify-content:space-between;font-size:12px}.receipt-totals .grand{border-top:2px solid #111;padding-top:8px;font-size:17px;font-weight:bold}footer{text-align:center;font-size:11px;margin-top:18px}@media print{body{margin:0}.receipt{margin:0 auto 14mm;break-after:page}.receipt:last-child{break-after:auto}}</style></head><body>${receipt('CUSTOMER COPY')}${receipt('SHOP COPY')}<script>window.onload=()=>{window.focus();window.print();};<\/script></body></html>`);
+    printWindow.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(sale.billNumber)}</title><style>body{font-family:Arial,sans-serif;color:#111;margin:20px}.receipt{max-width:760px;margin:0 auto 28px;padding:22px;border:1px dashed #888;page-break-after:always}.receipt:last-child{page-break-after:auto}header{text-align:center;border-bottom:1px solid #bbb;padding-bottom:10px}h1{font-size:21px;margin:0 0 6px}h2{font-size:13px;margin:9px 0 0;text-transform:uppercase}p{margin:5px 0}header p,small{font-size:10px;color:#555}.meta{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;margin:14px 0}table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;padding:8px 5px;border-bottom:1px solid #ddd}th{background:#f2f2f2}.receipt-totals{width:min(320px,100%);margin:14px 0 0 auto}.receipt-totals p{display:flex;justify-content:space-between;font-size:12px}.receipt-totals .grand{border-top:2px solid #111;padding-top:8px;font-size:17px;font-weight:bold}footer{text-align:center;font-size:11px;margin-top:18px}@media print{body{margin:0}.receipt{margin:0 auto 14mm;break-after:page}.receipt:last-child{break-after:auto}}
+        /* Gen-Z tutorial gallery: embedded videos, no external player links */
+        .ie-tutorials { margin: 34px 0 18px; padding: clamp(18px,3vw,30px); border:1px solid rgba(255,255,255,.09); border-radius:22px; background:radial-gradient(circle at 0% 0%,rgba(70,235,190,.09),transparent 34%),radial-gradient(circle at 100% 0%,rgba(167,90,255,.10),transparent 35%),linear-gradient(145deg,#0c121d,#080c13); }
+        .ie-tutorials-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; margin-bottom:20px; }
+        .ie-tutorials-heading h2 { margin:7px 0 8px; font-size:clamp(24px,3vw,36px); line-height:1.08; letter-spacing:-.045em; }
+        .ie-tutorials-heading p { margin:0; color:var(--muted); font-size:13px; line-height:1.6; }
+        .ie-kicker { color:#72f5cb; font-size:10px; font-weight:900; letter-spacing:.18em; }
+        .ie-sound-chip { flex-shrink:0; border:1px solid rgba(114,245,203,.22); background:rgba(114,245,203,.07); color:#9af7d9; border-radius:999px; padding:9px 12px; font-size:9px; font-weight:900; letter-spacing:.08em; }
+        .ie-video-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:15px; }
+        .ie-video-card { min-width:0; overflow:hidden; border:1px solid rgba(255,255,255,.09); border-radius:17px; background:rgba(15,22,34,.92); transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease; }
+        .ie-video-card:hover { transform:translateY(-4px); border-color:rgba(114,245,203,.3); box-shadow:0 18px 40px rgba(0,0,0,.25); }
+        .ie-video-frame { background:#05080d; aspect-ratio:16/9; overflow:hidden; }
+        .ie-video-frame video { display:block; width:100%; height:100%; object-fit:cover; background:#05080d; }
+        .ie-video-copy { padding:17px; }
+        .ie-video-tag { color:#80efd0; font-size:9px; font-weight:900; letter-spacing:.13em; }
+        .ie-video-copy h3 { margin:9px 0 7px; font-size:clamp(15px,1.4vw,19px); line-height:1.25; letter-spacing:-.025em; }
+        .ie-video-copy p { margin:0; color:var(--muted); font-size:11px; line-height:1.65; }
+        @media(max-width:1100px) { .ie-video-grid { grid-template-columns:1fr; } .ie-video-card { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr); align-items:center; } .ie-video-frame { height:100%; min-height:160px; aspect-ratio:auto; } }
+        @media(max-width:650px) { .ie-tutorials-heading { align-items:flex-start; flex-direction:column; } .ie-video-card { display:block; } .ie-video-frame { aspect-ratio:16/9; min-height:0; } .ie-sound-chip { white-space:normal; } }
+</style></head><body>${receipt('CUSTOMER COPY')}${receipt('SHOP COPY')}<script>window.onload=()=>{window.focus();window.print();};<\/script></body></html>`);
     printWindow.document.close();
 }
 
@@ -7140,70 +7166,151 @@ function reprintRetailSale(saleId) {
 }
 
 function exportRetailWorkbook() {
-    if (typeof XLSX === 'undefined') { showToast('Excel library unavailable', 'Refresh the page and try again.', true); return; }
-    const salesRows = state.retail.sales.map(s => ({ Bill:s.billNumber, Date:s.date, Customer:s.customerName, Phone:s.customerPhone, Payment:s.paymentMethod, Subtotal:s.subtotal, Discount:s.discount, Taxable:s.taxable, GST:s.tax, Total:s.total, Status:s.status }));
-    const itemRows = state.retail.sales.flatMap(s => s.items.map(i => ({ Bill:s.billNumber, Date:s.date, Customer:s.customerName, Product:i.productName, SKU:i.sku, HSN:i.hsn, Quantity:i.quantity, Unit:i.unit, UnitPrice:i.unitPrice, CostPrice:i.costPrice, Discount:i.discount, Taxable:i.taxable, GSTRate:i.gstRate, GST:i.gst, Total:i.total, EstimatedGrossProfit:i.estimatedGrossProfit })));
-    const productRows = state.retail.products.map(p => ({ Product:p.name, SKU:p.sku, HSN:p.hsn, Unit:p.unit, SellingPriceBeforeGST:p.price, PurchaseCost:p.costPrice, GSTRate:p.gstRate, CurrentStock:p.stock }));
-    const purchaseRows = state.retail.purchases.map(p => ({ Date:p.date, Supplier:p.supplier, Product:p.productName, Quantity:p.quantity, UnitCost:p.costPrice, TotalCost:p.totalCost }));
+    if (typeof XLSX === 'undefined') {
+        showToast('Excel library unavailable', 'Refresh the page and try again.', true);
+        return;
+    }
+
+    const salesRows = state.retail.sales.map(s => ({
+        Bill: s.billNumber, Date: s.date, Customer: s.customerName, Phone: s.customerPhone,
+        Payment: s.paymentMethod, Subtotal: s.subtotal, Discount: s.discount, Taxable: s.taxable,
+        GST: s.tax, Total: s.total, Status: s.status
+    }));
+    const itemRows = state.retail.sales.flatMap(s => s.items.map(i => ({
+        Bill: s.billNumber, Date: s.date, Customer: s.customerName, Product: i.productName,
+        SKU: i.sku, HSN: i.hsn, Quantity: i.quantity, Unit: i.unit, UnitPrice: i.unitPrice,
+        CostPrice: i.costPrice, Discount: i.discount, Taxable: i.taxable, GSTRate: i.gstRate,
+        GST: i.gst, Total: i.total, EstimatedGrossProfit: i.estimatedGrossProfit
+    })));
+    const productRows = state.retail.products.map(p => ({
+        Product: p.name, SKU: p.sku, HSN: p.hsn, Unit: p.unit,
+        SellingPriceBeforeGST: p.price, PurchaseCost: p.costPrice, GSTRate: p.gstRate,
+        CurrentStock: p.stock
+    }));
+    const purchaseRows = state.retail.purchases.map(p => ({
+        Date: p.date, Supplier: p.supplier, Product: p.productName, Quantity: p.quantity,
+        UnitCost: p.costPrice, TotalCost: p.totalCost
+    }));
+
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(salesRows.length ? salesRows : [{Note:'No sales recorded yet'}]), 'Sales');
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(itemRows.length ? itemRows : [{Note:'No sale line items recorded yet'}]), 'Sales Line Items');
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(productRows.length ? productRows : [{Note:'No products created yet'}]), 'Inventory');
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(purchaseRows.length ? purchaseRows : [{Note:'No manual stock receipts recorded yet'}]), 'Purchases');
+    const makeSheet = (rows, headers, emptyMessage) => {
+        const ws = XLSX.utils.json_to_sheet(rows.length ? rows : [{ Note: emptyMessage }]);
+        styleRetailWorksheet(ws);
+        return ws;
+    };
+    XLSX.utils.book_append_sheet(wb, makeSheet(salesRows, null, 'No sales recorded yet'), 'Sales');
+    XLSX.utils.book_append_sheet(wb, makeSheet(itemRows, null, 'No sale line items recorded yet'), 'Sales Line Items');
+    XLSX.utils.book_append_sheet(wb, makeSheet(productRows, null, 'No products created yet'), 'Inventory');
+    XLSX.utils.book_append_sheet(wb, makeSheet(purchaseRows, null, 'No manual stock receipts recorded yet'), 'Purchases');
+
     XLSX.writeFile(wb, `invoice-engine-retail-${new Date().toISOString().slice(0,10)}.xlsx`);
-    showToast('Retail workbook exported', 'One workbook containing sales, line items, inventory and stock receipts was downloaded.');
+    showToast('Retail workbook exported', 'Formatted workbook created with readable columns, filters and frozen headers.');
 }
+
+function styleRetailWorksheet(ws) {
+    if (!ws || typeof XLSX === 'undefined') return;
+    const range = XLSX.utils.decode_range(ws['!ref'] || 'A1:A1');
+    const headers = [];
+    const border = {
+        bottom: { style: 'thin', color: { rgb: 'DCE4EF' } },
+        right: { style: 'thin', color: { rgb: 'EDF1F7' } }
+    };
+    for (let c = range.s.c; c <= range.e.c; c++) {
+        const cell = ws[XLSX.utils.encode_cell({ r: 0, c })];
+        headers.push(cell ? String(cell.v || '') : '');
+        if (cell) cell.s = {
+            font: { name: 'Aptos', sz: 10, bold: true, color: { rgb: 'FFFFFF' } },
+            fill: { patternType: 'solid', fgColor: { rgb: '172554' } },
+            alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+            border
+        };
+    }
+    ws['!rows'] = ws['!rows'] || [];
+    ws['!rows'][0] = { hpt: 32 };
+    const money = /subtotal|discount|taxable|gst|total|unitprice|costprice|purchasecost|sellingprice|profit|unitcost|totalcost/i;
+    const percent = /gstrate/i;
+    const numeric = /quantity|stock/i;
+    for (let r = 1; r <= range.e.r; r++) {
+        ws['!rows'][r] = { hpt: 23 };
+        for (let c = range.s.c; c <= range.e.c; c++) {
+            const cell = ws[XLSX.utils.encode_cell({ r, c })];
+            if (!cell) continue;
+            const header = headers[c - range.s.c] || '';
+            cell.s = {
+                font: { name: 'Aptos', sz: 10, color: { rgb: '263449' } },
+                fill: { patternType: 'solid', fgColor: { rgb: r % 2 ? 'FFFFFF' : 'F3F6FB' } },
+                alignment: { vertical: 'center', wrapText: /customer|product|supplier|payment|status|note/i.test(header) },
+                border
+            };
+            if (money.test(header) && typeof cell.v === 'number') cell.z = '₹#,##0.00;[Red]-₹#,##0.00';
+            else if (percent.test(header) && typeof cell.v === 'number') cell.z = '0.##"%"';
+            else if (numeric.test(header) && typeof cell.v === 'number') cell.z = '#,##0.###';
+            if (/status/i.test(header)) {
+                const value = String(cell.v || '').toLowerCase();
+                if (value.includes('complete')) cell.s.fill = { patternType: 'solid', fgColor: { rgb: 'E2F0D9' } };
+                else if (value.includes('void') || value.includes('cancel')) cell.s.fill = { patternType: 'solid', fgColor: { rgb: 'FCE4D6' } };
+            }
+        }
+    }
+    ws['!cols'] = headers.map(h => {
+        if (/bill/i.test(h)) return { wch: 25 };
+        if (/date/i.test(h)) return { wch: 22 };
+        if (/customer|supplier|product/i.test(h)) return { wch: 24 };
+        if (/estimatedgrossprofit/i.test(h)) return { wch: 23 };
+        if (/payment|sellingpricebeforegst|currentstock/i.test(h)) return { wch: 21 };
+        if (/note/i.test(h)) return { wch: 34 };
+        return { wch: Math.max(12, Math.min(19, h.length + 3)) };
+    });
+    ws['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: range.s.c }, e: range.e }) };
+    ws['!views'] = [{ state: 'frozen', ySplit: 1, topLeftCell: 'A2', activePane: 'bottomLeft' }];
+}
+
 
 function styleReportWorksheet(ws, options = {}) {
     if (!ws || typeof XLSX === "undefined") return;
     const range = XLSX.utils.decode_range(ws["!ref"] || "A1:A1");
     const headerRow = options.headerRow || 0;
-    const headerFill = "17365D";
-    const headerFont = { name: "Aptos", sz: 10, bold: true, color: { rgb: "FFFFFF" } };
+    const headerFill = "172554";
     const border = {
-        top: { style: "thin", color: { rgb: "D9E2F3" } },
-        bottom: { style: "thin", color: { rgb: "D9E2F3" } },
-        left: { style: "thin", color: { rgb: "E7ECF3" } },
-        right: { style: "thin", color: { rgb: "E7ECF3" } }
+        bottom: { style: "thin", color: { rgb: "DCE4EF" } },
+        right: { style: "thin", color: { rgb: "EDF1F7" } }
     };
     const headers = [];
     for (let col = range.s.c; col <= range.e.c; col++) {
         const cell = ws[XLSX.utils.encode_cell({ r: headerRow, c: col })];
         headers.push(cell ? String(cell.v || "") : "");
-        if (cell) {
-            cell.s = {
-                font: headerFont,
-                fill: { patternType: "solid", fgColor: { rgb: headerFill } },
-                alignment: { horizontal: "center", vertical: "center", wrapText: true },
-                border
-            };
-        }
+        if (cell) cell.s = {
+            font: { name: "Aptos", sz: 10, bold: true, color: { rgb: "FFFFFF" } },
+            fill: { patternType: "solid", fgColor: { rgb: headerFill } },
+            alignment: { horizontal: "center", vertical: "center", wrapText: true },
+            border
+        };
     }
     ws["!rows"] = ws["!rows"] || [];
-    ws["!rows"][headerRow] = { hpt: 32 };
-    const moneyHeader = /subtotal|taxable|taxamount|cgst|sgst|igst|totalamount|unitprice|grossamount|discount|cess|amount|cost|price|profit|revenue/i;
+    ws["!rows"][headerRow] = { hpt: 34 };
+    const moneyHeader = /subtotal|taxable|taxamount|cgst|sgst|igst|totalamount|unitprice|grossamount|discount|cess|amount|cost|price|profit|revenue|lineamount/i;
     const percentHeader = /taxrate|gstrate|discountpercent|confidence|completeness/i;
     const integerHeader = /quantity|freequantity/i;
     for (let row = headerRow + 1; row <= range.e.r; row++) {
-        ws["!rows"][row] = ws["!rows"][row] || { hpt: 22 };
+        ws["!rows"][row] = { hpt: 24 };
         for (let col = range.s.c; col <= range.e.c; col++) {
             const ref = XLSX.utils.encode_cell({ r: row, c: col });
             const cell = ws[ref];
             if (!cell) continue;
             const header = headers[col - range.s.c] || "";
             cell.s = {
-                font: { name: "Aptos", sz: 10, color: { rgb: "243247" } },
-                fill: { patternType: "solid", fgColor: { rgb: row % 2 ? "FFFFFF" : "F4F7FB" } },
+                font: { name: "Aptos", sz: 10, color: { rgb: "263449" } },
+                fill: { patternType: "solid", fgColor: { rgb: row % 2 ? "FFFFFF" : "F3F6FB" } },
                 alignment: { vertical: "top", wrapText: /name|description|address|errors|warnings|filename|product/i.test(header) },
                 border
             };
-            if (moneyHeader.test(header) && typeof cell.v === "number") cell.z = '₹#,##0.00;[Red]-₹#,##0.00';
-            else if (percentHeader.test(header) && typeof cell.v === "number") {
+            if (moneyHeader.test(header) && typeof cell.v === "number") {
+                // Keep original currency values unconverted; currency is visible in its own column.
+                cell.z = '#,##0.00;[Red]-#,##0.00';
+            } else if (percentHeader.test(header) && typeof cell.v === "number") {
                 cell.z = /confidence|completeness/i.test(header) ? '0.0"%"' : '0.00"%"';
             } else if (integerHeader.test(header) && typeof cell.v === "number") cell.z = '#,##0.###';
-            if (/reviewrequired/i.test(header)) {
-                cell.s.fill = { patternType: "solid", fgColor: { rgb: cell.v ? "FCE4D6" : "E2F0D9" } };
-            }
+            if (/reviewrequired/i.test(header)) cell.s.fill = { patternType: "solid", fgColor: { rgb: cell.v ? "FCE4D6" : "E2F0D9" } };
             if (/status/i.test(header)) {
                 const value = String(cell.v || "").toLowerCase();
                 if (value.includes("valid") && !value.includes("invalid")) cell.s.fill = { patternType: "solid", fgColor: { rgb: "E2F0D9" } };
@@ -7214,27 +7321,27 @@ function styleReportWorksheet(ws, options = {}) {
     }
     ws["!cols"] = headers.map(header => {
         if (/errors|warnings/i.test(header)) return { wch: 42 };
-        if (/address|description|productname|sellername|buyername|filename/i.test(header)) return { wch: 28 };
+        if (/address|description|productname|sellername|buyername/i.test(header)) return { wch: 30 };
+        if (/filename/i.test(header)) return { wch: 32 };
         if (/gstin|invoicenumber|portalinvoicenumber|date|createdat|hsn|sku|model/i.test(header)) return { wch: 20 };
-        if (/reviewrequired|confidence|completeness|status/i.test(header)) return { wch: 16 };
+        if (/reviewrequired|confidence|completeness|status/i.test(header)) return { wch: 17 };
         return { wch: Math.max(13, Math.min(22, header.length + 3)) };
     });
     ws["!autofilter"] = { ref: XLSX.utils.encode_range({ s: { r: headerRow, c: range.s.c }, e: range.e }) };
-    // xlsx-js-style supports sheet views with frozen header rows in current builds.
     ws["!views"] = [{ state: "frozen", ySplit: headerRow + 1, topLeftCell: `A${headerRow + 2}`, activePane: "bottomLeft" }];
 }
+
 
 async function exportCombinedInvoices() {
     if (typeof XLSX === "undefined") {
         showToast("Excel library unavailable", "Refresh the page and try again.", true);
         return;
     }
-    // Export the filters currently visible in the search controls, even if Search wasn't clicked again.
     const searchInput = document.getElementById("invoiceSearch");
     const statusInput = document.getElementById("invoiceStatus");
     if (searchInput) state.search = searchInput.value.trim();
     if (statusInput) state.status = statusInput.value;
-    showToast("Preparing formatted workbook", "Collecting every matching invoice and its line items.");
+    showToast("Preparing formatted workbook", "Collecting matching invoices and line items.");
     const all = [];
     const seen = new Set();
     try {
@@ -7259,122 +7366,103 @@ async function exportCombinedInvoices() {
         }
         const detailed = [];
         for (let i = 0; i < all.length; i += 5) {
-            const chunk = all.slice(i, i + 5);
-            const result = await Promise.all(chunk.map(async invoice => {
+            detailed.push(...await Promise.all(all.slice(i, i + 5).map(async invoice => {
                 if (invoice.id == null) return invoice;
                 try { return await apiRequest(`/invoices/${encodeURIComponent(invoice.id)}`); }
                 catch (error) { return invoice; }
-            }));
-            detailed.push(...result);
+            })));
         }
         const invoiceRows = detailed.map(inv => ({
-            ID: inv.id,
-            FileName: inv.file_name,
-            InvoiceNumber: inv.invoice_number,
-            InvoiceDate: inv.invoice_date,
-            PortalInvoiceNumber: inv.portal_invoice_number,
-            PortalInvoiceDate: inv.portal_invoice_date,
-            Currency: inv.currency,
+            ID: inv.id, FileName: inv.file_name, InvoiceNumber: inv.invoice_number,
+            InvoiceDate: inv.invoice_date, PortalInvoiceNumber: inv.portal_invoice_number,
+            PortalInvoiceDate: inv.portal_invoice_date, Currency: inv.currency || "Unspecified",
             SellerName: inv.seller_name || inv.vendor || inv.supplier_name,
-            SellerAddress: inv.seller_address,
-            SellerGSTIN: inv.seller_gstin,
-            BuyerName: inv.buyer_name,
-            BuyerAddress: inv.buyer_address,
-            BuyerGSTIN: inv.buyer_gstin,
-            Subtotal: inv.subtotal,
-            TaxableAmount: inv.taxable_amount,
-            TaxRate: inv.tax_rate,
-            TaxAmount: inv.tax_amount,
-            CGST: inv.cgst,
-            SGST: inv.sgst,
-            IGST: inv.igst,
-            TotalAmount: inv.total_amount,
-            Status: inv.status,
-            Confidence: inv.confidence,
-            Completeness: inv.completeness,
-            ReviewRequired: Boolean(inv.review_required),
+            SellerAddress: inv.seller_address, SellerGSTIN: inv.seller_gstin,
+            BuyerName: inv.buyer_name, BuyerAddress: inv.buyer_address, BuyerGSTIN: inv.buyer_gstin,
+            Subtotal: inv.subtotal, TaxableAmount: inv.taxable_amount, TaxRate: inv.tax_rate,
+            TaxAmount: inv.tax_amount, CGST: inv.cgst, SGST: inv.sgst, IGST: inv.igst,
+            TotalAmount: inv.total_amount, Status: inv.status, Confidence: inv.confidence,
+            Completeness: inv.completeness, ReviewRequired: Boolean(inv.review_required),
             Errors: typeof inv.errors === "string" ? inv.errors : JSON.stringify(inv.errors || ""),
             Warnings: typeof inv.warnings === "string" ? inv.warnings : JSON.stringify(inv.warnings || ""),
             CreatedAt: inv.created_at
         }));
         const lineRows = detailed.flatMap(inv => (Array.isArray(inv.line_items) ? inv.line_items : []).map(item => ({
-            InvoiceID: inv.id,
-            InvoiceNumber: inv.invoice_number,
-            InvoiceDate: inv.invoice_date,
+            InvoiceID: inv.id, InvoiceNumber: inv.invoice_number, InvoiceDate: inv.invoice_date,
+            Currency: inv.currency || item.currency || "Unspecified",
             SellerName: inv.seller_name || inv.vendor || inv.supplier_name,
-            SellerGSTIN: inv.seller_gstin,
-            BuyerGSTIN: inv.buyer_gstin,
+            SellerGSTIN: inv.seller_gstin, BuyerGSTIN: inv.buyer_gstin,
             ProductName: item.product_name || item.description || item.item_name,
-            Description: item.description,
-            Model: item.model,
-            SKU: item.sku,
-            HSN_SAC: item.hsn_sac || item.hsn,
-            Quantity: item.quantity,
-            FreeQuantity: item.free_quantity,
-            Unit: item.uom || item.unit,
-            UnitPrice: item.unit_price,
-            GrossAmount: item.gross_amount || item.amount,
-            Discount: item.discount,
-            DiscountPercent: item.discount_percent,
-            TaxableAmount: item.taxable_amount,
-            GSTRate: item.gst_rate,
-            CGST: item.cgst,
-            SGST: item.sgst,
-            IGST: item.item_igst || item.igst,
-            Cess: item.cess,
-            LineAmount: item.amount
+            Description: item.description, Model: item.model, SKU: item.sku,
+            HSN_SAC: item.hsn_sac || item.hsn, Quantity: item.quantity,
+            FreeQuantity: item.free_quantity, Unit: item.uom || item.unit,
+            UnitPrice: item.unit_price, GrossAmount: item.gross_amount ?? item.amount,
+            Discount: item.discount, DiscountPercent: item.discount_percent,
+            TaxableAmount: item.taxable_amount, GSTRate: item.gst_rate,
+            CGST: item.cgst, SGST: item.sgst, IGST: item.item_igst ?? item.igst,
+            Cess: item.cess, LineAmount: item.amount
         })));
+
         const wb = XLSX.utils.book_new();
-        const summarySheet = XLSX.utils.json_to_sheet(invoiceRows);
+        const invoiceSheet = XLSX.utils.json_to_sheet(invoiceRows);
         const lineSheet = XLSX.utils.json_to_sheet(lineRows.length ? lineRows : [{ Note: "No line-item detail was returned for these invoices" }]);
-        styleReportWorksheet(summarySheet);
+        styleReportWorksheet(invoiceSheet);
         styleReportWorksheet(lineSheet);
-        XLSX.utils.book_append_sheet(wb, summarySheet, "Invoice Summary");
+        XLSX.utils.book_append_sheet(wb, invoiceSheet, "Invoice Summary");
         XLSX.utils.book_append_sheet(wb, lineSheet, "Line Items");
-        // A compact report cover makes the exported file easier to understand and present.
-        const coverRows = [
-            { "INVOICE ENGINE — PURCHASE REPORT": " " },
-            { "Report generated": new Date().toLocaleString("en-IN") },
-            { "Search filter": state.search || "All invoices" },
-            { "Status filter": state.status || "All statuses" },
-            { "Invoices included": detailed.length },
-            { "Line items included": lineRows.length },
-            { "Total invoice value": detailed.reduce((sum, inv) => sum + (Number(inv.total_amount) || 0), 0) },
-            { "Review required": detailed.filter(inv => Boolean(inv.review_required)).length }
+
+        // Currency totals are separated so INR, USD, AUD, etc. are never added together.
+        const currencyTotals = {};
+        for (const inv of detailed) {
+            const currency = String(inv.currency || "Unspecified").toUpperCase();
+            if (!currencyTotals[currency]) currencyTotals[currency] = { count: 0, total: 0 };
+            currencyTotals[currency].count += 1;
+            const amount = Number(inv.total_amount);
+            if (Number.isFinite(amount)) currencyTotals[currency].total += amount;
+        }
+        const overview = [
+            ["INVOICE ENGINE — PURCHASING REPORT", "", "", ""],
+            ["Generated", new Date().toLocaleString("en-IN"), "Search filter", state.search || "All invoices"],
+            ["Status filter", state.status || "All statuses", "Invoices included", detailed.length],
+            ["Line items included", lineRows.length, "Needs review", detailed.filter(inv => Boolean(inv.review_required)).length],
+            ["", "", "", ""],
+            ["TOTALS BY CURRENCY", "", "", ""],
+            ["Currency", "Invoices", "Total invoice value", "Note"],
+            ...Object.entries(currencyTotals).sort(([a],[b]) => a.localeCompare(b)).map(([currency, info]) => [
+                currency, info.count, info.total, currency === "Unspecified" ? "Currency missing — verify source records" : "Kept separate; not converted"
+            ]),
+            ["", "", "", ""],
+            ["DATA NOTE", "Values are exported as recorded. Verify source documents and review flags before using for payment or accounting.", "", ""]
         ];
-        const coverSheet = XLSX.utils.json_to_sheet(coverRows, { skipHeader: true });
-        coverSheet["!cols"] = [{ wch: 28 }, { wch: 42 }];
-        coverSheet["!rows"] = [{ hpt: 32 }];
-        for (let row = 0; row < coverRows.length; row++) {
-            for (let col = 0; col < 2; col++) {
-                const cell = coverSheet[XLSX.utils.encode_cell({ r: row, c: col })];
+        const coverSheet = XLSX.utils.aoa_to_sheet(overview);
+        coverSheet["!cols"] = [{ wch: 24 }, { wch: 30 }, { wch: 24 }, { wch: 43 }];
+        coverSheet["!merges"] = [
+            { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } },
+            { s: { r: 5, c: 0 }, e: { r: 5, c: 3 } },
+            { s: { r: overview.length - 1, c: 1 }, e: { r: overview.length - 1, c: 3 } }
+        ];
+        coverSheet["!rows"] = overview.map((_, i) => ({ hpt: [0,5].includes(i) ? 30 : (i === overview.length - 1 ? 40 : 24) }));
+        for (let r = 0; r < overview.length; r++) {
+            for (let c = 0; c < 4; c++) {
+                const cell = coverSheet[XLSX.utils.encode_cell({ r, c })];
                 if (!cell) continue;
+                const isTitle = r === 0 || r === 5;
+                const isHeader = r === 6;
+                const isDataRow = r >= 7 && r < 7 + Object.keys(currencyTotals).length;
                 cell.s = {
-                    font: { name: "Aptos", sz: row === 0 ? 16 : 11, bold: row === 0 || col === 0, color: { rgb: row === 0 ? "FFFFFF" : "243247" } },
-                    fill: { patternType: "solid", fgColor: { rgb: row === 0 ? "17365D" : (row % 2 ? "F4F7FB" : "FFFFFF") } },
+                    font: { name: "Aptos", sz: isTitle ? 15 : 10, bold: isTitle || isHeader || c === 0, color: isTitle || isHeader ? { rgb: "FFFFFF" } : { rgb: "263449" } },
+                    fill: { patternType: "solid", fgColor: { rgb: isTitle || isHeader ? "172554" : (r % 2 ? "FFFFFF" : "F3F6FB") } },
                     alignment: { vertical: "center", wrapText: true },
-                    border: { bottom: { style: "thin", color: { rgb: "D9E2F3" } } }
+                    border: { bottom: { style: "thin", color: { rgb: "DCE4EF" } } }
                 };
+                if (isDataRow && c === 2 && typeof cell.v === "number") cell.z = '#,##0.00;[Red]-#,##0.00';
             }
         }
-        if (coverSheet.B7) coverSheet.B7.z = '₹#,##0.00';
         XLSX.utils.book_append_sheet(wb, coverSheet, "Report Overview");
-        // Report Overview first, followed by the invoice-level and line-level detail.
         wb.SheetNames = ["Report Overview", "Invoice Summary", "Line Items"];
         XLSX.writeFile(wb, `invoice-engine-purchases-${new Date().toISOString().slice(0, 10)}.xlsx`);
-        showToast("Combined Excel ready", `${detailed.length} invoices and ${lineRows.length} line items exported in a formatted workbook.`);
+        showToast("Combined Excel ready", `${detailed.length} invoices and ${lineRows.length} line items exported. Currency totals are separated.`);
     } catch (error) {
         showToast("Combined export failed", readableError(error), true);
     }
 }
-
-/* ============================================================
-   START
-   ============================================================ */
-
-initialize();
-
-</script>
-
-</body>
-</html>
