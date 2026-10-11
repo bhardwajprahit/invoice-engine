@@ -10,16 +10,12 @@
 
     <title>Invoice Engine — Dashboard</title>
 
-    <!-- Supabase authentication -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/frontend/supabase-config.js"></script>
-
     <!-- =====================================================
          SHEETJS
          ===================================================== -->
 
     <script
-        src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"
+        src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"
     ></script>
 
     <!-- =====================================================
@@ -728,16 +724,24 @@
 
             display: flex;
 
+            flex-wrap: wrap;
+
             gap: 10px;
 
             align-items: center;
         }
 
-        .search {
+        .table-toolbar .search {
 
-            flex: 1;
+            flex: 1 1 560px;
 
-            min-width: 180px;
+            width: 100%;
+
+            min-width: min(100%, 360px);
+
+            min-height: 42px;
+
+            font-size: 13px;
 
             background:
                 #0a111b;
@@ -1658,189 +1662,10 @@
         }
 
         /* =================================================
-           QUICK-START TUTORIAL
-           ================================================= */
-
-        .tutorial-card {
-
-            display: grid;
-
-            grid-template-columns: minmax(0, 1fr) minmax(320px, 1.05fr);
-
-            gap: 24px;
-
-            padding: 22px;
-
-            margin-bottom: 22px;
-
-            overflow: hidden;
-
-        }
-
-        .tutorial-copy {
-
-            align-self: center;
-
-            min-width: 0;
-
-        }
-
-        .tutorial-eyebrow {
-
-            color: #84aaff;
-
-            font-size: 10px;
-
-            font-weight: 800;
-
-            letter-spacing: .14em;
-
-            margin-bottom: 10px;
-
-        }
-
-        .tutorial-copy h3 {
-
-            margin: 0;
-
-            font-size: 20px;
-
-            line-height: 1.35;
-
-            letter-spacing: -.03em;
-
-        }
-
-        .tutorial-copy p {
-
-            margin: 10px 0 16px;
-
-            color: var(--muted);
-
-            font-size: 12px;
-
-            line-height: 1.7;
-
-            max-width: 460px;
-
-        }
-
-        .tutorial-steps {
-
-            display: grid;
-
-            gap: 9px;
-
-            margin: 0 0 18px;
-
-        }
-
-        .tutorial-steps div {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-
-            color: #dce4f2;
-
-            font-size: 11px;
-
-        }
-
-        .tutorial-steps span {
-
-            display: inline-grid;
-
-            place-items: center;
-
-            width: 25px;
-
-            height: 25px;
-
-            border-radius: 8px;
-
-            background: rgba(91,140,255,.12);
-
-            color: #9dbaff;
-
-            font-size: 9px;
-
-            font-weight: 800;
-
-        }
-
-        .tutorial-video-wrap {
-
-            min-width: 0;
-
-            align-self: center;
-
-            overflow: hidden;
-
-            border: 1px solid var(--border-strong);
-
-            border-radius: 13px;
-
-            background: #070b12;
-
-        }
-
-        .tutorial-video {
-
-            display: block;
-
-            width: 100%;
-
-            aspect-ratio: 16 / 9;
-
-            object-fit: cover;
-
-            background: #070b12;
-
-        }
-
-        .tutorial-video-caption {
-
-            padding: 10px 12px;
-
-            color: var(--muted);
-
-            font-size: 10px;
-
-            text-align: center;
-
-            border-top: 1px solid var(--border);
-
-        }
-
-        .tutorial-video-caption span {
-
-            color: #84aaff;
-
-            padding: 0 5px;
-
-        }
-
-
-        /* =================================================
            RESPONSIVE
            ================================================= */
 
         @media (max-width: 1050px) {
-
-            .tutorial-card {
-
-                grid-template-columns: 1fr;
-
-            }
-
-            .tutorial-copy p {
-
-                max-width: 700px;
-
-            }
 
             .stats-grid {
 
@@ -1977,28 +1802,133 @@
             }
         }
 
-    
-        .signout-button {
-            margin-left: 14px;
-            padding: 8px 12px;
-            border: 1px solid var(--border-strong);
+
+
+        /* =================================================
+           MODULE NAVIGATION + RETAIL WORKSPACE
+           ================================================= */
+        .module-switcher {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: rgba(255,255,255,.025);
+        }
+        .module-tab {
+            border: 1px solid transparent;
             border-radius: 8px;
-            background: var(--panel-2);
-            color: var(--text);
-            font: inherit;
+            padding: 10px 13px;
+            color: var(--muted);
+            background: transparent;
             font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
+            font-weight: 800;
+            white-space: nowrap;
         }
+        .module-tab span { margin-right: 5px; font-size: 14px; }
+        .module-tab:hover { color: var(--text); background: rgba(255,255,255,.045); }
+        .module-tab.active {
+            color: #fff;
+            border-color: rgba(91,140,255,.28);
+            background: linear-gradient(135deg, rgba(91,140,255,.22), rgba(63,111,229,.12));
+        }
+        .app.retail-mode .sidebar .nav-label,
+        .app.retail-mode .sidebar > .nav-item { display: none; }
+        .app.retail-mode .sidebar { background: rgba(9,14,22,.98); }
+        .suite-section { margin-bottom: 24px; }
+        .suite-heading { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:14px; }
+        .suite-heading h3 { margin:0; font-size:19px; letter-spacing:-.025em; }
+        .suite-heading p { margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.6; }
+        .suite-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+        .suite-card { padding:22px; display:flex; flex-direction:column; align-items:flex-start; min-height:330px; }
+        .suite-card-featured { border-color:rgba(91,140,255,.35); box-shadow:0 18px 55px rgba(48,86,190,.12); }
+        .suite-icon { width:46px; height:46px; display:grid; place-items:center; border-radius:14px; background:rgba(91,140,255,.14); color:#a9c2ff; font-size:24px; margin-bottom:17px; }
+        .suite-eyebrow { color:#8eabf8; font-size:10px; font-weight:800; letter-spacing:.12em; }
+        .suite-card h3 { font-size:17px; line-height:1.35; margin:8px 0; }
+        .suite-card p { font-size:12px; line-height:1.65; color:var(--muted); margin:0 0 10px; }
+        .suite-card ul { padding-left:18px; margin:5px 0 20px; color:#d1d8e5; font-size:11px; line-height:1.9; }
+        .suite-card .btn { margin-top:auto; }
+        .export-hint { color:var(--muted-2); font-size:10px; line-height:1.5; padding:0 15px 12px; }
 
-        .signout-button:hover {
-            background: var(--panel-3);
-        }
+        /* Landing page: clean module chooser, with no Purchasing-only actions */
+        .app.home-mode .sidebar .nav-label,
+        .app.home-mode .sidebar > .nav-item,
+        .app.home-mode .sidebar .sidebar-footer { display:none !important; }
+        .app.home-mode .sidebar { min-height:100vh; }
+        .home-mode .page-header > button { display:none !important; }
+        .suite-section { margin-top:22px; }
+        .suite-heading h3 { font-size:clamp(24px,2vw,34px) !important; line-height:1.2; }
+        .suite-heading p { font-size:15px !important; }
+        .suite-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+        .suite-card { min-height:380px; padding:26px !important; }
+        .suite-card .suite-icon { width:54px;height:54px;font-size:26px; }
+        .suite-card .suite-eyebrow { font-size:12px !important; letter-spacing:.1em; margin-top:18px; }
+        .suite-card h3 { font-size:clamp(22px,1.7vw,30px) !important; line-height:1.22; margin:12px 0; }
+        .suite-card p { font-size:15px !important; line-height:1.65 !important; }
+        .suite-card ul { margin:18px 0 22px; padding-left:20px; }
+        .suite-card li { font-size:14px !important; line-height:1.8 !important; }
+        .suite-card .btn { font-size:14px; padding:13px 17px; }
+        .plan-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:22px 0; }
+        .plan-card { padding:24px;border:1px solid var(--border);border-radius:16px;background:linear-gradient(160deg,#111b2a,#0a111b);display:flex;flex-direction:column;gap:12px; }
+        .plan-card h3 { font-size:22px;margin:0; }
+        .plan-price { font-size:30px;font-weight:900;letter-spacing:-.04em; }
+        .plan-card p,.plan-card li { font-size:14px;line-height:1.7;color:var(--muted); }
+        .plan-card ul { padding-left:20px;margin:0 0 10px; }
+        .plan-card .btn { margin-top:auto; }
+        .plan-card.featured { border-color:#4c7eff;box-shadow:0 0 0 1px #4c7eff33; }
+        .module-landing-actions { display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin:18px 0; }
+        .quick-product-entry { margin:10px 0 14px; }
+        .quick-product-entry input { font-size:16px !important;padding:14px !important; }
+        @media(max-width:1100px){.suite-grid,.plan-grid{grid-template-columns:1fr}.suite-card{min-height:0}.suite-card h3{font-size:25px!important}}
 
-        .signout-button:disabled {
-            opacity: .6;
-            cursor: wait;
-        }
+        .retail-layout { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr); gap:16px; align-items:start; }
+        .retail-stack { display:grid; gap:16px; }
+        .retail-card { padding:20px; }
+        .retail-card h3 { margin:0 0 6px; font-size:16px; }
+        .retail-card > p { color:var(--muted); font-size:11px; line-height:1.6; margin:0 0 16px; }
+        .retail-form-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:11px; }
+        .retail-field { display:flex; flex-direction:column; gap:6px; min-width:0; }
+        .retail-field.full { grid-column:1/-1; }
+        .retail-field label { color:#b8c2d3; font-size:11px; font-weight:700; }
+        .retail-field input,.retail-field select,.retail-input { width:100%; min-width:0; background:#0a111b; border:1px solid var(--border-strong); color:var(--text); border-radius:9px; padding:11px 12px; font-size:12px; outline:none; }
+        .retail-field input:focus,.retail-field select:focus,.retail-input:focus { border-color:rgba(91,140,255,.7); }
+        .retail-workspace-nav { margin: 14px 0 18px; }
+        .retail-single-view { display:block !important; }
+        .retail-single-view > .retail-stack { display:contents; }
+        .retail-single-view .retail-card[hidden] { display:none !important; }
+        .retail-single-view .retail-card:not([hidden]) { width:100%; max-width:none; margin-bottom:16px; }
+        .retail-section-title { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:13px; }
+        .retail-section-title h3 { margin:0; }
+        .retail-table-wrap { overflow-x:auto; }
+        .retail-table { width:100%; border-collapse:collapse; min-width:500px; }
+        .retail-table th { padding:11px 10px; color:var(--muted-2); font-size:9px; text-align:left; border-bottom:1px solid var(--border); }
+        .retail-table td { padding:11px 10px; font-size:11px; border-bottom:1px solid rgba(255,255,255,.05); }
+        .retail-muted { color:var(--muted); font-size:10px; line-height:1.5; }
+        .retail-stock { display:inline-flex; padding:4px 7px; border-radius:20px; background:rgba(57,217,138,.09); color:#6fe5a8; font-size:10px; font-weight:800; }
+        .retail-stock.low { color:#ffd16d; background:rgba(245,196,81,.1); }
+        .retail-cart-list { display:grid; gap:8px; margin:12px 0; }
+        .retail-cart-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; padding:11px 0; border-bottom:1px solid var(--border); }
+        .retail-cart-name { font-size:12px; font-weight:800; }
+        .retail-cart-meta { color:var(--muted); font-size:10px; margin-top:4px; }
+        .qty-controls { display:flex; align-items:center; gap:6px; }
+        .qty-controls button { border:1px solid var(--border-strong); border-radius:7px; background:var(--panel-3); color:var(--text); width:26px; height:26px; }
+        .qty-controls strong { min-width:18px; text-align:center; font-size:11px; }
+        .retail-totals { display:grid; gap:9px; padding-top:12px; border-top:1px solid var(--border); }
+        .retail-total-row { display:flex; justify-content:space-between; gap:12px; color:var(--muted); font-size:12px; }
+        .retail-total-row.grand { color:var(--text); font-size:19px; font-weight:800; padding-top:8px; }
+        .retail-stat-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:16px; }
+        .retail-stat { padding:17px; }
+        .retail-stat-label { color:var(--muted); font-size:11px; }
+        .retail-stat-value { font-size:23px; font-weight:800; margin-top:9px; letter-spacing:-.03em; }
+        .retail-toolbar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
+        .retail-toolbar .retail-input { flex:1; min-width:190px; }
+        .retail-pill { display:inline-flex; padding:4px 7px; border-radius:20px; background:rgba(91,140,255,.12); color:#a9c2ff; font-size:10px; font-weight:800; }
+        .retail-empty { padding:24px; color:var(--muted); font-size:12px; text-align:center; }
+        .retail-warning { padding:12px 14px; border:1px solid rgba(245,196,81,.2); background:rgba(245,196,81,.06); border-radius:10px; color:#f3d58c; font-size:11px; line-height:1.6; margin-bottom:14px; }
+        @media (max-width:1250px) { .module-switcher { gap:2px; } .module-tab { padding:9px 9px; } .suite-grid { grid-template-columns:1fr; } .suite-card { min-height:0; } }
+        @media (max-width:1000px) { .retail-layout { grid-template-columns:1fr; } .retail-stat-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .topbar { height:auto; min-height:72px; padding-top:12px; padding-bottom:12px; flex-wrap:wrap; gap:10px; } .module-switcher { order:3; width:100%; justify-content:stretch; } .module-tab { flex:1; } }
+        @media (max-width:600px) { .retail-form-grid { grid-template-columns:1fr; } .retail-field.full { grid-column:auto; } .retail-stat-grid { grid-template-columns:1fr 1fr; } .suite-card { padding:17px; } .retail-card { padding:15px; } .module-tab { font-size:11px; padding:9px 5px; } }
 
     </style>
 </head>
@@ -2089,14 +2019,14 @@
 
             <div class="profile">
 
-                <div class="avatar">
-                    PB
+                <div class="avatar" id="profileAvatar">
+                    IE
                 </div>
 
                 <div class="profile-copy">
 
-                    <div class="profile-name">
-                        Prahit Bhardwaj
+                    <div class="profile-name" id="profileName">
+                        Signed-in user
                     </div>
 
                     <div class="profile-status">
@@ -2131,6 +2061,18 @@
 
             </div>
 
+            <nav class="module-switcher" aria-label="Invoice Engine modules">
+                <button class="module-tab active" data-module="purchasing" onclick="setModule('purchasing')">
+                    <span>▤</span> Purchasing
+                </button>
+                <button class="module-tab" data-module="billing" onclick="setModule('billing')">
+                    <span>▣</span> Billing
+                </button>
+                <button class="module-tab" data-module="sales" onclick="setModule('sales')">
+                    <span>↗</span> Sales
+                </button>
+            </nav>
+
             <div class="api-status">
 
                 <span
@@ -2141,12 +2083,6 @@
                 <span id="apiText">
                     API checking...
                 </span>
-
-                <button
-                    id="logoutButton"
-                    class="signout-button"
-                    type="button"
-                >Sign out</button>
 
             </div>
 
@@ -2434,12 +2370,32 @@ const API_BASE = (
         : window.location.origin
 );
 
+const RETAIL_STORAGE_KEY = "invoiceEngineRetailDataV1";
+
 
 /* ============================================================
    STATE
    ============================================================ */
 
 const state = {
+
+    module:
+        "home",
+
+    pendingModule:
+        null,
+
+    selectedPlan:
+        null,
+
+    retailView:
+        "current-bill",
+
+    retailCart:
+        [],
+
+    retail:
+        loadRetailData(),
 
     page:
         "overview",
@@ -2859,6 +2815,28 @@ function pageMeta(page) {
 
 function renderPage() {
 
+    const app = document.querySelector(".app");
+    if (app) {
+        app.classList.toggle("retail-mode", !["purchasing", "home"].includes(state.module));
+        app.classList.toggle("home-mode", state.module === "home");
+    }
+
+    document.querySelectorAll(".module-tab").forEach(button => {
+        button.classList.toggle("active", button.dataset.module === state.module);
+    });
+
+    if (state.module === "home") {
+        document.getElementById("pageTitle").textContent = "Invoice Engine";
+        document.getElementById("pageSubtitle").textContent = "Choose the workspace that fits your business.";
+        document.getElementById("content").innerHTML = renderOverview();
+        return;
+    }
+
+    if (state.module !== "purchasing") {
+        renderRetailModule();
+        return;
+    }
+
     const [
         title,
         subtitle
@@ -2964,203 +2942,18 @@ function renderPage() {
    OVERVIEW
    ============================================================ */
 
-function getGreeting() {
-
-    const hour = new Date().getHours();
-
-    const greeting =
-        hour < 12
-            ? "Good morning"
-            : hour < 17
-                ? "Good afternoon"
-                : "Good evening";
-
-    return `${greeting}, Prahit.`;
-
-}
-
-
 function renderOverview() {
-
     return `
-
-        <div class="page-header">
-
-            <div>
-
-                <h2>
-                    ${getGreeting()}
-                </h2>
-
-                <p>
-                    Here's what's happening with your invoice data.
-                </p>
-
-            </div>
-
-            <button
-                class="btn btn-primary"
-                onclick="openUploadModal()"
-            >
-                + New processing job
-            </button>
-
+      <div class="page-header"><div><h2>Choose your workspace</h2><p>One platform. Three powerful ways to run your business.</p></div></div>
+      <section class="suite-section">
+        <div class="suite-heading"><div><h3>Purchasing. Billing. Sales.</h3><p>Choose a module to see its features and open its workspace.</p></div></div>
+        <div class="suite-grid">
+          <article class="card suite-card"><div class="suite-icon">▤</div><div class="suite-eyebrow">INVOICE AUTOMATION</div><h3>Purchasing — Invoice to Excel</h3><p>Turn supplier invoices into searchable, structured records and combined Excel reports.</p><ul><li>Bulk photo/PDF uploads</li><li>OCR + AI extraction and validation</li><li>Search by supplier, invoice, item and HSN</li><li>Invoice history, review tools and combined Excel exports</li></ul><button class="btn btn-primary" onclick="setModule('purchasing')">Open Purchasing</button></article>
+          <article class="card suite-card"><div class="suite-icon">▣</div><div class="suite-eyebrow">RETAIL CHECKOUT</div><h3>Billing + Sales</h3><p>Create customer bills and print receipts with saved product details automatically filled in.</p><ul><li>Product catalogue with prices, tax and stock</li><li>Current bill with fast product lookup</li><li>Discounts, GST and payment methods</li><li>Customer records, sales history and reports</li></ul><button class="btn btn-primary" onclick="setModule('billing')">Open Billing</button></article>
+          <article class="card suite-card suite-card-featured"><div class="suite-icon">✦</div><div class="suite-eyebrow">ALL-IN-ONE RETAIL</div><h3>Complete Retail Suite</h3><p>Connect supplier purchases, stock and checkout in one retail workflow.</p><ul><li>Purchasing + Billing + Sales</li><li>Shared inventory and stock movements</li><li>Supplier and customer records</li><li>Combined purchase, stock and sales reports</li></ul><button class="btn" onclick="setModule('billing')">Explore Retail Suite</button></article>
         </div>
-
-        <div
-            id="statsGrid"
-            class="grid stats-grid"
-        >
-
-            ${statCard(
-                "Documents processed",
-                "—",
-                "Total invoices in database"
-            )}
-
-            ${statCard(
-                "Valid",
-                "—",
-                "Passed validation"
-            )}
-
-            ${statCard(
-                "Review required",
-                "—",
-                "Need human attention"
-            )}
-
-            ${statCard(
-                "Processing errors",
-                "—",
-                "Failed processing jobs"
-            )}
-
-        </div>
-
-        <section class="card tutorial-card">
-
-            <div class="tutorial-copy">
-
-                <div class="tutorial-eyebrow">QUICK START</div>
-
-                <h3>From invoice to Excel in minutes.</h3>
-
-                <p>
-                    Upload invoice photos or PDFs, let Invoice Engine extract
-                    the data, review anything flagged, and export your records.
-                </p>
-
-                <div class="tutorial-steps">
-
-                    <div><span>01</span> Upload bills</div>
-                    <div><span>02</span> Extract with AI</div>
-                    <div><span>03</span> Review & export</div>
-
-                </div>
-
-                <button
-                    class="btn btn-small"
-                    type="button"
-                    onclick="replayTutorial()"
-                >
-                    ↻ Replay tutorial
-                </button>
-
-            </div>
-
-            <div class="tutorial-video-wrap">
-
-                <video
-                    id="tutorialVideo"
-                    class="tutorial-video"
-                    src="/frontend/invoice-engine-tutorial.mp4"
-                    autoplay
-                    muted
-                    loop
-                    playsinline
-                    controls
-                    preload="metadata"
-                    aria-label="Invoice Engine quick-start tutorial"
-                >
-                    Your browser does not support embedded video.
-                </video>
-
-                <div class="tutorial-video-caption">
-                    Upload <span>→</span> Extract <span>→</span> Validate <span>→</span> Export
-                </div>
-
-            </div>
-
-        </section>
-
-        <div class="card table-card">
-
-            <div class="table-toolbar">
-
-                <div style="font-size:12px;font-weight:700">
-                    Recent invoices
-                </div>
-
-                <div style="flex:1"></div>
-
-                <button
-                    class="btn btn-small"
-                    onclick="navigate('invoices')"
-                >
-                    View all
-                </button>
-
-            </div>
-
-            <div
-                id="recentInvoices"
-                class="table-wrap"
-            >
-
-                <div class="empty">
-
-                    Loading invoices...
-
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
-
+      </section>`;
 }
-
-
-function statCard(
-    label,
-    value,
-    note
-) {
-
-    return `
-
-        <div class="card stat-card">
-
-            <div class="stat-label">
-                ${escapeHtml(label)}
-            </div>
-
-            <div class="stat-value">
-                ${escapeHtml(value)}
-            </div>
-
-            <div class="stat-note">
-                ${escapeHtml(note)}
-            </div>
-
-        </div>
-
-    `;
-
-}
-
 
 async function loadOverviewData() {
 
@@ -3409,9 +3202,17 @@ function renderInvoices() {
                     Search
                 </button>
 
-                <button class="btn btn-small" onclick="createProductReport()" title="Generate a product-level quantity, spend and GST report">Create report</button>
+                <button
+                    class="btn btn-success"
+                    onclick="exportCombinedInvoices()"
+                    title="Export the matching invoices and their line items into one workbook"
+                >
+                    ↓ Combined Excel
+                </button>
 
             </div>
+
+            <div class="export-hint">Exports all matching search results into one workbook with Invoice Summary and Line Items sheets.</div>
 
             <div
                 id="invoiceTable"
@@ -3560,47 +3361,6 @@ async function loadInvoices() {
 /* ============================================================
    INVOICE TABLE
    ============================================================ */
-
-async function createProductReport() {
-    const query = (document.getElementById("invoiceSearch")?.value || "").trim().toLowerCase();
-    const target = document.getElementById("invoiceTable");
-    if (target) target.innerHTML = '<div class="empty">Building product report…</div>';
-    try {
-        const data = await apiRequest("/search?page=1&page_size=1000");
-        const invoices = extractInvoiceArray(data);
-        const products = new Map();
-        for (const invoice of invoices) {
-            for (const item of (Array.isArray(invoice.line_items) ? invoice.line_items : [])) {
-                const product = String(item.product_name || item.item_name || item.description || item.name || "Unidentified item").trim();
-                const model = String(item.model || item.model_number || "").trim();
-                const supplier = String(invoice.seller_name || invoice.vendor_name || "Unknown supplier");
-                const hsn = String(item.hsn_sac || item.hsn || item.sac || "");
-                const haystack = [product, model, item.sku, hsn, supplier, invoice.seller_gstin].join(" ").toLowerCase();
-                if (query && !haystack.includes(query)) continue;
-                const key = [product.toLowerCase(), model.toLowerCase(), supplier.toLowerCase()].join("|");
-                if (!products.has(key)) products.set(key,{product,model,supplier,quantity:0,beforeTax:0,cgst:0,sgst:0,igst:0,total:0,invoices:new Set()});
-                const r=products.get(key); const taxable=Number(item.taxable_amount ?? item.gross_amount ?? item.amount ?? 0);
-                const cgst=Number(item.cgst||0),sgst=Number(item.sgst||0),igst=Number(item.item_igst ?? item.igst ?? 0);
-                r.quantity+=Number(item.quantity||0); r.beforeTax+=taxable; r.cgst+=cgst; r.sgst+=sgst; r.igst+=igst;
-                r.total+=Number(item.amount ?? item.total_amount ?? (taxable+cgst+sgst+igst));
-                r.invoices.add(String(invoice.invoice_number||invoice.id||invoice.file_name||"Unknown"));
-            }
-        }
-        const rows=[...products.values()].sort((a,b)=>b.total-a.total);
-        if(!target) return;
-        if(!rows.length){target.innerHTML=emptyState("No product line items found","The API must return line_items for product-level reporting. Try another search or process invoices with item details.");return;}
-        const money=n=>Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-        const esc=v=>escapeHtml(String(v??""));
-        target.innerHTML=`<div style="padding:12px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><strong>Product report · ${rows.length} product/supplier combinations</strong><button class="btn btn-small btn-primary" onclick="downloadProductReportCsv()">Download report CSV</button><span style="color:var(--muted);font-size:12px">GST totals reflect extracted item-level fields.</span></div><div class="table-wrap"><table><thead><tr><th>Product</th><th>Model</th><th>Supplier</th><th>Quantity</th><th>Spend before GST</th><th>CGST</th><th>SGST</th><th>IGST</th><th>Total incl. GST</th><th>Invoice refs</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.product)}</td><td>${esc(r.model||"—")}</td><td>${esc(r.supplier)}</td><td>${money(r.quantity)}</td><td>${money(r.beforeTax)}</td><td>${money(r.cgst)}</td><td>${money(r.sgst)}</td><td>${money(r.igst)}</td><td>${money(r.total)}</td><td>${esc([...r.invoices].join(", "))}</td></tr>`).join("")}</tbody></table></div>`;
-        window.__invoiceEngineProductReport=rows.map(r=>({product:r.product,model:r.model,supplier:r.supplier,quantity:r.quantity,spend_before_gst:r.beforeTax,cgst:r.cgst,sgst:r.sgst,igst:r.igst,total_including_gst:r.total,invoice_references:[...r.invoices].join("; ")}));
-    } catch(error) { if(target) target.innerHTML=emptyState("Report could not be created",readableError(error)); }
-}
-function downloadProductReportCsv(){
-    const rows=window.__invoiceEngineProductReport||[]; if(!rows.length){showToast("No report","Create a report first.",true);return;}
-    const cols=Object.keys(rows[0]); const cell=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
-    const csv=[cols.map(cell).join(","),...rows.map(r=>cols.map(k=>cell(r[k])).join(","))].join("\r\n");
-    const blob=new Blob(["\ufeff",csv],{type:"text/csv;charset=utf-8;"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="invoice-engine-product-report.csv";document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
-}
 
 function extractInvoiceArray(data) {
 
@@ -4007,18 +3767,14 @@ function renderJobCard(
                     completed
                         ? `
 
-                            <button
-                                class="btn btn-primary btn-small"
-                                onclick="downloadJobExcel('${escapeHtml(job.job_id)}')"
-                            >
-                                ↓ Download Excel
-                            </button>
+                            <span class="export-hint">Your invoice is saved. Export matching invoices and all line items together.</span>
 
                             <button
-                                class="btn btn-small"
-                                onclick="openAppendExcel('${escapeHtml(job.job_id)}')"
+                                class="btn btn-small btn-success"
+                                onclick="exportCombinedInvoices()"
+                                title="Download a formatted workbook containing matching invoices and line items"
                             >
-                                + Add to existing Excel
+                                ↓ Download Combined Excel
                             </button>
 
                         `
@@ -4737,119 +4493,6 @@ function refreshProcessingIfVisible() {
 function refreshCurrentPage() {
 
     renderPage();
-
-}
-
-
-/* ============================================================
-   DOWNLOAD EXCEL
-   ============================================================ */
-
-function buildDownloadUrl(
-    job
-) {
-
-    if (
-        job.download_url
-    ) {
-
-        if (
-            String(
-                job.download_url
-            ).startsWith("http")
-        ) {
-
-            return job.download_url;
-
-        }
-
-        return (
-            API_BASE
-            +
-            (
-                String(
-                    job.download_url
-                ).startsWith("/")
-                    ? job.download_url
-                    : `/${job.download_url}`
-            )
-        );
-
-    }
-
-    return (
-        `${API_BASE}/download/${encodeURIComponent(job.job_id)}`
-    );
-
-}
-
-
-function downloadJobExcel(
-    jobId
-) {
-
-    const job =
-        state.jobs[jobId];
-
-
-    if (
-        !job
-    ) {
-
-        showToast(
-            "Download unavailable",
-            "Processing job information was not found.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    const url =
-        buildDownloadUrl(
-            job
-        );
-
-
-    /*
-       Use a normal browser navigation.
-
-       This is more reliable for FileResponse downloads
-       than trying to parse the response as JSON/blob.
-    */
-
-    const anchor =
-        document.createElement(
-            "a"
-        );
-
-
-    anchor.href =
-        url;
-
-    anchor.target =
-        "_blank";
-
-    anchor.rel =
-        "noopener";
-
-    document
-        .body
-        .appendChild(
-            anchor
-        );
-
-    anchor.click();
-
-    anchor.remove();
-
-
-    showToast(
-        "Excel ready",
-        "The generated workbook has been opened for download."
-    );
 
 }
 
@@ -6875,30 +6518,55 @@ function openAppendExcel(
 }
 
 
-function replayTutorial() {
+/* ============================================================
+   SIGNED-IN USER IDENTITY
+   Read the Supabase session already stored by the auth flow.
+   Never hard-code the developer's name into a shared dashboard.
+   ============================================================ */
 
-    const video =
-        document.getElementById("tutorialVideo");
-
-    if (!video) {
-        return;
-    }
-
-    video.currentTime = 0;
-
-    const playPromise = video.play();
-
-    if (playPromise && typeof playPromise.catch === "function") {
-        playPromise.catch(() => {
-            showToast(
-                "Tutorial ready",
-                "Use the video play control to start the tutorial."
-            );
-        });
-    }
-
+function emailToDisplayName(email) {
+    if (!email || typeof email !== "string" || !email.includes("@")) return "";
+    const localPart = email.split("@")[0]
+        .replace(/[._+-]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    if (!localPart) return email;
+    return localPart.replace(/\b\w/g, character => character.toUpperCase());
 }
 
+function readSignedInEmail() {
+    try {
+        if (window.__INVOICE_ENGINE_USER__ && window.__INVOICE_ENGINE_USER__.email) {
+            return String(window.__INVOICE_ENGINE_USER__.email);
+        }
+        // Supabase JS v2 stores its session in a key like sb-<project-ref>-auth-token.
+        for (let index = 0; index < localStorage.length; index++) {
+            const key = localStorage.key(index);
+            if (!key || !/^sb-.+-auth-token$/.test(key)) continue;
+            const raw = localStorage.getItem(key);
+            if (!raw) continue;
+            const parsed = JSON.parse(raw);
+            const user = parsed.user || parsed.currentSession?.user || parsed.session?.user;
+            if (user && user.email) return String(user.email);
+        }
+    } catch (error) {
+        console.warn("Could not read signed-in profile from the local auth session.", error);
+    }
+    return "";
+}
+
+function applySignedInIdentity() {
+    const email = readSignedInEmail();
+    const displayName = emailToDisplayName(email) || "Signed-in user";
+    const nameElement = document.getElementById("profileName");
+    const avatarElement = document.getElementById("profileAvatar");
+    if (nameElement) nameElement.textContent = displayName;
+    if (avatarElement) {
+        const initials = displayName.split(/\s+/).filter(Boolean).slice(0, 2)
+            .map(part => part.charAt(0).toUpperCase()).join("");
+        avatarElement.textContent = initials || "IE";
+    }
+}
 
 /* ============================================================
    INITIALIZATION
@@ -6917,6 +6585,8 @@ async function initialize() {
     state.initialized =
         true;
 
+
+    applySignedInIdentity();
 
     await checkApi();
 
@@ -6975,57 +6645,734 @@ document
 
 
 /* ============================================================
-   AUTHENTICATION + START
+   RETAIL MODULES (BILLING + SALES)
+   Browser prototype storage is used until the retail API/database
+   is implemented. This is not a substitute for tenant-secure cloud storage.
    ============================================================ */
 
-async function protectDashboard() {
+function emptyRetailData() {
+    return { products: [], sales: [], purchases: [], customers: [] };
+}
 
+function loadRetailData() {
     try {
-
-        const { data, error } = await supabaseClient.auth.getSession();
-
-        if (error) {
-            throw error;
-        }
-
-        if (!data || !data.session) {
-            window.location.replace("/frontend/auth.html");
-            return;
-        }
-
-        const logoutButton = document.getElementById("logoutButton");
-
-        if (logoutButton) {
-            logoutButton.addEventListener("click", async () => {
-                logoutButton.disabled = true;
-                logoutButton.textContent = "Signing out...";
-
-                try {
-                    const { error: signOutError } = await supabaseClient.auth.signOut();
-                    if (signOutError) {
-                        throw signOutError;
-                    }
-                } catch (signOutError) {
-                    console.error("Invoice Engine sign-out error:", signOutError);
-                    logoutButton.disabled = false;
-                    logoutButton.textContent = "Sign out";
-                    showToast("Sign out failed", signOutError.message || "Please try again.", true);
-                    return;
-                }
-
-                window.location.replace("/frontend/auth.html");
-            });
-        }
-
-        await initialize();
-
+        const parsed = JSON.parse(localStorage.getItem(RETAIL_STORAGE_KEY) || "null");
+        if (!parsed || typeof parsed !== "object") return emptyRetailData();
+        return {
+            products: Array.isArray(parsed.products) ? parsed.products : [],
+            sales: Array.isArray(parsed.sales) ? parsed.sales : [],
+            purchases: Array.isArray(parsed.purchases) ? parsed.purchases : [],
+            customers: Array.isArray(parsed.customers) ? parsed.customers : []
+        };
     } catch (error) {
-        console.error("Invoice Engine session check failed:", error);
-        window.location.replace("/frontend/auth.html");
+        return emptyRetailData();
     }
 }
 
-protectDashboard();
+function saveRetailData() {
+    try {
+        localStorage.setItem(RETAIL_STORAGE_KEY, JSON.stringify(state.retail));
+        return true;
+    } catch (error) {
+        showToast("Could not save retail data", "Browser storage may be full or unavailable. Export your data and retry.", true);
+        return false;
+    }
+}
+
+function setModule(module) {
+    if (!['home', 'purchasing', 'billing', 'sales'].includes(module)) return;
+    if (module === 'billing' || module === 'sales') {
+        state.pendingModule = module;
+        renderPlanChooser();
+        return;
+    }
+    state.module = module;
+    renderPage();
+}
+
+function renderPlanChooser() {
+    const content = document.getElementById('content');
+    const app = document.querySelector('.app');
+    if (app) app.classList.remove('home-mode');
+    document.getElementById('pageTitle').textContent = 'Choose your plan';
+    document.getElementById('pageSubtitle').textContent = 'Select a plan to continue, or skip for now and explore the workspace.';
+    document.querySelectorAll('.module-tab').forEach(button => button.classList.toggle('active', false));
+    const target = state.pendingModule || 'billing';
+    content.innerHTML = `
+      <div class="page-header"><div><h2>Plans for ${target === 'billing' ? 'Billing' : 'Sales'}</h2><p>Start small and upgrade when your shop needs more.</p></div></div>
+      <div class="plan-grid">
+        <article class="card plan-card"><div class="suite-eyebrow">STARTER</div><h3>Starter</h3><div class="plan-price">Free to explore</div><p>Try the workspace and build your product catalogue.</p><ul><li>Product catalogue</li><li>Current bill and receipt preview</li><li>Basic sales records</li></ul><button class="btn" onclick="chooseRetailPlan('starter')">Choose Starter</button></article>
+        <article class="card plan-card featured"><div class="suite-eyebrow">FOR BUSY SHOPS</div><h3>Growth</h3><div class="plan-price">Flexible plan</div><p>For shops managing frequent transactions and stock.</p><ul><li>Fast product lookup and barcode/SKU support</li><li>Discounts, GST and payment tracking</li><li>Sales history and exports</li><li>Inventory and stock-receipt tools</li></ul><button class="btn btn-primary" onclick="chooseRetailPlan('growth')">Choose Growth</button></article>
+        <article class="card plan-card"><div class="suite-eyebrow">ALL-IN-ONE</div><h3>Complete Retail Suite</h3><div class="plan-price">Flexible plan</div><p>For purchasing, stock, billing and sales in one flow.</p><ul><li>Purchasing + Billing + Sales</li><li>Supplier and customer records</li><li>Combined stock and sales reports</li><li>Designed for future shared cloud inventory</li></ul><button class="btn" onclick="chooseRetailPlan('suite')">Choose Complete Suite</button></article>
+      </div>
+      <div class="module-landing-actions"><button class="btn" onclick="skipPlanForNow()">Skip for now</button><button class="btn" onclick="setModule('home')">← Back to modules</button></div>`;
+}
+
+function chooseRetailPlan(plan) {
+    state.selectedPlan = plan;
+    skipPlanForNow();
+}
+
+function skipPlanForNow() {
+    const target = state.pendingModule || 'billing';
+    state.module = target;
+    state.pendingModule = null;
+    renderPage();
+}
+
+function setRetailView(view) {
+    const allowed = ["current-bill", "catalogue", "purchases"];
+    if (!allowed.includes(view)) return;
+    state.retailView = view;
+    renderPage();
+}
+
+function renderRetailModule() {
+    const content = document.getElementById("content");
+    if (!content) return;
+    if (state.module === "billing") {
+        document.getElementById("pageTitle").textContent = "Billing";
+        const labels = {"current-bill":"Current bill", catalogue:"Product catalogue", purchases:"Purchases / stock"};
+        document.getElementById("pageSubtitle").textContent = labels[state.retailView] || "Current bill";
+        content.innerHTML = renderBillingModule();
+        const layout = content.querySelector(".retail-layout");
+        if (layout) layout.classList.add("retail-single-view");
+        const currentBill = document.getElementById("currentBillSection");
+        const catalogue = document.getElementById("productCatalogueSection");
+        const products = document.getElementById("productsAvailableSection");
+        const purchases = document.getElementById("stockReceiptSection");
+        if (currentBill) currentBill.hidden = state.retailView !== "current-bill";
+        if (catalogue) catalogue.hidden = state.retailView !== "catalogue";
+        if (products) products.hidden = state.retailView !== "catalogue";
+        if (purchases) purchases.hidden = state.retailView !== "purchases";
+        const help = document.getElementById("retailHowItWorks");
+        if (help) help.hidden = true;
+        content.querySelectorAll("[data-retail-view]").forEach(button => button.classList.toggle("btn-primary", button.dataset.retailView === state.retailView));
+        renderRetailProducts();
+        renderRetailCart();
+        return;
+    }
+    document.getElementById("pageTitle").textContent = "Sales";
+    document.getElementById("pageSubtitle").textContent = "Sales history, customer records, daily performance and exports.";
+    content.innerHTML = renderSalesModule();
+    renderSalesData();
+}
+
+function renderBillingModule() {
+    return `
+        <div class="page-header">
+            <div><h2>Retail billing desk</h2><p>Create a bill, print customer and shop copies, and record the sale once.</p></div>
+            <span class="retail-pill">BILLING + SALES</span>
+        </div>
+        <nav class="retail-toolbar retail-workspace-nav" aria-label="Billing options"><button class="btn" data-retail-view="current-bill" onclick="setRetailView('current-bill')">Current bill</button><button class="btn" data-retail-view="catalogue" onclick="setRetailView('catalogue')">Product catalogue</button><button class="btn" data-retail-view="purchases" onclick="setRetailView('purchases')">Purchases / stock</button><button class="btn" onclick="setModule('sales')">Sales history & reports</button></nav>
+        <div class="retail-warning"><strong>Prototype storage notice:</strong> these new retail products, sales and stock records are saved in this browser only. They are not yet connected to secure shared cloud storage or to OCR purchase records. Do not use this browser-only version as the shop's sole production ledger.</div>
+        <div class="retail-layout">
+            <div class="retail-stack">
+                <section id="productCatalogueSection" class="card retail-card" hidden>
+                    <div class="retail-section-title"><h3>Product catalogue</h3><span class="retail-pill" id="retailProductCount">0 products</span></div>
+                    <p><strong>Add each product once.</strong> Saved products stay in your catalogue, so future bills can use the product name, SKU/barcode, price and GST automatically. Update a product only when its details change.</p>
+                    <div class="retail-toolbar" style="margin:12px 0;flex-wrap:wrap"><button class="btn" type="button" onclick="downloadProductTemplate()">↓ Download CSV template</button><label class="btn" for="productCsvImport" style="cursor:pointer">↑ Import products from CSV</label><input id="productCsvImport" type="file" accept=".csv,text/csv" style="display:none" onchange="importRetailProductsCsv(event)"><span class="retail-muted">Bulk-add hundreds of products at once from Excel/CSV.</span></div>
+                    <form onsubmit="event.preventDefault(); addRetailProduct();" class="retail-form-grid">
+                        <div class="retail-field"><label for="newProductName">Product name *</label><input id="newProductName" required maxlength="120" placeholder="e.g. Tata Salt 1 kg"></div>
+                        <div class="retail-field"><label for="newProductSku">SKU / barcode</label><input id="newProductSku" maxlength="80" placeholder="Scan or type code"></div>
+                        <div class="retail-field"><label for="newProductHsn">HSN/SAC</label><input id="newProductHsn" maxlength="30" placeholder="HSN code"></div>
+                        <div class="retail-field"><label for="newProductUnit">Unit</label><select id="newProductUnit"><option value="piece">Piece</option><option value="kg">Kg</option><option value="g">Gram</option><option value="litre">Litre</option><option value="ml">Millilitre</option><option value="pack">Pack</option><option value="box">Box</option><option value="dozen">Dozen</option></select></div>
+                        <div class="retail-field"><label for="newProductPrice">Selling price before GST (₹) *</label><input id="newProductPrice" type="number" min="0" step="0.01" required placeholder="0.00"></div>
+                        <div class="retail-field"><label for="newProductCost">Purchase cost per unit (₹)</label><input id="newProductCost" type="number" min="0" step="0.01" value="0" placeholder="0.00"></div>
+                        <div class="retail-field"><label for="newProductGst">GST rate (%)</label><select id="newProductGst"><option value="0">0%</option><option value="0.25">0.25%</option><option value="3">3%</option><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select></div>
+                        <div class="retail-field"><label for="newProductStock">Opening stock *</label><input id="newProductStock" type="number" min="0" step="0.001" required value="0"></div>
+                        <div class="retail-field full"><button class="btn btn-primary" type="submit">＋ Save product</button></div>
+                    </form>
+                </section>
+                <section id="productsAvailableSection" class="card retail-card" hidden>
+                    <div class="retail-section-title"><h3>Products available to sell</h3></div>
+                    <div class="retail-toolbar"><input id="retailProductSearch" class="retail-input" placeholder="Search product name, SKU or barcode..." oninput="renderRetailProducts()"><span class="retail-muted">Select Add to put an item in the bill.</span></div>
+                    <div id="retailProductsTable" class="retail-table-wrap"></div>
+                </section>
+                <section id="stockReceiptSection" class="card retail-card" hidden>
+                    <h3>Receive stock / record a purchase</h3>
+                    <p>Record incoming quantities against a supplier. This manual stock receipt is separate from OCR-extracted supplier invoices until the backend integration is built.</p>
+                    <form onsubmit="event.preventDefault(); receiveRetailStock();" class="retail-form-grid">
+                        <div class="retail-field"><label for="receiveSupplier">Supplier name *</label><input id="receiveSupplier" required placeholder="Supplier / distributor"></div>
+                        <div class="retail-field"><label for="receiveProduct">Product *</label><select id="receiveProduct" required></select></div>
+                        <div class="retail-field"><label for="receiveQuantity">Quantity received *</label><input id="receiveQuantity" type="number" min="0.001" step="0.001" required placeholder="0"></div>
+                        <div class="retail-field"><label for="receiveCost">Cost per unit (₹) *</label><input id="receiveCost" type="number" min="0" step="0.01" required placeholder="0.00"></div>
+                        <div class="retail-field full"><button class="btn" type="submit">＋ Record purchase and increase stock</button></div>
+                    </form>
+                </section>
+            </div>
+            <div class="retail-stack">
+                <section id="currentBillSection" class="card retail-card">
+                    <div class="retail-section-title"><h3>Current bill</h3><button class="btn btn-small" onclick="clearRetailCart()">Clear cart</button></div>
+                    <form onsubmit="event.preventDefault();" class="retail-form-grid">
+                        <div class="retail-field"><label for="retailCustomerName">Customer name</label><input id="retailCustomerName" maxlength="120" placeholder="Walk-in customer"></div>
+                        <div class="retail-field"><label for="retailCustomerPhone">Phone number</label><input id="retailCustomerPhone" maxlength="20" inputmode="tel" placeholder="Optional"></div>
+                        <div class="retail-field"><label for="retailPaymentMethod">Payment method</label><select id="retailPaymentMethod"><option>Cash</option><option>UPI</option><option>Card</option><option>Bank transfer</option><option>Credit / due</option><option>Other</option></select></div>
+                        <div class="retail-field"><label for="retailDiscount">Bill discount (₹)</label><input id="retailDiscount" type="number" min="0" step="0.01" value="0" oninput="renderRetailCart()"></div>
+                    </form>
+                    <div class="quick-product-entry"><label for="quickProductLookup" style="display:block;font-size:13px;font-weight:800;margin-bottom:7px">Add item by name / SKU / barcode</label><input id="quickProductLookup" class="retail-input" list="quickProductSuggestions" placeholder="Start typing e.g. Tata Salt..." autocomplete="off" onchange="addQuickProductToBill()"><datalist id="quickProductSuggestions">${state.retail.products.map(p => `<option value="${escapeHtml(p.name)}">${escapeHtml(p.sku || '')}</option><option value="${escapeHtml(p.sku || '')}">${escapeHtml(p.name)}</option>`).join('')}</datalist><p class="retail-muted" style="margin-top:6px">Select a saved product and its saved price, GST, unit and stock are filled automatically.</p></div>
+                    <div id="retailCartContents" class="retail-cart-list"></div>
+                    <div id="retailCartTotals" class="retail-totals"></div>
+                    <button class="btn btn-primary" style="width:100%;margin-top:16px;padding:13px" onclick="completeRetailSale()">✓ Complete sale & print two copies</button>
+                    <p class="retail-muted" style="margin-top:10px">Prices entered above are before GST. Bill totals add the selected GST rates. Confirm the shop's actual tax treatment before live use.</p>
+                </section>
+                <section id="retailHowItWorks" class="card retail-card" hidden>
+                    <h3>How this works</h3>
+                    <p>1. Add products and opening stock.<br>2. Add items to the cart and enter customer/payment details.<br>3. Complete the sale to save a sales record and reduce stock.<br>4. Print a customer copy and a shop copy.</p>
+                    <button class="btn" onclick="setModule('sales')">Open Sales records →</button>
+                </section>
+            </div>
+        </div>`;
+}
+
+
+function downloadProductTemplate() {
+    const csv = 'name,sku,hsn,unit,selling_price,cost_price,gst_rate,opening_stock\nTata Salt 1 kg,890000000001,2501,pack,25,20,0,100\n';
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'invoice-engine-product-template.csv'; a.click();
+    URL.revokeObjectURL(url);
+}
+
+function parseProductCsvLine(line) {
+    const out = []; let value = ''; let quoted = false;
+    for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"' && quoted && line[i + 1] === '"') { value += '"'; i++; }
+        else if (ch === '"') quoted = !quoted;
+        else if (ch === ',' && !quoted) { out.push(value.trim()); value = ''; }
+        else value += ch;
+    }
+    out.push(value.trim()); return out;
+}
+
+async function importRetailProductsCsv(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    try {
+        const lines = (await file.text()).replace(/^\uFEFF/, '').split(/\r?\n/).filter(line => line.trim());
+        if (lines.length < 2) throw new Error('The CSV has no product rows.');
+        const headers = parseProductCsvLine(lines[0]).map(h => h.toLowerCase().replace(/[\s-]+/g, '_'));
+        const col = name => headers.indexOf(name);
+        if (col('name') < 0 || col('selling_price') < 0) throw new Error('CSV must include at least name and selling_price columns. Use the downloadable template.');
+        let added = 0, updated = 0, skipped = 0;
+        for (const line of lines.slice(1)) {
+            const row = parseProductCsvLine(line); const get = key => col(key) < 0 ? '' : (row[col(key)] || '').trim();
+            const name = get('name'); if (!name) { skipped++; continue; }
+            const price = Number(get('selling_price')); const cost = Number(get('cost_price') || 0); const gst = Number(get('gst_rate') || 0); const stock = Number(get('opening_stock') || 0);
+            if (![price, cost, gst, stock].every(Number.isFinite) || price < 0 || cost < 0 || gst < 0 || stock < 0) { skipped++; continue; }
+            const sku = get('sku');
+            let existing = sku ? state.retail.products.find(p => String(p.sku || '').toLowerCase() === sku.toLowerCase()) : state.retail.products.find(p => String(p.name || '').toLowerCase() === name.toLowerCase());
+            if (existing) {
+                existing.name = name; existing.sku = sku || existing.sku || ''; existing.hsn = get('hsn') || existing.hsn || ''; existing.unit = get('unit') || existing.unit || 'piece'; existing.price = price; existing.costPrice = cost; existing.gstRate = gst;
+                if (get('opening_stock') !== '') existing.stock = stock;
+                updated++;
+            } else {
+                state.retail.products.push({ id: `prd-${Date.now()}-${Math.random().toString(36).slice(2,7)}`, name, sku, hsn: get('hsn'), unit: get('unit') || 'piece', price, costPrice: cost, gstRate: gst, stock, createdAt: new Date().toISOString() }); added++;
+            }
+        }
+        if (!saveRetailData()) return;
+        renderRetailProducts();
+        showToast('Product import complete', `${added} added, ${updated} updated, ${skipped} skipped. Products are saved in this browser.`);
+    } catch (error) { showToast('Could not import CSV', error.message || 'Check the file and try again.', true); }
+    finally { event.target.value = ''; }
+}
+
+function editRetailProduct(productId) {
+    const product = state.retail.products.find(p => p.id === productId);
+    if (!product) return;
+    const name = prompt('Product name:', product.name); if (name === null) return;
+    const priceText = prompt('Selling price before GST (₹):', String(product.price)); if (priceText === null) return;
+    const gstText = prompt('GST rate (%):', String(product.gstRate)); if (gstText === null) return;
+    const costText = prompt('Purchase cost per unit (₹):', String(product.costPrice || 0)); if (costText === null) return;
+    const sku = prompt('SKU / barcode:', product.sku || ''); if (sku === null) return;
+    const price = Number(priceText), gst = Number(gstText), cost = Number(costText);
+    if (!name.trim() || ![price, gst, cost].every(Number.isFinite) || price < 0 || gst < 0 || cost < 0) { showToast('Invalid product details', 'No changes were saved. Check name, price, GST and cost.', true); return; }
+    if (sku.trim() && state.retail.products.some(p => p.id !== productId && String(p.sku || '').toLowerCase() === sku.trim().toLowerCase())) { showToast('SKU already exists', 'Each SKU/barcode must be unique.', true); return; }
+    const previous = { ...product };
+    Object.assign(product, { name: name.trim(), price, gstRate: gst, costPrice: cost, sku: sku.trim() });
+    if (!saveRetailData()) { Object.assign(product, previous); return; }
+    renderRetailProducts(); showToast('Product updated', `${product.name} changes have been saved.`);
+}
+
+function addQuickProductToBill() {
+    const input = document.getElementById('quickProductLookup');
+    if (!input) return;
+    const query = input.value.trim().toLowerCase();
+    if (!query) return;
+    const product = state.retail.products.find(p => String(p.name || '').toLowerCase() === query || String(p.sku || '').toLowerCase() === query);
+    if (!product) { showToast('Product not found', 'Add it to the product catalogue first, including price and GST.', true); return; }
+    if (Number(product.stock || 0) <= 0) { showToast('Out of stock', `${product.name} has no available stock.`, true); return; }
+    const existing = state.retailCart.find(item => item.productId === product.id);
+    if (existing) existing.quantity = Math.min(Number(existing.quantity || 0) + 1, Number(product.stock));
+    else state.retailCart.push({ productId: product.id, quantity: 1 });
+    input.value = '';
+    renderRetailCart();
+    showToast('Item added', `${product.name} added with saved price and GST.`);
+}
+
+function addRetailProduct() {
+    const name = document.getElementById("newProductName").value.trim();
+    const sku = document.getElementById("newProductSku").value.trim();
+    const price = Number(document.getElementById("newProductPrice").value);
+    const cost = Number(document.getElementById("newProductCost").value || 0);
+    const stock = Number(document.getElementById("newProductStock").value);
+    const gst = Number(document.getElementById("newProductGst").value || 0);
+    if (!name || !Number.isFinite(price) || price < 0 || !Number.isFinite(stock) || stock < 0) {
+        showToast("Check product details", "Enter a product name, valid price and non-negative stock.", true); return;
+    }
+    if (sku && state.retail.products.some(p => String(p.sku || '').toLowerCase() === sku.toLowerCase())) {
+        showToast("SKU already exists", "Use a unique SKU or barcode for each product.", true); return;
+    }
+    const product = {
+        id: `prd-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,
+        name, sku, hsn: document.getElementById("newProductHsn").value.trim(),
+        unit: document.getElementById("newProductUnit").value, price, costPrice: cost, gstRate: gst, stock,
+        createdAt: new Date().toISOString()
+    };
+    state.retail.products.push(product);
+    if (!saveRetailData()) { state.retail.products = state.retail.products.filter(p => p.id !== product.id); return; }
+    document.getElementById("newProductName").value = '';
+    document.getElementById("newProductSku").value = '';
+    document.getElementById("newProductHsn").value = '';
+    document.getElementById("newProductPrice").value = '';
+    document.getElementById("newProductCost").value = '0';
+    document.getElementById("newProductStock").value = '0';
+    renderRetailProducts(); renderReceiveProductOptions();
+    showToast("Product saved", `${name} was added to the browser's retail catalogue.`);
+}
+
+function renderRetailProducts() {
+    const target = document.getElementById("retailProductsTable");
+    if (!target) return;
+    const search = (document.getElementById("retailProductSearch")?.value || '').trim().toLowerCase();
+    const products = state.retail.products.filter(p => !search || [p.name,p.sku,p.hsn].some(v => String(v || '').toLowerCase().includes(search)));
+    const count = document.getElementById("retailProductCount");
+    if (count) count.textContent = `${state.retail.products.length} product${state.retail.products.length === 1 ? '' : 's'}`;
+    renderReceiveProductOptions();
+    if (!products.length) {
+        target.innerHTML = `<div class="retail-empty">${state.retail.products.length ? 'No products match your search.' : 'No products yet. Add your first product above.'}</div>`; return;
+    }
+    target.innerHTML = `<table class="retail-table"><thead><tr><th>Product</th><th>Price + GST</th><th>Stock</th><th>Actions</th></tr></thead><tbody>${products.map(p => {
+        const total = Number(p.price || 0) * (1 + Number(p.gstRate || 0) / 100);
+        const low = Number(p.stock || 0) <= 5;
+        return `<tr><td><strong>${escapeHtml(p.name)}</strong><div class="retail-muted">${escapeHtml(p.sku || p.hsn || p.unit || '')}</div></td><td>${formatAmount(total, '₹')}<div class="retail-muted">Base ${formatAmount(p.price, '₹')} · GST ${Number(p.gstRate || 0)}%</div></td><td><span class="retail-stock ${low ? 'low' : ''}">${formatNumber(p.stock)} ${escapeHtml(p.unit || '')}</span></td><td><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-small" onclick="addRetailCartItem('${escapeHtml(p.id)}')" ${Number(p.stock) <= 0 ? 'disabled' : ''}>＋ Add</button><button class="btn btn-small" onclick="editRetailProduct('${escapeHtml(p.id)}')">Edit</button></div></td></tr>`;
+    }).join('')}</tbody></table>`;
+}
+
+function renderReceiveProductOptions() {
+    const select = document.getElementById("receiveProduct");
+    if (!select) return;
+    const current = select.value;
+    select.innerHTML = `<option value="">Choose product</option>` + state.retail.products.map(p => `<option value="${escapeHtml(p.id)}">${escapeHtml(p.name)} (${escapeHtml(p.sku || p.unit || 'product')})</option>`).join('');
+    if (state.retail.products.some(p => p.id === current)) select.value = current;
+}
+
+function addRetailCartItem(productId) {
+    const product = state.retail.products.find(p => p.id === productId);
+    if (!product) return;
+    const existing = state.retailCart.find(item => item.productId === productId);
+    if (existing) {
+        if (existing.quantity + 1 > Number(product.stock)) { showToast("Not enough stock", `Only ${product.stock} ${product.unit || 'units'} are available.`, true); return; }
+        existing.quantity += 1;
+    } else {
+        if (Number(product.stock) <= 0) { showToast("Out of stock", "Receive stock before selling this product.", true); return; }
+        state.retailCart.push({ productId, quantity: 1 });
+    }
+    renderRetailCart();
+}
+
+function changeRetailCartQuantity(productId, delta) {
+    const item = state.retailCart.find(x => x.productId === productId);
+    const product = state.retail.products.find(x => x.id === productId);
+    if (!item || !product) return;
+    const next = item.quantity + delta;
+    if (next <= 0) state.retailCart = state.retailCart.filter(x => x.productId !== productId);
+    else if (next > Number(product.stock)) showToast("Not enough stock", `Only ${product.stock} ${product.unit || 'units'} are available.`, true);
+    else item.quantity = next;
+    renderRetailCart();
+}
+
+function clearRetailCart() { state.retailCart = []; renderRetailCart(); }
+
+function calculateRetailTotals() {
+    const items = state.retailCart.map(item => {
+        const product = state.retail.products.find(p => p.id === item.productId);
+        if (!product) return null;
+        const subtotal = Number(product.price || 0) * Number(item.quantity || 0);
+        return { product, quantity: item.quantity, subtotal, gstRate: Number(product.gstRate || 0) };
+    }).filter(Boolean);
+    const subtotal = items.reduce((sum, item) => sum + item.subtotal, 0);
+    const discountInput = Math.max(0, Number(document.getElementById("retailDiscount")?.value || 0));
+    const discount = Math.min(discountInput, subtotal);
+    const discountRatio = subtotal > 0 ? discount / subtotal : 0;
+    const taxable = subtotal - discount;
+    const tax = items.reduce((sum, item) => sum + (item.subtotal * (1 - discountRatio) * item.gstRate / 100), 0);
+    return { items, subtotal, discount, taxable, tax, total: taxable + tax, discountRatio };
+}
+
+function renderRetailCart() {
+    const list = document.getElementById("retailCartContents");
+    const totalsTarget = document.getElementById("retailCartTotals");
+    if (!list || !totalsTarget) return;
+    const totals = calculateRetailTotals();
+    if (!totals.items.length) list.innerHTML = `<div class="retail-empty">Your bill is empty. Add products from the catalogue.</div>`;
+    else list.innerHTML = totals.items.map(item => `<div class="retail-cart-row"><div><div class="retail-cart-name">${escapeHtml(item.product.name)}</div><div class="retail-cart-meta">${item.quantity} × ${formatAmount(item.product.price, '₹')} · GST ${item.gstRate}%</div></div><div style="text-align:right"><strong>${formatAmount(item.subtotal, '₹')}</strong><div class="qty-controls" style="justify-content:flex-end;margin-top:6px"><button onclick="changeRetailCartQuantity('${escapeHtml(item.product.id)}',-1)" aria-label="Decrease quantity">−</button><strong>${item.quantity}</strong><button onclick="changeRetailCartQuantity('${escapeHtml(item.product.id)}',1)" aria-label="Increase quantity">＋</button></div></div></div>`).join('');
+    totalsTarget.innerHTML = `<div class="retail-total-row"><span>Subtotal</span><strong>${formatAmount(totals.subtotal, '₹')}</strong></div><div class="retail-total-row"><span>Discount</span><strong>− ${formatAmount(totals.discount, '₹')}</strong></div><div class="retail-total-row"><span>Taxable amount</span><strong>${formatAmount(totals.taxable, '₹')}</strong></div><div class="retail-total-row"><span>GST total</span><strong>${formatAmount(totals.tax, '₹')}</strong></div><div class="retail-total-row grand"><span>Grand total</span><strong>${formatAmount(totals.total, '₹')}</strong></div>`;
+}
+
+function receiveRetailStock() {
+    const supplier = document.getElementById("receiveSupplier").value.trim();
+    const productId = document.getElementById("receiveProduct").value;
+    const quantity = Number(document.getElementById("receiveQuantity").value);
+    const cost = Number(document.getElementById("receiveCost").value);
+    const product = state.retail.products.find(p => p.id === productId);
+    if (!supplier || !product || !Number.isFinite(quantity) || quantity <= 0 || !Number.isFinite(cost) || cost < 0) {
+        showToast("Check purchase details", "Choose a product and enter supplier, quantity and valid cost.", true); return;
+    }
+    product.stock = Number(product.stock || 0) + quantity;
+    product.costPrice = cost;
+    const purchase = { id: `pur-${Date.now()}`, supplier, productId, productName: product.name, quantity, costPrice: cost, totalCost: quantity * cost, date: new Date().toISOString() };
+    state.retail.purchases.unshift(purchase);
+    if (!saveRetailData()) { state.retail.purchases = state.retail.purchases.filter(p => p.id !== purchase.id); product.stock -= quantity; return; }
+    document.getElementById("receiveSupplier").value = '';
+    document.getElementById("receiveQuantity").value = '';
+    document.getElementById("receiveCost").value = '';
+    renderRetailProducts();
+    showToast("Stock received", `${formatNumber(quantity)} ${product.unit || 'units'} added for ${product.name}.`);
+}
+
+function completeRetailSale() {
+    const totals = calculateRetailTotals();
+    if (!totals.items.length) { showToast("Bill is empty", "Add at least one product before completing a sale.", true); return; }
+    for (const item of totals.items) {
+        const live = state.retail.products.find(p => p.id === item.product.id);
+        if (!live || Number(live.stock) < item.quantity) { showToast("Stock changed", `Not enough stock for ${item.product.name}. Refresh the cart and retry.`, true); return; }
+    }
+    const customerName = (document.getElementById("retailCustomerName")?.value || '').trim() || 'Walk-in customer';
+    const customerPhone = (document.getElementById("retailCustomerPhone")?.value || '').trim();
+    const paymentMethod = document.getElementById("retailPaymentMethod")?.value || 'Cash';
+    const now = new Date();
+    const saleId = `sale-${now.getTime()}-${Math.random().toString(36).slice(2,6)}`;
+    const billNumber = `IE-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}-${String(now.getTime()).slice(-6)}`;
+    const items = totals.items.map(item => {
+        const discount = item.subtotal * totals.discountRatio;
+        const taxable = item.subtotal - discount;
+        const gst = taxable * item.gstRate / 100;
+        return { productId:item.product.id, productName:item.product.name, sku:item.product.sku || '', hsn:item.product.hsn || '', unit:item.product.unit || 'piece', quantity:item.quantity, unitPrice:Number(item.product.price), costPrice:Number(item.product.costPrice || 0), gstRate:item.gstRate, subtotal:item.subtotal, discount, taxable, gst, total:taxable+gst, estimatedGrossProfit:taxable-(Number(item.product.costPrice || 0)*item.quantity) };
+    });
+    const sale = { id:saleId, billNumber, date:now.toISOString(), customerName, customerPhone, paymentMethod, items, subtotal:totals.subtotal, discount:totals.discount, taxable:totals.taxable, tax:totals.tax, total:totals.total, status:'completed' };
+    const previousRetailData = JSON.stringify(state.retail);
+    items.forEach(item => { const product = state.retail.products.find(p => p.id === item.productId); product.stock = Number(product.stock) - item.quantity; });
+    state.retail.sales.unshift(sale);
+    if (customerPhone) {
+        const existing = state.retail.customers.find(c => c.phone === customerPhone);
+        if (existing) { existing.name = customerName; existing.lastSeen = now.toISOString(); existing.saleCount = Number(existing.saleCount || 0) + 1; }
+        else state.retail.customers.push({ name:customerName, phone:customerPhone, lastSeen:now.toISOString(), saleCount:1 });
+    }
+    if (!saveRetailData()) { state.retail = JSON.parse(previousRetailData); renderRetailProducts(); renderRetailCart(); return; }
+    state.retailCart = [];
+    const nameInput = document.getElementById("retailCustomerName"); if (nameInput) nameInput.value = '';
+    const phoneInput = document.getElementById("retailCustomerPhone"); if (phoneInput) phoneInput.value = '';
+    const discountInput = document.getElementById("retailDiscount"); if (discountInput) discountInput.value = '0';
+    renderRetailProducts(); renderRetailCart();
+    showToast("Sale recorded", `${billNumber} saved in this browser. Preparing two receipt copies.`);
+    printRetailSale(sale);
+}
+
+function printRetailSale(sale) {
+    const money = value => `₹${Number(value || 0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+    const receipt = (copyName) => `<section class="receipt"><header><h1>RETAIL INVOICE</h1><p>Shop name / address / GSTIN: configure before live use</p><h2>${copyName}</h2></header><div class="meta"><div><strong>Bill:</strong> ${escapeHtml(sale.billNumber)}</div><div><strong>Date:</strong> ${escapeHtml(new Date(sale.date).toLocaleString('en-IN'))}</div><div><strong>Customer:</strong> ${escapeHtml(sale.customerName)}</div><div><strong>Phone:</strong> ${escapeHtml(sale.customerPhone || '—')}</div><div><strong>Payment:</strong> ${escapeHtml(sale.paymentMethod)}</div></div><table><thead><tr><th>Item</th><th>Qty</th><th>Rate</th><th>GST</th><th>Amount</th></tr></thead><tbody>${sale.items.map(item=>`<tr><td>${escapeHtml(item.productName)}<small>${escapeHtml(item.hsn || item.sku || '')}</small></td><td>${escapeHtml(item.quantity)}</td><td>${money(item.unitPrice)}</td><td>${escapeHtml(item.gstRate)}%</td><td>${money(item.total)}</td></tr>`).join('')}</tbody></table><div class="receipt-totals"><p><span>Subtotal</span><strong>${money(sale.subtotal)}</strong></p><p><span>Discount</span><strong>− ${money(sale.discount)}</strong></p><p><span>Taxable amount</span><strong>${money(sale.taxable)}</strong></p><p><span>GST</span><strong>${money(sale.tax)}</strong></p><p class="grand"><span>Grand total</span><strong>${money(sale.total)}</strong></p></div><footer>Thank you for shopping with us.</footer></section>`;
+    const printWindow = window.open('', '_blank', 'width=900,height=700');
+    if (!printWindow) { showToast("Print window blocked", "Allow pop-ups for this site, then open Sales and print the bill again.", true); return; }
+    printWindow.document.open();
+    printWindow.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(sale.billNumber)}</title><style>body{font-family:Arial,sans-serif;color:#111;margin:20px}.receipt{max-width:760px;margin:0 auto 28px;padding:22px;border:1px dashed #888;page-break-after:always}.receipt:last-child{page-break-after:auto}header{text-align:center;border-bottom:1px solid #bbb;padding-bottom:10px}h1{font-size:21px;margin:0 0 6px}h2{font-size:13px;margin:9px 0 0;text-transform:uppercase}p{margin:5px 0}header p,small{font-size:10px;color:#555}.meta{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;margin:14px 0}table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;padding:8px 5px;border-bottom:1px solid #ddd}th{background:#f2f2f2}.receipt-totals{width:min(320px,100%);margin:14px 0 0 auto}.receipt-totals p{display:flex;justify-content:space-between;font-size:12px}.receipt-totals .grand{border-top:2px solid #111;padding-top:8px;font-size:17px;font-weight:bold}footer{text-align:center;font-size:11px;margin-top:18px}@media print{body{margin:0}.receipt{margin:0 auto 14mm;break-after:page}.receipt:last-child{break-after:auto}}</style></head><body>${receipt('CUSTOMER COPY')}${receipt('SHOP COPY')}<script>window.onload=()=>{window.focus();window.print();};<\/script></body></html>`);
+    printWindow.document.close();
+}
+
+function renderSalesModule() {
+    return `<div class="page-header"><div><h2>Sales & business reports</h2><p>Every bill completed in Billing appears here automatically, with customer and product-level details.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" onclick="exportRetailWorkbook()">↓ Export retail Excel</button><button class="btn btn-primary" onclick="setModule('billing')">＋ Create bill</button></div></div><div class="retail-warning"><strong>Data scope:</strong> these sales reports reflect browser-stored prototype records only. Secure multi-user cloud reporting and integration with supplier-invoice OCR require backend work.</div><div id="retailSalesStats" class="retail-stat-grid"></div><section class="card retail-card" style="margin-bottom:16px"><div class="retail-section-title"><h3>Customer records</h3><span class="retail-pill" id="retailCustomerCount">0 customers</span></div><div id="retailCustomersTable" class="retail-table-wrap"></div></section><section class="card retail-card"><div class="retail-section-title"><h3>Sales history</h3><button class="btn btn-small" onclick="exportRetailWorkbook()">Export all retail data</button></div><div class="retail-toolbar"><input id="retailSalesSearch" class="retail-input" placeholder="Search bill number, customer, phone or item..." oninput="renderSalesHistory()"><select id="retailSalesPeriod" class="retail-input" style="max-width:190px" onchange="renderSalesData()"><option value="all">All time</option><option value="today">Today</option><option value="month" selected>This month</option></select></div><div id="retailSalesTable" class="retail-table-wrap"></div></section><section class="card retail-card" style="margin-top:16px"><div class="retail-section-title"><h3>Recent purchase / stock receipts</h3><span class="retail-pill">${state.retail.purchases.length} records</span></div><div id="retailPurchasesTable" class="retail-table-wrap"></div></section>`;
+}
+
+function filteredRetailSales() {
+    const period = document.getElementById('retailSalesPeriod')?.value || 'month';
+    const now = new Date();
+    return state.retail.sales.filter(sale => {
+        const date = new Date(sale.date);
+        if (period === 'today') return date.toDateString() === now.toDateString();
+        if (period === 'month') return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
+        return true;
+    });
+}
+
+function renderSalesData() {
+    const stats = document.getElementById('retailSalesStats');
+    if (!stats) return;
+    const sales = filteredRetailSales();
+    const revenue = sales.reduce((sum,s) => sum + Number(s.total || 0),0);
+    const discounts = sales.reduce((sum,s) => sum + Number(s.discount || 0),0);
+    const taxes = sales.reduce((sum,s) => sum + Number(s.tax || 0),0);
+    const estimatedProfit = sales.reduce((sum,s) => sum + s.items.reduce((a,i) => a + Number(i.estimatedGrossProfit || 0),0),0);
+    stats.innerHTML = `<div class="card retail-stat"><div class="retail-stat-label">Completed bills</div><div class="retail-stat-value">${formatNumber(sales.length)}</div></div><div class="card retail-stat"><div class="retail-stat-label">Net sales incl. tax</div><div class="retail-stat-value">${formatAmount(revenue,'₹')}</div></div><div class="card retail-stat"><div class="retail-stat-label">Discounts</div><div class="retail-stat-value">${formatAmount(discounts,'₹')}</div></div><div class="card retail-stat"><div class="retail-stat-label">Estimated gross profit*</div><div class="retail-stat-value">${formatAmount(estimatedProfit,'₹')}</div></div>`;
+    const customers = document.getElementById('retailCustomersTable');
+    const customerCount = document.getElementById('retailCustomerCount');
+    if (customers) {
+        const list = state.retail.customers;
+        if (customerCount) customerCount.textContent = `${list.length} customer${list.length === 1 ? '' : 's'}`;
+        customers.innerHTML = list.length ? `<table class="retail-table"><thead><tr><th>Customer</th><th>Phone</th><th>Recorded bills</th><th>Last seen</th></tr></thead><tbody>${list.map(c=>`<tr><td>${escapeHtml(c.name)}</td><td>${escapeHtml(c.phone)}</td><td>${formatNumber(c.saleCount || 0)}</td><td>${escapeHtml(c.lastSeen ? new Date(c.lastSeen).toLocaleDateString('en-IN') : '—')}</td></tr>`).join('')}</tbody></table>` : `<div class="retail-empty">Customer records will appear after a bill is completed with a phone number.</div>`;
+    }
+    const purchases = document.getElementById('retailPurchasesTable');
+    if (purchases) purchases.innerHTML = state.retail.purchases.length ? `<table class="retail-table"><thead><tr><th>Date</th><th>Supplier</th><th>Product</th><th>Quantity</th><th>Total cost</th></tr></thead><tbody>${state.retail.purchases.slice(0,50).map(p=>`<tr><td>${escapeHtml(new Date(p.date).toLocaleDateString('en-IN'))}</td><td>${escapeHtml(p.supplier)}</td><td>${escapeHtml(p.productName)}</td><td>${formatNumber(p.quantity)}</td><td>${formatAmount(p.totalCost,'₹')}</td></tr>`).join('')}</tbody></table>` : `<div class="retail-empty">No stock receipts yet. Record incoming stock from Billing.</div>`;
+    renderSalesHistory();
+}
+
+function renderSalesHistory() {
+    const target = document.getElementById('retailSalesTable');
+    if (!target) return;
+    const query = (document.getElementById('retailSalesSearch')?.value || '').trim().toLowerCase();
+    const sales = filteredRetailSales().filter(s => !query || [s.billNumber,s.customerName,s.customerPhone,...s.items.map(i=>i.productName)].some(v=>String(v || '').toLowerCase().includes(query)));
+    target.innerHTML = sales.length ? `<table class="retail-table"><thead><tr><th>Bill</th><th>Date</th><th>Customer</th><th>Payment</th><th>Items</th><th>Discount</th><th>Tax</th><th>Total</th><th></th></tr></thead><tbody>${sales.map(s=>`<tr><td><strong>${escapeHtml(s.billNumber)}</strong><div class="retail-muted">${escapeHtml(s.status)}</div></td><td>${escapeHtml(new Date(s.date).toLocaleString('en-IN'))}</td><td>${escapeHtml(s.customerName)}<div class="retail-muted">${escapeHtml(s.customerPhone || '')}</div></td><td>${escapeHtml(s.paymentMethod)}</td><td>${formatNumber(s.items.reduce((n,i)=>n+Number(i.quantity),0))}</td><td>${formatAmount(s.discount,'₹')}</td><td>${formatAmount(s.tax,'₹')}</td><td><strong>${formatAmount(s.total,'₹')}</strong></td><td><button class="btn btn-small" onclick="reprintRetailSale('${escapeHtml(s.id)}')">Print</button></td></tr>`).join('')}</tbody></table><p class="retail-muted" style="padding-top:12px">*Estimated gross profit uses the recorded purchase cost and excludes operating expenses. Verify costs and tax settings before using these figures for accounting or tax filing.</p>` : `<div class="retail-empty">No sales match this period/search. Create a bill in Billing to get started.</div>`;
+}
+
+function reprintRetailSale(saleId) {
+    const sale = state.retail.sales.find(s => s.id === saleId);
+    if (sale) printRetailSale(sale);
+}
+
+function exportRetailWorkbook() {
+    if (typeof XLSX === 'undefined') { showToast('Excel library unavailable', 'Refresh the page and try again.', true); return; }
+    const salesRows = state.retail.sales.map(s => ({ Bill:s.billNumber, Date:s.date, Customer:s.customerName, Phone:s.customerPhone, Payment:s.paymentMethod, Subtotal:s.subtotal, Discount:s.discount, Taxable:s.taxable, GST:s.tax, Total:s.total, Status:s.status }));
+    const itemRows = state.retail.sales.flatMap(s => s.items.map(i => ({ Bill:s.billNumber, Date:s.date, Customer:s.customerName, Product:i.productName, SKU:i.sku, HSN:i.hsn, Quantity:i.quantity, Unit:i.unit, UnitPrice:i.unitPrice, CostPrice:i.costPrice, Discount:i.discount, Taxable:i.taxable, GSTRate:i.gstRate, GST:i.gst, Total:i.total, EstimatedGrossProfit:i.estimatedGrossProfit })));
+    const productRows = state.retail.products.map(p => ({ Product:p.name, SKU:p.sku, HSN:p.hsn, Unit:p.unit, SellingPriceBeforeGST:p.price, PurchaseCost:p.costPrice, GSTRate:p.gstRate, CurrentStock:p.stock }));
+    const purchaseRows = state.retail.purchases.map(p => ({ Date:p.date, Supplier:p.supplier, Product:p.productName, Quantity:p.quantity, UnitCost:p.costPrice, TotalCost:p.totalCost }));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(salesRows.length ? salesRows : [{Note:'No sales recorded yet'}]), 'Sales');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(itemRows.length ? itemRows : [{Note:'No sale line items recorded yet'}]), 'Sales Line Items');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(productRows.length ? productRows : [{Note:'No products created yet'}]), 'Inventory');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(purchaseRows.length ? purchaseRows : [{Note:'No manual stock receipts recorded yet'}]), 'Purchases');
+    XLSX.writeFile(wb, `invoice-engine-retail-${new Date().toISOString().slice(0,10)}.xlsx`);
+    showToast('Retail workbook exported', 'One workbook containing sales, line items, inventory and stock receipts was downloaded.');
+}
+
+function styleReportWorksheet(ws, options = {}) {
+    if (!ws || typeof XLSX === "undefined") return;
+    const range = XLSX.utils.decode_range(ws["!ref"] || "A1:A1");
+    const headerRow = options.headerRow || 0;
+    const headerFill = "17365D";
+    const headerFont = { name: "Aptos", sz: 10, bold: true, color: { rgb: "FFFFFF" } };
+    const border = {
+        top: { style: "thin", color: { rgb: "D9E2F3" } },
+        bottom: { style: "thin", color: { rgb: "D9E2F3" } },
+        left: { style: "thin", color: { rgb: "E7ECF3" } },
+        right: { style: "thin", color: { rgb: "E7ECF3" } }
+    };
+    const headers = [];
+    for (let col = range.s.c; col <= range.e.c; col++) {
+        const cell = ws[XLSX.utils.encode_cell({ r: headerRow, c: col })];
+        headers.push(cell ? String(cell.v || "") : "");
+        if (cell) {
+            cell.s = {
+                font: headerFont,
+                fill: { patternType: "solid", fgColor: { rgb: headerFill } },
+                alignment: { horizontal: "center", vertical: "center", wrapText: true },
+                border
+            };
+        }
+    }
+    ws["!rows"] = ws["!rows"] || [];
+    ws["!rows"][headerRow] = { hpt: 32 };
+    const moneyHeader = /subtotal|taxable|taxamount|cgst|sgst|igst|totalamount|unitprice|grossamount|discount|cess|amount|cost|price|profit|revenue/i;
+    const percentHeader = /taxrate|gstrate|discountpercent|confidence|completeness/i;
+    const integerHeader = /quantity|freequantity/i;
+    for (let row = headerRow + 1; row <= range.e.r; row++) {
+        ws["!rows"][row] = ws["!rows"][row] || { hpt: 22 };
+        for (let col = range.s.c; col <= range.e.c; col++) {
+            const ref = XLSX.utils.encode_cell({ r: row, c: col });
+            const cell = ws[ref];
+            if (!cell) continue;
+            const header = headers[col - range.s.c] || "";
+            cell.s = {
+                font: { name: "Aptos", sz: 10, color: { rgb: "243247" } },
+                fill: { patternType: "solid", fgColor: { rgb: row % 2 ? "FFFFFF" : "F4F7FB" } },
+                alignment: { vertical: "top", wrapText: /name|description|address|errors|warnings|filename|product/i.test(header) },
+                border
+            };
+            if (moneyHeader.test(header) && typeof cell.v === "number") cell.z = '₹#,##0.00;[Red]-₹#,##0.00';
+            else if (percentHeader.test(header) && typeof cell.v === "number") {
+                cell.z = /confidence|completeness/i.test(header) ? '0.0"%"' : '0.00"%"';
+            } else if (integerHeader.test(header) && typeof cell.v === "number") cell.z = '#,##0.###';
+            if (/reviewrequired/i.test(header)) {
+                cell.s.fill = { patternType: "solid", fgColor: { rgb: cell.v ? "FCE4D6" : "E2F0D9" } };
+            }
+            if (/status/i.test(header)) {
+                const value = String(cell.v || "").toLowerCase();
+                if (value.includes("valid") && !value.includes("invalid")) cell.s.fill = { patternType: "solid", fgColor: { rgb: "E2F0D9" } };
+                else if (value.includes("warning")) cell.s.fill = { patternType: "solid", fgColor: { rgb: "FFF2CC" } };
+                else if (value.includes("invalid") || value.includes("error")) cell.s.fill = { patternType: "solid", fgColor: { rgb: "FCE4D6" } };
+            }
+        }
+    }
+    ws["!cols"] = headers.map(header => {
+        if (/errors|warnings/i.test(header)) return { wch: 42 };
+        if (/address|description|productname|sellername|buyername|filename/i.test(header)) return { wch: 28 };
+        if (/gstin|invoicenumber|portalinvoicenumber|date|createdat|hsn|sku|model/i.test(header)) return { wch: 20 };
+        if (/reviewrequired|confidence|completeness|status/i.test(header)) return { wch: 16 };
+        return { wch: Math.max(13, Math.min(22, header.length + 3)) };
+    });
+    ws["!autofilter"] = { ref: XLSX.utils.encode_range({ s: { r: headerRow, c: range.s.c }, e: range.e }) };
+    // xlsx-js-style supports sheet views with frozen header rows in current builds.
+    ws["!views"] = [{ state: "frozen", ySplit: headerRow + 1, topLeftCell: `A${headerRow + 2}`, activePane: "bottomLeft" }];
+}
+
+async function exportCombinedInvoices() {
+    if (typeof XLSX === "undefined") {
+        showToast("Excel library unavailable", "Refresh the page and try again.", true);
+        return;
+    }
+    // Export the filters currently visible in the search controls, even if Search wasn't clicked again.
+    const searchInput = document.getElementById("invoiceSearch");
+    const statusInput = document.getElementById("invoiceStatus");
+    if (searchInput) state.search = searchInput.value.trim();
+    if (statusInput) state.status = statusInput.value;
+    showToast("Preparing formatted workbook", "Collecting every matching invoice and its line items.");
+    const all = [];
+    const seen = new Set();
+    try {
+        for (let page = 1; page <= 1000; page++) {
+            const params = new URLSearchParams();
+            if (state.search) params.set("q", state.search);
+            if (state.status) params.set("status", state.status);
+            params.set("page", String(page));
+            params.set("page_size", "100");
+            const response = await apiRequest(`/search?${params.toString()}`);
+            const batch = extractInvoiceArray(response);
+            for (const invoice of batch) {
+                const key = invoice.id ?? `${invoice.invoice_number || ""}-${invoice.file_name || ""}`;
+                if (!seen.has(key)) { seen.add(key); all.push(invoice); }
+            }
+            const total = response && response.total != null ? Number(response.total) : null;
+            if (batch.length < 100 || (Number.isFinite(total) && all.length >= total)) break;
+        }
+        if (!all.length) {
+            showToast("No invoices to export", "No records match the current search and status filters.", true);
+            return;
+        }
+        const detailed = [];
+        for (let i = 0; i < all.length; i += 5) {
+            const chunk = all.slice(i, i + 5);
+            const result = await Promise.all(chunk.map(async invoice => {
+                if (invoice.id == null) return invoice;
+                try { return await apiRequest(`/invoices/${encodeURIComponent(invoice.id)}`); }
+                catch (error) { return invoice; }
+            }));
+            detailed.push(...result);
+        }
+        const invoiceRows = detailed.map(inv => ({
+            ID: inv.id,
+            FileName: inv.file_name,
+            InvoiceNumber: inv.invoice_number,
+            InvoiceDate: inv.invoice_date,
+            PortalInvoiceNumber: inv.portal_invoice_number,
+            PortalInvoiceDate: inv.portal_invoice_date,
+            Currency: inv.currency,
+            SellerName: inv.seller_name || inv.vendor || inv.supplier_name,
+            SellerAddress: inv.seller_address,
+            SellerGSTIN: inv.seller_gstin,
+            BuyerName: inv.buyer_name,
+            BuyerAddress: inv.buyer_address,
+            BuyerGSTIN: inv.buyer_gstin,
+            Subtotal: inv.subtotal,
+            TaxableAmount: inv.taxable_amount,
+            TaxRate: inv.tax_rate,
+            TaxAmount: inv.tax_amount,
+            CGST: inv.cgst,
+            SGST: inv.sgst,
+            IGST: inv.igst,
+            TotalAmount: inv.total_amount,
+            Status: inv.status,
+            Confidence: inv.confidence,
+            Completeness: inv.completeness,
+            ReviewRequired: Boolean(inv.review_required),
+            Errors: typeof inv.errors === "string" ? inv.errors : JSON.stringify(inv.errors || ""),
+            Warnings: typeof inv.warnings === "string" ? inv.warnings : JSON.stringify(inv.warnings || ""),
+            CreatedAt: inv.created_at
+        }));
+        const lineRows = detailed.flatMap(inv => (Array.isArray(inv.line_items) ? inv.line_items : []).map(item => ({
+            InvoiceID: inv.id,
+            InvoiceNumber: inv.invoice_number,
+            InvoiceDate: inv.invoice_date,
+            SellerName: inv.seller_name || inv.vendor || inv.supplier_name,
+            SellerGSTIN: inv.seller_gstin,
+            BuyerGSTIN: inv.buyer_gstin,
+            ProductName: item.product_name || item.description || item.item_name,
+            Description: item.description,
+            Model: item.model,
+            SKU: item.sku,
+            HSN_SAC: item.hsn_sac || item.hsn,
+            Quantity: item.quantity,
+            FreeQuantity: item.free_quantity,
+            Unit: item.uom || item.unit,
+            UnitPrice: item.unit_price,
+            GrossAmount: item.gross_amount || item.amount,
+            Discount: item.discount,
+            DiscountPercent: item.discount_percent,
+            TaxableAmount: item.taxable_amount,
+            GSTRate: item.gst_rate,
+            CGST: item.cgst,
+            SGST: item.sgst,
+            IGST: item.item_igst || item.igst,
+            Cess: item.cess,
+            LineAmount: item.amount
+        })));
+        const wb = XLSX.utils.book_new();
+        const summarySheet = XLSX.utils.json_to_sheet(invoiceRows);
+        const lineSheet = XLSX.utils.json_to_sheet(lineRows.length ? lineRows : [{ Note: "No line-item detail was returned for these invoices" }]);
+        styleReportWorksheet(summarySheet);
+        styleReportWorksheet(lineSheet);
+        XLSX.utils.book_append_sheet(wb, summarySheet, "Invoice Summary");
+        XLSX.utils.book_append_sheet(wb, lineSheet, "Line Items");
+        // A compact report cover makes the exported file easier to understand and present.
+        const coverRows = [
+            { "INVOICE ENGINE — PURCHASE REPORT": " " },
+            { "Report generated": new Date().toLocaleString("en-IN") },
+            { "Search filter": state.search || "All invoices" },
+            { "Status filter": state.status || "All statuses" },
+            { "Invoices included": detailed.length },
+            { "Line items included": lineRows.length },
+            { "Total invoice value": detailed.reduce((sum, inv) => sum + (Number(inv.total_amount) || 0), 0) },
+            { "Review required": detailed.filter(inv => Boolean(inv.review_required)).length }
+        ];
+        const coverSheet = XLSX.utils.json_to_sheet(coverRows, { skipHeader: true });
+        coverSheet["!cols"] = [{ wch: 28 }, { wch: 42 }];
+        coverSheet["!rows"] = [{ hpt: 32 }];
+        for (let row = 0; row < coverRows.length; row++) {
+            for (let col = 0; col < 2; col++) {
+                const cell = coverSheet[XLSX.utils.encode_cell({ r: row, c: col })];
+                if (!cell) continue;
+                cell.s = {
+                    font: { name: "Aptos", sz: row === 0 ? 16 : 11, bold: row === 0 || col === 0, color: { rgb: row === 0 ? "FFFFFF" : "243247" } },
+                    fill: { patternType: "solid", fgColor: { rgb: row === 0 ? "17365D" : (row % 2 ? "F4F7FB" : "FFFFFF") } },
+                    alignment: { vertical: "center", wrapText: true },
+                    border: { bottom: { style: "thin", color: { rgb: "D9E2F3" } } }
+                };
+            }
+        }
+        if (coverSheet.B7) coverSheet.B7.z = '₹#,##0.00';
+        XLSX.utils.book_append_sheet(wb, coverSheet, "Report Overview");
+        // Report Overview first, followed by the invoice-level and line-level detail.
+        wb.SheetNames = ["Report Overview", "Invoice Summary", "Line Items"];
+        XLSX.writeFile(wb, `invoice-engine-purchases-${new Date().toISOString().slice(0, 10)}.xlsx`);
+        showToast("Combined Excel ready", `${detailed.length} invoices and ${lineRows.length} line items exported in a formatted workbook.`);
+    } catch (error) {
+        showToast("Combined export failed", readableError(error), true);
+    }
+}
+
+/* ============================================================
+   START
+   ============================================================ */
+
+initialize();
 
 </script>
 
