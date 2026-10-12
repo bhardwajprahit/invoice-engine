@@ -136,17 +136,23 @@ def process_job(job):
             )
         )
 
-        # Keep duplicate detection tenant-specific even though older databases
-        # have a global UNIQUE constraint on file_hash.
+        # Keep new duplicate detection tenant-specific even though older
+        # databases have a global UNIQUE constraint on file_hash.
         file_hash = (
             hashlib.sha256(f"{owner_id}:{source_hash}".encode("utf-8")).hexdigest()
             if owner_id else source_hash
         )
 
-        if invoice_exists(
-            file_hash,
-            owner_id=owner_id,
-        ):
+        already_exists = invoice_exists(file_hash, owner_id=owner_id)
+        if owner_id and not already_exists:
+            # A migrated legacy invoice retains its original content hash.
+            # Reuse it for this same tenant rather than hitting the old global
+            # UNIQUE constraint when the document is uploaded again.
+            already_exists = invoice_exists(source_hash, owner_id=owner_id)
+            if already_exists:
+                file_hash = source_hash
+
+        if already_exists:
 
             print(
                 "Invoice already exists "

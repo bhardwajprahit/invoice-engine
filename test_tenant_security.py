@@ -49,6 +49,11 @@ class TenantSecurityTests(unittest.TestCase):
         self.assertEqual(database.get_database_stats(owner_id="user-a")["total_invoices"], 1)
         self.assertEqual(database.get_database_stats(owner_id="user-a")["total_line_items"], 1)
 
+    def test_legacy_hash_stays_deduplicated_only_for_its_owner(self):
+        database.save_invoice(self.invoice("legacy.pdf"), "legacy-content-hash", "user-a")
+        self.assertTrue(database.invoice_exists("legacy-content-hash", owner_id="user-a"))
+        self.assertFalse(database.invoice_exists("legacy-content-hash", owner_id="user-b"))
+
     def test_jobs_are_scoped_to_owner(self):
         job_id = job_queue.add_job("a.pdf", "file-hash", owner_id="user-a")
         self.assertIsNotNone(job_queue.get_job(job_id, owner_id="user-a"))
