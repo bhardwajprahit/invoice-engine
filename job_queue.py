@@ -1,12 +1,11 @@
 import sqlite3
 import uuid
+import os
 
 from pathlib import Path
 
 
-DATABASE_FILE = Path(
-    "invoice_engine.db"
-)
+DATABASE_FILE = Path(os.environ.get("DATABASE_PATH", "invoice_engine.db"))
 
 
 MAX_ATTEMPTS = 3
@@ -41,6 +40,7 @@ def initialize_jobs_table():
             file_name TEXT NOT NULL,
 
             file_hash TEXT,
+            owner_id TEXT,
 
             status TEXT NOT NULL
                 DEFAULT 'pending',
@@ -60,15 +60,23 @@ def initialize_jobs_table():
         """
     )
 
+    columns = {row["name"] for row in cursor.execute("PRAGMA table_info(jobs)")}
+    if "owner_id" not in columns:
+        cursor.execute("ALTER TABLE jobs ADD COLUMN owner_id TEXT")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_jobs_owner_id ON jobs(owner_id)")
+    legacy_owner_id = os.environ.get("LEGACY_DATA_OWNER_ID", "").strip()
+    if legacy_owner_id:
+        cursor.execute(
+            "UPDATE jobs SET owner_id = ? WHERE owner_id IS NULL",
+            (legacy_owner_id,),
+        )
+
     connection.commit()
 
     connection.close()
 
 
-def add_job(
-    file_name,
-    file_hash=None
-):
+def add_job(file_name, file_hash=None, owner_id=None):
 
     connection = get_connection()
 
@@ -84,17 +92,14 @@ def add_job(
             id,
             file_name,
             file_hash,
+            owner_id,
             status
         )
         VALUES (
-            ?, ?, ?, 'pending'
+            ?, ?, ?, ?, 'pending'
         )
         """,
-        (
-            job_id,
-            file_name,
-            file_hash
-        )
+        (job_id, file_name, file_hash, owner_id)
     )
 
     connection.commit()
@@ -282,24 +287,16 @@ def retry_job(
     connection.close()
 
 
-def get_job(
-    job_id
-):
+def get_job(job_id, owner_id=None):
 
     connection = get_connection()
 
     cursor = connection.cursor()
 
-    cursor.execute(
-        """
-        SELECT *
-        FROM jobs
-        WHERE id = ?
-        """,
-        (
-            job_id,
-        )
-    )
+    if owner_id is None:
+        cursor.execute("SELECT * FROM jobs WHERE id = ?", (job_id,))
+    else:
+        cursor.execute("SELECT * FROM jobs WHERE id = ? AND owner_id = ?", (job_id, owner_id))
 
     job = cursor.fetchone()
 

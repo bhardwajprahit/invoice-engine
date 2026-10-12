@@ -1,4 +1,5 @@
 import time
+import hashlib
 from pathlib import Path
 
 from job_queue import (
@@ -88,6 +89,7 @@ def process_job(job):
 
     job_id = job["id"]
     file_name = job["file_name"]
+    owner_id = job["owner_id"] if "owner_id" in job.keys() else None
 
     print()
     print("=" * 50)
@@ -128,14 +130,22 @@ def process_job(job):
                 f"{file_path}"
             )
 
-        file_hash = (
+        source_hash = (
             calculate_file_hash(
                 file_path
             )
         )
 
+        # Keep duplicate detection tenant-specific even though older databases
+        # have a global UNIQUE constraint on file_hash.
+        file_hash = (
+            hashlib.sha256(f"{owner_id}:{source_hash}".encode("utf-8")).hexdigest()
+            if owner_id else source_hash
+        )
+
         if invoice_exists(
-            file_hash
+            file_hash,
+            owner_id=owner_id,
         ):
 
             print(
@@ -145,7 +155,8 @@ def process_job(job):
 
             invoice = (
                 get_invoice_by_hash(
-                    file_hash
+                    file_hash,
+                    owner_id=owner_id,
                 )
             )
 
@@ -179,7 +190,8 @@ def process_job(job):
 
             save_invoice(
                 invoice,
-                file_hash
+                file_hash,
+                owner_id=owner_id,
             )
 
             print(

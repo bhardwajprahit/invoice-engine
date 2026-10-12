@@ -68,6 +68,7 @@ def initialize_database():
                 completeness REAL,
                 errors TEXT,
                 warnings TEXT,
+                owner_id TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
@@ -79,6 +80,7 @@ def initialize_database():
             "buyer_address": "TEXT",
             "cgst": "REAL",
             "sgst": "REAL",
+            "owner_id": "TEXT",
         })
 
         cursor.execute("""
@@ -137,6 +139,7 @@ def initialize_database():
             "CREATE INDEX IF NOT EXISTS idx_invoices_buyer_name ON invoices(buyer_name)",
             "CREATE INDEX IF NOT EXISTS idx_invoices_total_amount ON invoices(total_amount)",
             "CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status)",
+            "CREATE INDEX IF NOT EXISTS idx_invoices_owner_id ON invoices(owner_id)",
             "CREATE INDEX IF NOT EXISTS idx_line_items_invoice_id ON line_items(invoice_id)",
             "CREATE INDEX IF NOT EXISTS idx_line_items_description ON line_items(description)",
             "CREATE INDEX IF NOT EXISTS idx_line_items_product_name ON line_items(product_name)",
@@ -148,6 +151,15 @@ def initialize_database():
         for statement in indexes:
             cursor.execute(statement)
 
+        # Legacy records have no tenant owner. Only migrate them when an
+        # operator explicitly identifies the existing Supabase account.
+        legacy_owner_id = os.environ.get("LEGACY_DATA_OWNER_ID", "").strip()
+        if legacy_owner_id:
+            cursor.execute(
+                "UPDATE invoices SET owner_id = ? WHERE owner_id IS NULL",
+                (legacy_owner_id,),
+            )
+
         connection.commit()
 
     except Exception:
@@ -158,14 +170,17 @@ def initialize_database():
         connection.close()
 
 
-def invoice_exists(file_hash):
+def invoice_exists(file_hash, owner_id=None):
     connection = get_connection()
 
     try:
-        return connection.execute(
-            "SELECT 1 FROM invoices WHERE file_hash = ? LIMIT 1",
-            (file_hash,)
-        ).fetchone() is not None
+        if owner_id is None:
+            query = "SELECT 1 FROM invoices WHERE file_hash = ? LIMIT 1"
+            parameters = (file_hash,)
+        else:
+            query = "SELECT 1 FROM invoices WHERE file_hash = ? AND owner_id = ? LIMIT 1"
+            parameters = (file_hash, owner_id)
+        return connection.execute(query, parameters).fetchone() is not None
 
     finally:
         connection.close()
@@ -201,14 +216,17 @@ def _invoice_with_items(
     return invoice
 
 
-def get_invoice_by_hash(file_hash):
+def get_invoice_by_hash(file_hash, owner_id=None):
     connection = get_connection()
 
     try:
-        row = connection.execute(
-            "SELECT * FROM invoices WHERE file_hash = ?",
-            (file_hash,)
-        ).fetchone()
+        if owner_id is None:
+            query = "SELECT * FROM invoices WHERE file_hash = ?"
+            parameters = (file_hash,)
+        else:
+            query = "SELECT * FROM invoices WHERE file_hash = ? AND owner_id = ?"
+            parameters = (file_hash, owner_id)
+        row = connection.execute(query, parameters).fetchone()
 
         return _invoice_with_items(
             connection,
@@ -220,14 +238,17 @@ def get_invoice_by_hash(file_hash):
         connection.close()
 
 
-def get_invoice_by_id(invoice_id):
+def get_invoice_by_id(invoice_id, owner_id=None):
     connection = get_connection()
 
     try:
-        row = connection.execute(
-            "SELECT * FROM invoices WHERE id = ?",
-            (invoice_id,)
-        ).fetchone()
+        if owner_id is None:
+            query = "SELECT * FROM invoices WHERE id = ?"
+            parameters = (invoice_id,)
+        else:
+            query = "SELECT * FROM invoices WHERE id = ? AND owner_id = ?"
+            parameters = (invoice_id, owner_id)
+        row = connection.execute(query, parameters).fetchone()
 
         return _invoice_with_items(connection, row)
 
@@ -235,7 +256,7 @@ def get_invoice_by_id(invoice_id):
         connection.close()
 
 
-def save_invoice(invoice, file_hash):
+def save_invoice(invoice, file_hash, owner_id=None):
     """Save an invoice and its line items; return the database ID."""
     connection = get_connection()
 
@@ -270,11 +291,12 @@ def save_invoice(invoice, file_hash):
                 review_required,
                 completeness,
                 errors,
-                warnings
+                warnings,
+                owner_id
             )
             VALUES (
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )
         """, (
             invoice.get("file_name"),
@@ -304,6 +326,7 @@ def save_invoice(invoice, file_hash):
             invoice.get("completeness"),
             invoice.get("errors"),
             invoice.get("warnings"),
+            owner_id,
         ))
 
         invoice_id = cursor.lastrowid
@@ -396,6 +419,7 @@ def search_invoices(
     product_name=None,
     model=None,
     hsn_sac=None,
+    owner_id=None,
 ):
     """Search invoices and product fields with pagination."""
     connection = get_connection()
@@ -403,6 +427,10 @@ def search_invoices(
     try:
         conditions = []
         parameters = []
+
+        if owner_id is not None:
+            conditions.append("i.owner_id = ?")
+            parameters.append(owner_id)
 
         if search_text and search_text.strip():
             value = f"%{search_text.strip()}%"
@@ -616,10 +644,12 @@ def search_line_items(
         connection.close()
 
 
-def get_database_stats():
+def get_database_stats(owner_id=None):
     connection = get_connection()
 
     try:
+        owner_filter = " WHERE owner_id = ?" if owner_id is not None else ""
+        owner_parameters = (owner_id,) if owner_id is not None else ()
         invoice_stats = dict(connection.execute("""
             SELECT
                 COUNT(*) AS total_invoices,
@@ -639,14 +669,15 @@ def get_database_stats():
                     CASE WHEN status = 'Invalid' THEN 1 ELSE 0 END
                 ) AS invalid
             FROM invoices
-        """).fetchone())
+        """ + owner_filter, owner_parameters).fetchone())
 
         item_stats = dict(connection.execute("""
             SELECT
                 COUNT(*) AS total_line_items,
                 COALESCE(SUM(quantity), 0) AS total_quantity
             FROM line_items
-        """).fetchone())
+            JOIN invoices ON invoices.id = line_items.invoice_id
+        """ + owner_filter.replace("owner_id", "invoices.owner_id"), owner_parameters).fetchone())
 
         vendor_stats = dict(connection.execute("""
             SELECT COUNT(DISTINCT CASE
@@ -658,7 +689,7 @@ def get_database_stats():
                     THEN LOWER(TRIM(seller_gstin))
             END) AS unique_vendors
             FROM invoices
-        """).fetchone())
+        """ + owner_filter, owner_parameters).fetchone())
 
         return {
             **invoice_stats,

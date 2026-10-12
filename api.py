@@ -8,11 +8,13 @@ from fastapi import (
     File,
     HTTPException,
     Query,
+    Depends,
 )
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from auth import get_current_user
 
 from database import (
     initialize_database,
@@ -171,7 +173,7 @@ def health():
 # ============================================================
 
 @app.get("/system")
-def system_info():
+def system_info(user: dict = Depends(get_current_user)):
 
     stats = get_database_stats()
 
@@ -198,6 +200,8 @@ async def upload_invoices(
     files: list[UploadFile] | None = File(
         default=None
     ),
+
+    user: dict = Depends(get_current_user),
 
 ):
 
@@ -340,6 +344,7 @@ async def upload_invoices(
             file_name=file_name,
 
             file_hash=file_hash,
+            owner_id=user["id"],
 
         )
 
@@ -443,6 +448,8 @@ def search(
         le=200,
     ),
 
+    user: dict = Depends(get_current_user),
+
 ):
 
     return search_invoices(
@@ -466,6 +473,7 @@ def search(
         page=page,
 
         page_size=page_size,
+        owner_id=user["id"],
 
     )
 
@@ -488,6 +496,8 @@ def invoices(
         le=200,
     ),
 
+    user: dict = Depends(get_current_user),
+
 ):
 
     return search_invoices(
@@ -495,6 +505,7 @@ def invoices(
         page=page,
 
         page_size=page_size,
+        owner_id=user["id"],
 
     )
 
@@ -506,10 +517,12 @@ def invoices(
 @app.get("/invoices/{invoice_id}")
 def invoice_details(
     invoice_id: int,
+    user: dict = Depends(get_current_user),
 ):
 
     invoice = get_invoice_by_id(
-        invoice_id
+        invoice_id,
+        owner_id=user["id"],
     )
 
     if invoice is None:
@@ -530,9 +543,9 @@ def invoice_details(
 # ============================================================
 
 @app.get("/stats")
-def statistics():
+def statistics(user: dict = Depends(get_current_user)):
 
-    return get_database_stats()
+    return get_database_stats(owner_id=user["id"])
 
 
 # ============================================================
@@ -542,10 +555,12 @@ def statistics():
 @app.get("/jobs/{job_id}")
 def get_job_status(
     job_id: str,
+    user: dict = Depends(get_current_user),
 ):
 
     job = get_job(
-        job_id
+        job_id,
+        owner_id=user["id"],
     )
 
     if job is None:
@@ -603,7 +618,12 @@ def get_job_status(
 @app.get("/download/{job_id}")
 def download_excel(
     job_id: str,
+    user: dict = Depends(get_current_user),
 ):
+
+    job = get_job(job_id, owner_id=user["id"])
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found.")
 
     output_file = (
         OUTPUT_FOLDER
