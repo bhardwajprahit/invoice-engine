@@ -2642,17 +2642,6 @@ async function apiRequest(
     options = {}
 ) {
 
-    const { data: sessionData, error: sessionError } =
-        await supabaseClient.auth.getSession();
-
-    if (sessionError) throw sessionError;
-
-    const accessToken = sessionData?.session?.access_token;
-    if (!accessToken) {
-        window.location.replace("/frontend/auth.html");
-        throw new Error("Your session has expired. Please sign in again.");
-    }
-
     const response =
         await fetch(
             `${API_BASE}${path}`,
@@ -2660,8 +2649,7 @@ async function apiRequest(
                 ...options,
 
                 headers: {
-                    ...(options.headers || {}),
-                    Authorization: `Bearer ${accessToken}`
+                    ...(options.headers || {})
                 }
             }
         );
@@ -2978,7 +2966,7 @@ function renderOverview() {
     return `
       <div class="page-header"><div><h2>Choose your workspace</h2><p>One platform. Three powerful ways to run your business.</p></div></div>
       <section class="suite-section">
-        <div class="suite-heading"><div><h3>Purchasing. Billing. Sales.</h3><p>Choose a module to see its features and open its workspace.</p></div></div>
+        <div class="suite-heading"><div><h3>Purchasing. Billing. Sales.</h3><p>Choose a module to see its features and open its workspace.</p><a class="ie-tools-link" href="/frontend/business-tools.html">GSTIN tools &amp; customizable bill designer →</a></div></div>
         <div class="suite-grid">
           <article class="card suite-card"><div class="suite-icon">▤</div><div class="suite-eyebrow">INVOICE AUTOMATION</div><h3>Purchasing — Invoice to Excel</h3><p>Turn supplier invoices into searchable, structured records and combined Excel reports.</p><ul><li>Bulk photo/PDF uploads</li><li>OCR + AI extraction and validation</li><li>Search by supplier, invoice, item and HSN</li><li>Invoice history, review tools and combined Excel exports</li></ul><button class="btn btn-primary" onclick="setModule('purchasing')">Open Purchasing</button></article>
           <article class="card suite-card"><div class="suite-icon">▣</div><div class="suite-eyebrow">RETAIL CHECKOUT</div><h3>Billing + Sales</h3><p>Create customer bills and print receipts with saved product details automatically filled in.</p><ul><li>Product catalogue with prices, tax and stock</li><li>Current bill with fast product lookup</li><li>Discounts, GST and payment methods</li><li>Customer records, sales history and reports</li></ul><button class="btn btn-primary" onclick="setModule('billing')">Open Billing</button></article>
@@ -4119,25 +4107,12 @@ async function startProcessing() {
 
     try {
 
-        const { data: sessionData, error: sessionError } =
-            await supabaseClient.auth.getSession();
-        if (sessionError) throw sessionError;
-        const accessToken = sessionData?.session?.access_token;
-        if (!accessToken) {
-            window.location.replace("/frontend/auth.html");
-            throw new Error("Your session has expired. Please sign in again.");
-        }
-
         const response =
             await fetch(
                 `${API_BASE}/upload`,
                 {
                     method:
                         "POST",
-
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`
-                    },
 
                     body:
                         formData
@@ -6633,9 +6608,9 @@ async function initialize() {
 
     }
 
-    state.initialized =
-        true;
-
+    // Load the user's tenant-scoped retail workspace before rendering Billing/Sales.
+    await syncRetailStateFromCloud();
+    state.initialized = true;
 
     applySignedInIdentity();
 
@@ -6720,9 +6695,117 @@ function loadRetailData() {
     }
 }
 
+let retailCloudSaveTimer = null;
+let retailCloudSyncBusy = false;
+let retailCloudSyncEnabled = false;
+
+function setCloudSyncStatus(message, mode = "neutral") {
+    const el = document.getElementById("ieCloudSyncStatus");
+    if (!el) return;
+    el.textContent = message;
+    el.dataset.mode = mode;
+    el.title = message;
+}
+
+function normalizeRetailState(value) {
+    const parsed = value && typeof value === "object" ? value : {};
+    return {
+        products: Array.isArray(parsed.products) ? parsed.products : [],
+        sales: Array.isArray(parsed.sales) ? parsed.sales : [],
+        purchases: Array.isArray(parsed.purchases) ? parsed.purchases : [],
+        customers: Array.isArray(parsed.customers) ? parsed.customers : []
+    };
+}
+
+async function syncRetailStateFromCloud() {
+    if (typeof supabaseClient === "undefined" || !supabaseClient?.auth) {
+        setCloudSyncStatus("Cloud sync not configured", "error");
+        return;
+    }
+    const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+    if (sessionError || !sessionData?.session?.user?.id) {
+        setCloudSyncStatus("Sign in required for cloud sync", "error");
+        return;
+    }
+    const userId = sessionData.session.user.id;
+    setCloudSyncStatus("Connecting to cloud…", "busy");
+    const { data, error } = await supabaseClient.from("user_workspaces")
+        .select("owner_id, retail_state").eq("owner_id", userId).maybeSingle();
+    if (error) {
+        setCloudSyncStatus("Cloud sync needs setup — see setup guide", "error");
+        console.warn("Invoice Engine workspace sync is not ready:", error.message);
+        return;
+    }
+    if (data?.retail_state && typeof data.retail_state === "object") {
+        const cloudState = normalizeRetailState(data.retail_state);
+        const localState = normalizeRetailState(state.retail);
+        const hasCloudData = Object.values(cloudState).some(list => list.length > 0);
+        const hasLocalData = Object.values(localState).some(list => list.length > 0);
+        // If a row was created by saving business settings first, don't replace
+        // existing browser records with the schema's empty default state.
+        if (!hasCloudData && hasLocalData) {
+            state.retail = localState;
+            const { error: seedError } = await supabaseClient.from("user_workspaces")
+                .update({ retail_state: localState, updated_at: new Date().toISOString() })
+                .eq("owner_id", userId);
+            if (seedError) throw seedError;
+            try { localStorage.setItem(RETAIL_STORAGE_KEY, JSON.stringify(state.retail)); } catch (_) {}
+            retailCloudSyncEnabled = true;
+            setCloudSyncStatus("Local records backed up to cloud", "success");
+            return;
+        }
+        state.retail = hasCloudData ? cloudState : localState;
+        try { localStorage.setItem(RETAIL_STORAGE_KEY, JSON.stringify(state.retail)); } catch (_) {}
+        retailCloudSyncEnabled = true;
+        setCloudSyncStatus(hasCloudData ? "Synced from cloud" : "Cloud workspace ready", "success");
+        return;
+    }
+    // First sync: preserve local records by uploading them only when no cloud row exists.
+    const localState = normalizeRetailState(state.retail);
+    const { error: insertError } = await supabaseClient.from("user_workspaces").insert({
+        owner_id: userId,
+        retail_state: localState,
+        business_settings: {},
+        updated_at: new Date().toISOString()
+    });
+    if (insertError) {
+        setCloudSyncStatus("Cloud sync needs setup — see setup guide", "error");
+        console.warn("Could not initialize workspace cloud row:", insertError.message);
+        return;
+    }
+    retailCloudSyncEnabled = true;
+    setCloudSyncStatus("Local records backed up to cloud", "success");
+}
+
+function scheduleRetailCloudSave() {
+    if (!retailCloudSyncEnabled || typeof supabaseClient === "undefined" || !supabaseClient?.auth) return;
+    clearTimeout(retailCloudSaveTimer);
+    retailCloudSaveTimer = setTimeout(async () => {
+        if (retailCloudSyncBusy) return;
+        retailCloudSyncBusy = true;
+        setCloudSyncStatus("Saving to cloud…", "busy");
+        try {
+            const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+            const userId = sessionData?.session?.user?.id;
+            if (sessionError || !userId) throw new Error("Your session expired. Sign in again to sync.");
+            const { error } = await supabaseClient.from("user_workspaces")
+                .update({ retail_state: normalizeRetailState(state.retail), updated_at: new Date().toISOString() })
+                .eq("owner_id", userId);
+            if (error) throw error;
+            setCloudSyncStatus("All changes synced", "success");
+        } catch (error) {
+            setCloudSyncStatus("Cloud save failed — local copy retained", "error");
+            console.warn("Invoice Engine cloud save failed:", error.message);
+        } finally {
+            retailCloudSyncBusy = false;
+        }
+    }, 650);
+}
+
 function saveRetailData() {
     try {
         localStorage.setItem(RETAIL_STORAGE_KEY, JSON.stringify(state.retail));
+        scheduleRetailCloudSave();
         return true;
     } catch (error) {
         showToast("Could not save retail data", "Browser storage may be full or unavailable. Export your data and retry.", true);
@@ -7156,7 +7239,17 @@ function printRetailSale(sale) {
         .ie-video-copy p { margin:0; color:var(--muted); font-size:11px; line-height:1.65; }
         @media(max-width:1100px) { .ie-video-grid { grid-template-columns:1fr; } .ie-video-card { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr); align-items:center; } .ie-video-frame { height:100%; min-height:160px; aspect-ratio:auto; } }
         @media(max-width:650px) { .ie-tutorials-heading { align-items:flex-start; flex-direction:column; } .ie-video-card { display:block; } .ie-video-frame { aspect-ratio:16/9; min-height:0; } .ie-sound-chip { white-space:normal; } }
-</style></head><body>${receipt('CUSTOMER COPY')}${receipt('SHOP COPY')}<script>window.onload=()=>{window.focus();window.print();};<\/script></body></html>`);
+</style></head><body>${receipt('CUSTOMER COPY')}${receipt('SHOP COPY')}<script>window.onload=()=>{window.focus();window.print();};<\/script>
+<style>
+#ieCloudSyncStatus{position:fixed;right:14px;bottom:14px;z-index:9999;padding:9px 12px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:#101827;color:#cbd5e1;font:600 11px Inter,Arial,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:80vw}
+#ieCloudSyncStatus[data-mode="success"]{color:#9bf3c1;border-color:rgba(57,217,138,.3)}
+#ieCloudSyncStatus[data-mode="error"]{color:#ffd0a0;border-color:rgba(245,196,81,.35)}
+#ieCloudSyncStatus[data-mode="busy"]{color:#c5d5ff;border-color:rgba(91,140,255,.4)}
+.ie-tools-link{display:inline-flex;align-items:center;gap:8px;margin:8px 0 0;padding:10px 13px;border:1px solid rgba(91,140,255,.35);border-radius:9px;background:rgba(91,140,255,.1);color:#dce6ff;font-weight:700;font-size:12px}
+</style>
+<div id="ieCloudSyncStatus" data-mode="neutral" role="status" aria-live="polite">Cloud sync setup required</div>
+
+</body></html>`);
     printWindow.document.close();
 }
 
