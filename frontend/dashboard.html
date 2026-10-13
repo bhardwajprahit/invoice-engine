@@ -2966,7 +2966,7 @@ function renderOverview() {
     return `
       <div class="page-header"><div><h2>Choose your workspace</h2><p>One platform. Three powerful ways to run your business.</p></div></div>
       <section class="suite-section">
-        <div class="suite-heading"><div><h3>Purchasing. Billing. Sales.</h3><p>Choose a module to see its features and open its workspace.</p><a class="ie-tools-link" href="/frontend/business-tools.html">GSTIN tools &amp; customizable bill designer →</a></div></div>
+        <div class="suite-heading"><div><h3>Purchasing. Billing. Sales.</h3><p>Choose a module to see its features and open its workspace.</p></div></div>
         <div class="suite-grid">
           <article class="card suite-card"><div class="suite-icon">▤</div><div class="suite-eyebrow">INVOICE AUTOMATION</div><h3>Purchasing — Invoice to Excel</h3><p>Turn supplier invoices into searchable, structured records and combined Excel reports.</p><ul><li>Bulk photo/PDF uploads</li><li>OCR + AI extraction and validation</li><li>Search by supplier, invoice, item and HSN</li><li>Invoice history, review tools and combined Excel exports</li></ul><button class="btn btn-primary" onclick="setModule('purchasing')">Open Purchasing</button></article>
           <article class="card suite-card"><div class="suite-icon">▣</div><div class="suite-eyebrow">RETAIL CHECKOUT</div><h3>Billing + Sales</h3><p>Create customer bills and print receipts with saved product details automatically filled in.</p><ul><li>Product catalogue with prices, tax and stock</li><li>Current bill with fast product lookup</li><li>Discounts, GST and payment methods</li><li>Customer records, sales history and reports</li></ul><button class="btn btn-primary" onclick="setModule('billing')">Open Billing</button></article>
@@ -3179,12 +3179,10 @@ function renderInvoices() {
 
             </div>
 
-            <button
-                class="btn btn-primary"
-                onclick="openUploadModal()"
-            >
-                + Process invoices
-            </button>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <a class="btn" href="/frontend/business-tools.html?tool=gstin" style="text-decoration:none">GSTIN tools</a>
+                <button class="btn btn-primary" onclick="openUploadModal()">+ Process invoices</button>
+            </div>
 
         </div>
 
@@ -6855,7 +6853,7 @@ function skipPlanForNow() {
 }
 
 function setRetailView(view) {
-    const allowed = ["current-bill", "catalogue", "purchases"];
+    const allowed = ["current-bill", "catalogue", "purchases", "bill-designer"];
     if (!allowed.includes(view)) return;
     state.retailView = view;
     renderPage();
@@ -6866,7 +6864,7 @@ function renderRetailModule() {
     if (!content) return;
     if (state.module === "billing") {
         document.getElementById("pageTitle").textContent = "Billing";
-        const labels = {"current-bill":"Current bill", catalogue:"Product catalogue", purchases:"Purchases / stock"};
+        const labels = {"current-bill":"Current bill", catalogue:"Product catalogue", purchases:"Purchases / stock", "bill-designer":"Customize bills"};
         document.getElementById("pageSubtitle").textContent = labels[state.retailView] || "Current bill";
         content.innerHTML = renderBillingModule();
         const layout = content.querySelector(".retail-layout");
@@ -6875,6 +6873,10 @@ function renderRetailModule() {
         const catalogue = document.getElementById("productCatalogueSection");
         const products = document.getElementById("productsAvailableSection");
         const purchases = document.getElementById("stockReceiptSection");
+        const billDesigner = document.getElementById("billDesignerSection");
+        const retailStack = content.querySelector(".retail-stack");
+        if (billDesigner) billDesigner.hidden = state.retailView !== "bill-designer";
+        if (retailStack) retailStack.hidden = state.retailView === "bill-designer";
         if (currentBill) currentBill.hidden = state.retailView !== "current-bill";
         if (catalogue) catalogue.hidden = state.retailView !== "catalogue";
         if (products) products.hidden = state.retailView !== "catalogue";
@@ -6898,9 +6900,10 @@ function renderBillingModule() {
             <div><h2>Retail billing desk</h2><p>Create a bill, print customer and shop copies, and record the sale once.</p></div>
             <span class="retail-pill">BILLING + SALES</span>
         </div>
-        <nav class="retail-toolbar retail-workspace-nav" aria-label="Billing options"><button class="btn" data-retail-view="current-bill" onclick="setRetailView('current-bill')">Current bill</button><button class="btn" data-retail-view="catalogue" onclick="setRetailView('catalogue')">Product catalogue</button><button class="btn" data-retail-view="purchases" onclick="setRetailView('purchases')">Purchases / stock</button><button class="btn" onclick="setModule('sales')">Sales history & reports</button></nav>
+        <nav class="retail-toolbar retail-workspace-nav" aria-label="Billing options"><button class="btn" data-retail-view="current-bill" onclick="setRetailView('current-bill')">Current bill</button><button class="btn" data-retail-view="catalogue" onclick="setRetailView('catalogue')">Product catalogue</button><button class="btn" data-retail-view="bill-designer" onclick="setRetailView('bill-designer')">Customize bills</button><button class="btn" data-retail-view="purchases" onclick="setRetailView('purchases')">Purchases / stock</button><button class="btn" onclick="setModule('sales')">Sales history & reports</button></nav>
         <div class="retail-warning"><strong>Prototype storage notice:</strong> these new retail products, sales and stock records are saved in this browser only. They are not yet connected to secure shared cloud storage or to OCR purchase records. Do not use this browser-only version as the shop's sole production ledger.</div>
         <div class="retail-layout">
+            <section id="billDesignerSection" class="card retail-card" hidden style="width:100%"><div class="retail-section-title"><h3>Customizable bill designer</h3><span class="retail-pill">BILLING</span></div><iframe title="Customizable bill designer" src="/frontend/business-tools.html?tool=bill" style="display:block;width:100%;height:1450px;border:0;border-radius:12px;background:#080c14" loading="lazy"></iframe></section>
             <div class="retail-stack">
                 <section id="productCatalogueSection" class="card retail-card" hidden>
                     <div class="retail-section-title"><h3>Product catalogue</h3><span class="retail-pill" id="retailProductCount">0 products</span></div>
@@ -7254,7 +7257,7 @@ function printRetailSale(sale) {
 }
 
 function renderSalesModule() {
-    return `<div class="page-header"><div><h2>Sales & business reports</h2><p>Every bill completed in Billing appears here automatically, with customer and product-level details.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" onclick="exportRetailWorkbook()">↓ Export retail Excel</button><button class="btn btn-primary" onclick="setModule('billing')">＋ Create bill</button></div></div><div class="retail-warning"><strong>Data scope:</strong> these sales reports reflect browser-stored prototype records only. Secure multi-user cloud reporting and integration with supplier-invoice OCR require backend work.</div><div id="retailSalesStats" class="retail-stat-grid"></div><section class="card retail-card" style="margin-bottom:16px"><div class="retail-section-title"><h3>Customer records</h3><span class="retail-pill" id="retailCustomerCount">0 customers</span></div><div id="retailCustomersTable" class="retail-table-wrap"></div></section><section class="card retail-card"><div class="retail-section-title"><h3>Sales history</h3><button class="btn btn-small" onclick="exportRetailWorkbook()">Export all retail data</button></div><div class="retail-toolbar"><input id="retailSalesSearch" class="retail-input" placeholder="Search bill number, customer, phone or item..." oninput="renderSalesHistory()"><select id="retailSalesPeriod" class="retail-input" style="max-width:190px" onchange="renderSalesData()"><option value="all">All time</option><option value="today">Today</option><option value="month" selected>This month</option></select></div><div id="retailSalesTable" class="retail-table-wrap"></div></section><section class="card retail-card" style="margin-top:16px"><div class="retail-section-title"><h3>Recent purchase / stock receipts</h3><span class="retail-pill">${state.retail.purchases.length} records</span></div><div id="retailPurchasesTable" class="retail-table-wrap"></div></section>`;
+    return `<div class="page-header"><div><h2>Sales & business reports</h2><p>Every bill completed in Billing appears here automatically, with customer and product-level details.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="/frontend/business-tools.html?tool=gstin" style="text-decoration:none">GSTIN tools</a><button class="btn" onclick="exportRetailWorkbook()">↓ Export retail Excel</button><button class="btn btn-primary" onclick="setModule('billing')">＋ Create bill</button></div></div><div class="retail-warning"><strong>Data scope:</strong> these sales reports reflect browser-stored prototype records only. Secure multi-user cloud reporting and integration with supplier-invoice OCR require backend work.</div><div id="retailSalesStats" class="retail-stat-grid"></div><section class="card retail-card" style="margin-bottom:16px"><div class="retail-section-title"><h3>Customer records</h3><span class="retail-pill" id="retailCustomerCount">0 customers</span></div><div id="retailCustomersTable" class="retail-table-wrap"></div></section><section class="card retail-card"><div class="retail-section-title"><h3>Sales history</h3><button class="btn btn-small" onclick="exportRetailWorkbook()">Export all retail data</button></div><div class="retail-toolbar"><input id="retailSalesSearch" class="retail-input" placeholder="Search bill number, customer, phone or item..." oninput="renderSalesHistory()"><select id="retailSalesPeriod" class="retail-input" style="max-width:190px" onchange="renderSalesData()"><option value="all">All time</option><option value="today">Today</option><option value="month" selected>This month</option></select><button class="btn btn-primary" type="button" onclick="exportFilteredSalesWorkbook()">↓ Export searched results</button></div><p class="retail-muted">Export all retail data for the full workbook, or search/filter above and export only the matching bills and relevant purchased items.</p><div id="retailSalesTable" class="retail-table-wrap"></div></section><section class="card retail-card" style="margin-top:16px"><div class="retail-section-title"><h3>Recent purchase / stock receipts</h3><span class="retail-pill">${state.retail.purchases.length} records</span></div><div id="retailPurchasesTable" class="retail-table-wrap"></div></section>`;
 }
 
 function filteredRetailSales() {
@@ -7289,11 +7292,15 @@ function renderSalesData() {
     renderSalesHistory();
 }
 
+function getFilteredSalesSearchResults() {
+    const query = (document.getElementById('retailSalesSearch')?.value || '').trim().toLowerCase();
+    return filteredRetailSales().filter(s => !query || [s.billNumber,s.customerName,s.customerPhone,...(s.items || []).map(i=>i.productName),...(s.items || []).map(i=>i.sku),...(s.items || []).map(i=>i.hsn)].some(v=>String(v || '').toLowerCase().includes(query)));
+}
+
 function renderSalesHistory() {
     const target = document.getElementById('retailSalesTable');
     if (!target) return;
-    const query = (document.getElementById('retailSalesSearch')?.value || '').trim().toLowerCase();
-    const sales = filteredRetailSales().filter(s => !query || [s.billNumber,s.customerName,s.customerPhone,...s.items.map(i=>i.productName)].some(v=>String(v || '').toLowerCase().includes(query)));
+    const sales = getFilteredSalesSearchResults();
     target.innerHTML = sales.length ? `<table class="retail-table"><thead><tr><th>Bill</th><th>Date</th><th>Customer</th><th>Payment</th><th>Items</th><th>Discount</th><th>Tax</th><th>Total</th><th></th></tr></thead><tbody>${sales.map(s=>`<tr><td><strong>${escapeHtml(s.billNumber)}</strong><div class="retail-muted">${escapeHtml(s.status)}</div></td><td>${escapeHtml(new Date(s.date).toLocaleString('en-IN'))}</td><td>${escapeHtml(s.customerName)}<div class="retail-muted">${escapeHtml(s.customerPhone || '')}</div></td><td>${escapeHtml(s.paymentMethod)}</td><td>${formatNumber(s.items.reduce((n,i)=>n+Number(i.quantity),0))}</td><td>${formatAmount(s.discount,'₹')}</td><td>${formatAmount(s.tax,'₹')}</td><td><strong>${formatAmount(s.total,'₹')}</strong></td><td><button class="btn btn-small" onclick="reprintRetailSale('${escapeHtml(s.id)}')">Print</button></td></tr>`).join('')}</tbody></table><p class="retail-muted" style="padding-top:12px">*Estimated gross profit uses the recorded purchase cost and excludes operating expenses. Verify costs and tax settings before using these figures for accounting or tax filing.</p>` : `<div class="retail-empty">No sales match this period/search. Create a bill in Billing to get started.</div>`;
 }
 
@@ -7310,14 +7317,18 @@ function exportRetailWorkbook() {
 
     const salesRows = state.retail.sales.map(s => ({
         Bill: s.billNumber, Date: s.date, Customer: s.customerName, Phone: s.customerPhone,
+        ItemsPurchased: (s.items || []).map(i => i.productName).join(', '),
+        ItemQuantities: (s.items || []).map(i => `${i.productName}: ${i.quantity} ${i.unit || ''}`.trim()).join('; '),
+        TotalItemQuantity: (s.items || []).reduce((sum, i) => sum + Number(i.quantity || 0), 0),
         Payment: s.paymentMethod, Subtotal: s.subtotal, Discount: s.discount, Taxable: s.taxable,
         GST: s.tax, Total: s.total, Status: s.status
     }));
-    const itemRows = state.retail.sales.flatMap(s => s.items.map(i => ({
-        Bill: s.billNumber, Date: s.date, Customer: s.customerName, Product: i.productName,
-        SKU: i.sku, HSN: i.hsn, Quantity: i.quantity, Unit: i.unit, UnitPrice: i.unitPrice,
-        CostPrice: i.costPrice, Discount: i.discount, Taxable: i.taxable, GSTRate: i.gstRate,
-        GST: i.gst, Total: i.total, EstimatedGrossProfit: i.estimatedGrossProfit
+    const itemRows = state.retail.sales.flatMap(s => (s.items || []).map(i => ({
+        Bill: s.billNumber, Date: s.date, Customer: s.customerName, Phone: s.customerPhone,
+        Product: i.productName, SKU: i.sku, HSN: i.hsn, QuantityPurchased: i.quantity,
+        Unit: i.unit, UnitPrice: i.unitPrice, CostPrice: i.costPrice, Discount: i.discount,
+        Taxable: i.taxable, GSTRate: i.gstRate, GST: i.gst, Total: i.total,
+        EstimatedGrossProfit: i.estimatedGrossProfit
     })));
     const productRows = state.retail.products.map(p => ({
         Product: p.name, SKU: p.sku, HSN: p.hsn, Unit: p.unit,
@@ -7342,6 +7353,49 @@ function exportRetailWorkbook() {
 
     XLSX.writeFile(wb, `invoice-engine-retail-${new Date().toISOString().slice(0,10)}.xlsx`);
     showToast('Retail workbook exported', 'Formatted workbook created with readable columns, filters and frozen headers.');
+}
+
+function exportFilteredSalesWorkbook() {
+    if (typeof XLSX === 'undefined') {
+        showToast('Excel library unavailable', 'Refresh the page and try again.', true);
+        return;
+    }
+    const matchingSales = getFilteredSalesSearchResults();
+    if (!matchingSales.length) {
+        showToast('No matching sales', 'Change the search or date filter before exporting.', true);
+        return;
+    }
+    const query = (document.getElementById('retailSalesSearch')?.value || '').trim().toLowerCase();
+    const hasItemMatch = sale => (sale.items || []).some(item =>
+        [item.productName, item.sku, item.hsn].some(value => String(value || '').toLowerCase().includes(query))
+    );
+    const filteredSalesRows = matchingSales.map(s => ({
+        Bill: s.billNumber, Date: s.date, Customer: s.customerName, Phone: s.customerPhone,
+        ItemsPurchased: (s.items || []).map(i => i.productName).join(', '),
+        ItemQuantities: (s.items || []).map(i => `${i.productName}: ${i.quantity} ${i.unit || ''}`.trim()).join('; '),
+        TotalItemQuantity: (s.items || []).reduce((sum, i) => sum + Number(i.quantity || 0), 0),
+        Payment: s.paymentMethod, Subtotal: s.subtotal, Discount: s.discount, Taxable: s.taxable,
+        GST: s.tax, Total: s.total, Status: s.status
+    }));
+    const filteredItemRows = matchingSales.flatMap(s => (s.items || [])
+        .filter(item => !query || !hasItemMatch(s) || [item.productName, item.sku, item.hsn].some(value => String(value || '').toLowerCase().includes(query)))
+        .map(i => ({
+            Bill: s.billNumber, Date: s.date, Customer: s.customerName, Phone: s.customerPhone,
+            Product: i.productName, SKU: i.sku, HSN: i.hsn, QuantityPurchased: i.quantity,
+            Unit: i.unit, UnitPrice: i.unitPrice, CostPrice: i.costPrice, Discount: i.discount,
+            Taxable: i.taxable, GSTRate: i.gstRate, GST: i.gst, Total: i.total,
+            EstimatedGrossProfit: i.estimatedGrossProfit
+        })));
+    const wb = XLSX.utils.book_new();
+    const salesSheet = XLSX.utils.json_to_sheet(filteredSalesRows);
+    const itemsSheet = XLSX.utils.json_to_sheet(filteredItemRows.length ? filteredItemRows : [{ Note: 'No matching line items' }]);
+    styleRetailWorksheet(salesSheet);
+    styleRetailWorksheet(itemsSheet);
+    XLSX.utils.book_append_sheet(wb, salesSheet, 'Filtered Sales');
+    XLSX.utils.book_append_sheet(wb, itemsSheet, 'Purchased Items');
+    const safeQuery = (query || 'current-filter').replace(/[^a-z0-9_-]+/gi, '-').slice(0, 40);
+    XLSX.writeFile(wb, `invoice-engine-sales-${safeQuery}-${new Date().toISOString().slice(0,10)}.xlsx`);
+    showToast('Filtered Excel ready', `${matchingSales.length} matching bills and ${filteredItemRows.length} item rows exported. The full-workbook export remains available separately.`);
 }
 
 function styleRetailWorksheet(ws) {
