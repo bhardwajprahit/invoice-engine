@@ -1,2011 +1,369 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
-
-
 <head>
-
-
-
-    <meta charset="UTF-8">
-
-
-
-    <meta
-
-        name="viewport"
-
-        content="width=device-width, initial-scale=1.0"
-
-    >
-
-
-
-    <title>Invoice Engine — Sign in</title>
-
-
-
-
-
-    <!-- =====================================================
-
-         SUPABASE
-
-         ===================================================== -->
-
-
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
-
-    <script src="/frontend/supabase-config.js"></script>
-
-
-
-    <style>
-
-
-
-        * {
-
-            box-sizing: border-box;
-
-            margin: 0;
-
-            padding: 0;
-
-        }
-
-
-
-
-
-        body {
-
-
-
-            min-height: 100vh;
-
-
-
-            display: flex;
-
-
-
-            align-items: center;
-
-
-
-            justify-content: center;
-
-
-
-            padding: 24px;
-
-
-
-            font-family:
-
-                Inter,
-
-                ui-sans-serif,
-
-                system-ui,
-
-                -apple-system,
-
-                BlinkMacSystemFont,
-
-                "Segoe UI",
-
-                sans-serif;
-
-
-
-            background:
-
-
-
-                radial-gradient(
-
-                    circle at 50% -10%,
-
-                    rgba(96,124,255,.16),
-
-                    transparent 45%
-
-                ),
-
-
-
-                #080b12;
-
-
-
-            color: #d8deea;
-
-
-
-        }
-
-
-
-
-
-        .auth-card {
-
-
-
-            width: 100%;
-
-
-
-            max-width: 430px;
-
-
-
-            padding: 38px;
-
-
-
-            border:
-
-                1px solid #1c2636;
-
-
-
-            border-radius: 18px;
-
-
-
-            background:
-
-                rgba(13,17,26,.92);
-
-
-
-            box-shadow:
-
-                0 25px 80px rgba(0,0,0,.35);
-
-
-
-        }
-
-
-
-
-
-        .brand {
-
-
-
-            display: flex;
-
-
-
-            align-items: center;
-
-
-
-            gap: 11px;
-
-
-
-            margin-bottom: 32px;
-
-
-
-            font-size: 18px;
-
-
-
-            font-weight: 700;
-
-
-
-        }
-
-
-
-
-
-        .brand-mark {
-
-
-
-            width: 36px;
-
-
-
-            height: 36px;
-
-
-
-            display: grid;
-
-
-
-            place-items: center;
-
-
-
-            border-radius: 10px;
-
-
-
-            background:
-
-                linear-gradient(
-
-                    135deg,
-
-                    rgba(96,124,255,.2),
-
-                    rgba(155,124,255,.15)
-
-                );
-
-
-
-            border:
-
-                1px solid rgba(96,124,255,.25);
-
-
-
-            color: #8297ff;
-
-
-
-        }
-
-
-
-
-
-        .brand-mark svg {
-
-
-
-            width: 19px;
-
-
-
-            height: 19px;
-
-
-
-            stroke: currentColor;
-
-
-
-        }
-
-
-
-
-
-        h1 {
-
-
-
-            font-size: 30px;
-
-
-
-            letter-spacing: -1px;
-
-
-
-        }
-
-
-
-
-
-        .subtitle {
-
-
-
-            margin-top: 9px;
-
-
-
-            color: #707b8e;
-
-
-
-            font-size: 14px;
-
-
-
-            line-height: 1.6;
-
-
-
-        }
-
-
-
-
-
-        .tabs {
-
-
-
-            display: grid;
-
-
-
-            grid-template-columns: 1fr 1fr;
-
-
-
-            margin-top: 28px;
-
-
-
-            padding: 4px;
-
-
-
-            border-radius: 9px;
-
-
-
-            background: #111722;
-
-
-
-            border: 1px solid #1c2636;
-
-
-
-        }
-
-
-
-
-
-        .tab {
-
-
-
-            padding: 10px;
-
-
-
-            border: 0;
-
-
-
-            border-radius: 7px;
-
-
-
-            background: transparent;
-
-
-
-            color: #707b8e;
-
-
-
-            cursor: pointer;
-
-
-
-            font-weight: 600;
-
-
-
-        }
-
-
-
-
-
-        .tab.active {
-
-
-
-            background: #1c2636;
-
-
-
-            color: #d8deea;
-
-
-
-        }
-
-
-
-
-
-        .form {
-
-
-
-            margin-top: 25px;
-
-
-
-        }
-
-
-
-
-
-        label {
-
-
-
-            display: block;
-
-
-
-            margin-bottom: 7px;
-
-
-
-            color: #a5afc0;
-
-
-
-            font-size: 13px;
-
-
-
-            font-weight: 600;
-
-
-
-        }
-
-
-
-
-
-        input {
-
-
-
-            width: 100%;
-
-
-
-            padding: 13px 14px;
-
-
-
-            border:
-
-                1px solid #1c2636;
-
-
-
-            border-radius: 9px;
-
-
-
-            outline: none;
-
-
-
-            background: #0b0f17;
-
-
-
-            color: #d8deea;
-
-
-
-            font-size: 14px;
-
-
-
-            margin-bottom: 17px;
-
-
-
-        }
-
-
-
-
-
-        input:focus {
-
-
-
-            border-color: #607cff;
-
-
-
-            box-shadow:
-
-                0 0 0 3px rgba(96,124,255,.10);
-
-
-
-        }
-
-
-
-
-
-        .submit {
-
-
-
-            width: 100%;
-
-
-
-            padding: 13px;
-
-
-
-            border: 0;
-
-
-
-            border-radius: 9px;
-
-
-
-            cursor: pointer;
-
-
-
-            color: white;
-
-
-
-            font-weight: 700;
-
-
-
-            background:
-
-                linear-gradient(
-
-                    135deg,
-
-                    #536fff,
-
-                    #7564df
-
-                );
-
-
-
-        }
-
-
-
-
-
-        .submit:disabled {
-
-
-
-            opacity: .6;
-
-
-
-            cursor: wait;
-
-
-
-        }
-
-
-
-
-
-        .message {
-
-
-
-            display: none;
-
-
-
-            margin-top: 16px;
-
-
-
-            padding: 12px;
-
-
-
-            border-radius: 8px;
-
-
-
-            font-size: 13px;
-
-
-
-            line-height: 1.5;
-
-
-
-        }
-
-
-
-
-
-        .message.error {
-
-
-
-            display: block;
-
-
-
-            color: #ff9b9b;
-
-
-
-            background:
-
-                rgba(255,80,80,.08);
-
-
-
-            border:
-
-                1px solid rgba(255,80,80,.18);
-
-
-
-        }
-
-
-
-
-
-        .message.success {
-
-
-
-            display: block;
-
-
-
-            color: #7ee6a7;
-
-
-
-            background:
-
-                rgba(85,217,138,.08);
-
-
-
-            border:
-
-                1px solid rgba(85,217,138,.18);
-
-
-
-        }
-
-
-
-
-
-        .back {
-
-
-
-            display: block;
-
-
-
-            margin-top: 22px;
-
-
-
-            text-align: center;
-
-
-
-            color: #707b8e;
-
-
-
-            font-size: 13px;
-
-
-
-            text-decoration: none;
-
-
-
-        }
-
-
-
-
-
-        .back:hover {
-
-
-
-            color: #d8deea;
-
-
-
-        }
-
-
-
-
-
-        @media(max-width: 500px) {
-
-
-
-            .auth-card {
-
-
-
-                padding: 28px 22px;
-
-
-
-            }
-
-
-
-        }
-
-
-
-    </style>
-
-
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b12">
+  <title>Invoice Engine — Account access</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/frontend/supabase-config.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      color-scheme: dark;
+      --bg:#080b12; --panel:rgba(13,17,26,.94); --line:#1c2636;
+      --muted:#8994a8; --text:#e8edf7; --blue:#607cff;
+      --purple:#7564df; --green:#7ee6a7; --red:#ff9b9b;
+    }
+    body {
+      min-height:100vh; margin:0; padding:24px; display:flex;
+      align-items:center; justify-content:center; color:var(--text);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+      background:radial-gradient(circle at 50% -10%,rgba(96,124,255,.18),transparent 45%),var(--bg);
+    }
+    .auth-card {
+      width:100%; max-width:460px; padding:38px;
+      border:1px solid var(--line); border-radius:20px;
+      background:var(--panel); box-shadow:0 25px 80px rgba(0,0,0,.38);
+    }
+    .brand { display:flex; align-items:center; gap:11px; margin-bottom:34px; font-size:18px; font-weight:750; }
+    .brand-mark {
+      width:38px;height:38px;display:grid;place-items:center;border-radius:11px;
+      background:linear-gradient(135deg,rgba(96,124,255,.22),rgba(155,124,255,.16));
+      border:1px solid rgba(96,124,255,.28);color:#91a3ff;
+    }
+    .brand-mark svg { width:20px;height:20px;stroke:currentColor; }
+    h1 { margin:0; font-size:31px; letter-spacing:-1.1px; }
+    .subtitle { margin:10px 0 0; color:var(--muted); font-size:14px; line-height:1.65; }
+    .mode-switch {
+      display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:27px;padding:4px;
+      border:1px solid var(--line);border-radius:11px;background:#101722;
+    }
+    .mode-button {
+      padding:11px 8px;border:0;border-radius:8px;background:transparent;
+      color:#8994a8;font:600 13px inherit;cursor:pointer;transition:.18s ease;
+    }
+    .mode-button.active { background:#202b3d;color:#f4f6fb;box-shadow:0 2px 8px rgba(0,0,0,.18); }
+    .oauth-button {
+      width:100%;display:flex;align-items:center;justify-content:center;gap:11px;
+      margin-top:20px;padding:13px 14px;border:1px solid #303b4e;border-radius:10px;
+      background:#f7f8fb;color:#151923;font-size:14px;font-weight:700;cursor:pointer;
+      transition:transform .15s ease,background .15s ease;
+    }
+    .oauth-button:hover { background:#fff;transform:translateY(-1px); }
+    .oauth-button:disabled,.submit:disabled { opacity:.62;cursor:wait;transform:none; }
+    .google-mark { width:18px;height:18px;flex:0 0 18px; }
+    .divider { display:flex;align-items:center;gap:13px;margin:20px 0;color:#667287;font-size:11px;font-weight:700;letter-spacing:1.2px; }
+    .divider::before,.divider::after { content:"";height:1px;flex:1;background:#222d3d; }
+    .form { margin-top:0; }
+    .field { margin-bottom:16px; }
+    label { display:block;margin-bottom:7px;color:#aab4c5;font-size:13px;font-weight:650; }
+    input {
+      width:100%;padding:13px 14px;border:1px solid #263246;border-radius:9px;
+      outline:none;background:#0b1019;color:#e8edf7;font-size:14px;
+    }
+    input:focus { border-color:var(--blue);box-shadow:0 0 0 3px rgba(96,124,255,.11); }
+    input::placeholder { color:#5f6b7e; }
+    .form-meta { display:flex;justify-content:flex-end;margin:-4px 0 16px; }
+    .text-button { border:0;background:none;padding:0;color:#91a3ff;font-size:12px;cursor:pointer; }
+    .text-button:hover { color:#c0caff;text-decoration:underline; }
+    .submit {
+      width:100%;padding:14px;border:0;border-radius:10px;color:white;font-size:14px;font-weight:750;
+      background:linear-gradient(135deg,#536fff,#7564df);cursor:pointer;transition:opacity .15s ease;
+    }
+    .message { display:none;margin-top:16px;padding:12px 13px;border-radius:9px;font-size:13px;line-height:1.55;overflow-wrap:anywhere; }
+    .message.error { display:block;color:var(--red);background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.2); }
+    .message.success { display:block;color:var(--green);background:rgba(85,217,138,.08);border:1px solid rgba(85,217,138,.2); }
+    .switch-prompt { margin:22px 0 0;text-align:center;color:#8792a5;font-size:13px; }
+    .switch-prompt button { border:0;background:none;color:#9aabff;font-weight:700;cursor:pointer; }
+    .switch-prompt button:hover { text-decoration:underline; }
+    .back { display:block;margin-top:22px;text-align:center;color:#707b8e;font-size:13px;text-decoration:none; }
+    .back:hover { color:#d8deea; }
+    .fine-print { margin:18px 0 0;color:#596579;text-align:center;font-size:11px;line-height:1.5; }
+    @media(max-width:520px) { body{padding:16px}.auth-card{padding:28px 22px}h1{font-size:28px} }
+  </style>
 </head>
-
-
-
-
-
 <body>
-
-
-
-
-
-<div class="auth-card">
-
-
-
-
-
-    <!-- =====================================================
-
-         BRAND
-
-         ===================================================== -->
-
-
-
+  <main class="auth-card">
     <div class="brand">
-
-
-
-        <div class="brand-mark">
-
-
-
-            <svg
-
-                viewBox="0 0 24 24"
-
-                fill="none"
-
-                stroke-width="1.8"
-
-            >
-
-
-
-                <path d="M7 3h7l4 4v14H7z"/>
-
-
-
-                <path d="M14 3v5h5"/>
-
-
-
-                <path d="M10 13h5"/>
-
-
-
-                <path d="M10 17h5"/>
-
-
-
-            </svg>
-
-
-
-        </div>
-
-
-
-
-
-        Invoice Engine
-
-
-
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h5"/><path d="M10 13h5"/><path d="M10 17h5"/>
+        </svg>
+      </div>
+      <span>Invoice Engine</span>
     </div>
 
-
-
-
-
-    <!-- =====================================================
-
-         TITLE
-
-         ===================================================== -->
-
-
-
-    <h1 id="title">
-
-        Welcome back
-
-    </h1>
-
-
-
-
-
-    <p
-
-        class="subtitle"
-
-        id="subtitle"
-
-    >
-
-
-
-        Sign in to access your invoice workspace.
-
-
-
-    </p>
-
-
-
-
-
-    <!-- =====================================================
-
-         TABS
-
-         ===================================================== -->
-
-
-
-    <div class="tabs">
-
-
-
-
-
-        <button
-
-            class="tab active"
-
-            id="loginTab"
-
-            type="button"
-
-            onclick="showLogin()"
-
-        >
-
-
-
-            Sign in
-
-
-
-        </button>
-
-
-
-
-
-        <button
-
-            class="tab"
-
-            id="signupTab"
-
-            type="button"
-
-            onclick="showSignup()"
-
-        >
-
-
-
-            Create account
-
-
-
-        </button>
-
-
-
-
-
+    <h1 id="title">Welcome back</h1>
+    <p class="subtitle" id="subtitle">Sign in to access your invoice workspace.</p>
+
+    <div class="mode-switch" role="tablist" aria-label="Account access">
+      <button class="mode-button active" id="loginTab" type="button" role="tab" aria-selected="true">Sign in</button>
+      <button class="mode-button" id="signupTab" type="button" role="tab" aria-selected="false">Create account</button>
     </div>
 
-
-
-
-
-    <!-- =====================================================
-
-         FORM
-
-         ===================================================== -->
-
-
-
-    <form
-
-        class="form"
-
-        id="authForm"
-
-    >
-
-
-
-
-
-        <label for="email">
-
-            Email
-
-        </label>
-
-
-
-
-
-        <input
-
-            id="email"
-
-            type="email"
-
-            placeholder="you@example.com"
-
-            autocomplete="email"
-
-            required
-
-        >
-
-
-
-
-
-        <label for="password">
-
-            Password
-
-        </label>
-
-
-
-
-
-        <input
-
-            id="password"
-
-            type="password"
-
-            placeholder="••••••••"
-
-            minlength="6"
-
-            autocomplete="current-password"
-
-            required
-
-        >
-
-
-
-
-
-        <button
-
-            class="submit"
-
-            id="submitButton"
-
-            type="submit"
-
-        >
-
-
-
-            Sign in
-
-
-
-        </button>
-
-
-
-
-
+    <button class="oauth-button" id="googleButton" type="button">
+      <svg class="google-mark" viewBox="0 0 48 48" aria-hidden="true">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" transform="translate(0 4)"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.9c-.58 2.96-2.26 5.48-4.76 7.18l7.73 6C44.38 38.02 46.98 31.93 46.98 24.55z"/>
+        <path fill="#FBBC05" d="M10.53 28.59a14.4 14.4 0 0 1 0-9.18l-7.98-6.19a23.9 23.9 0 0 0 0 21.56l7.98-6.19z" transform="translate(0 4)"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.9-5.8l-7.73-6c-2.14 1.44-4.89 2.3-8.17 2.3-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      <span id="googleButtonText">Continue with Google</span>
+    </button>
+
+    <div class="divider">OR USE EMAIL</div>
+
+    <form class="form" id="authForm" novalidate>
+      <div class="field">
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" placeholder="At least 6 characters" minlength="6" autocomplete="current-password" required>
+      </div>
+
+      <div class="field" id="confirmField" hidden>
+        <label for="confirmPassword">Confirm password</label>
+        <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Enter your password again" minlength="6" autocomplete="new-password">
+      </div>
+
+      <div class="form-meta" id="forgotRow">
+        <button class="text-button" id="forgotButton" type="button">Forgot password?</button>
+      </div>
+
+      <button class="submit" id="submitButton" type="submit">Sign in</button>
     </form>
 
-
-
-
-
-    <!-- =====================================================
-
-         MESSAGE
-
-         ===================================================== -->
-
-
-
-    <div
-
-        class="message"
-
-        id="message"
-
-    ></div>
-
-
-
-
-
-    <!-- =====================================================
-
-         BACK
-
-         ===================================================== -->
-
-
-
-    <a
-
-        class="back"
-
-        href="/frontend/index.html"
-
-    >
-
-
-
-        ← Back to Invoice Engine
-
-
-
-    </a>
-
-
-
-
-
-</div>
-
-
-
-
-
-<script>
-
-
-
-
-
-/* ==========================================================
-
-   STATE
-
-   ========================================================== */
-
-
-
-
-
-let mode = "login";
-
-
-
-
-
-const title =
-
-    document.getElementById("title");
-
-
-
-
-
-const subtitle =
-
-    document.getElementById("subtitle");
-
-
-
-
-
-const loginTab =
-
-    document.getElementById("loginTab");
-
-
-
-
-
-const signupTab =
-
-    document.getElementById("signupTab");
-
-
-
-
-
-const submitButton =
-
-    document.getElementById("submitButton");
-
-
-
-
-
-const message =
-
-    document.getElementById("message");
-
-
-
-
-
-const authForm =
-
-    document.getElementById("authForm");
-
-
-
-
-
-/* ==========================================================
-
-   MESSAGE HELPERS
-
-   ========================================================== */
-
-
-
-
-
-function clearMessage() {
-
-
-
-    message.className = "message";
-
-
-
-    message.textContent = "";
-
-
-
-}
-
-
-
-
-
-function showError(text) {
-
-
-
-    message.className =
-
-        "message error";
-
-
-
-    message.textContent =
-
-        text;
-
-
-
-}
-
-
-
-
-
-function showSuccess(text) {
-
-
-
-    message.className =
-
-        "message success";
-
-
-
-    message.textContent =
-
-        text;
-
-
-
-}
-
-
-
-
-
-/* ==========================================================
-
-   LOGIN MODE
-
-   ========================================================== */
-
-
-
-
-
-function showLogin() {
-
-
-
-    mode = "login";
-
-
-
-
-
-    title.textContent =
-
-        "Welcome back";
-
-
-
-
-
-    subtitle.textContent =
-
-        "Sign in to access your invoice workspace.";
-
-
-
-
-
-    loginTab.classList.add(
-
-        "active"
-
-    );
-
-
-
-
-
-    signupTab.classList.remove(
-
-        "active"
-
-    );
-
-
-
-
-
-    submitButton.textContent =
-
-        "Sign in";
-
-
-
-
-
-    document
-
-        .getElementById("password")
-
-        .autocomplete =
-
-        "current-password";
-
-
-
-
-
-    clearMessage();
-
-
-
-}
-
-
-
-
-
-/* ==========================================================
-
-   SIGNUP MODE
-
-   ========================================================== */
-
-
-
-
-
-function showSignup() {
-
-
-
-    mode = "signup";
-
-
-
-
-
-    title.textContent =
-
-        "Create your account";
-
-
-
-
-
-    subtitle.textContent =
-
-        "Create an account to start processing invoices.";
-
-
-
-
-
-    signupTab.classList.add(
-
-        "active"
-
-    );
-
-
-
-
-
-    loginTab.classList.remove(
-
-        "active"
-
-    );
-
-
-
-
-
-    submitButton.textContent =
-
-        "Create account";
-
-
-
-
-
-    document
-
-        .getElementById("password")
-
-        .autocomplete =
-
-        "new-password";
-
-
-
-
-
-    clearMessage();
-
-
-
-}
-
-
-
-
-
-/* ==========================================================
-
-   SUBMIT
-
-   ========================================================== */
-
-
-
-
-
-authForm.addEventListener(
-
-    "submit",
-
-    async function(event) {
-
-
-
-        event.preventDefault();
-
-
-
-
-
-        clearMessage();
-
-
-
-
-
-        const email =
-
-            document
-
-                .getElementById("email")
-
-                .value
-
-                .trim();
-
-
-
-
-
-        const password =
-
-            document
-
-                .getElementById("password")
-
-                .value;
-
-
-
-
-
-        if (!email || !password) {
-
-
-
-            showError(
-
-                "Please enter your email and password."
-
-            );
-
-
-
+    <div class="message" id="message" role="status" aria-live="polite"></div>
+
+    <p class="switch-prompt" id="switchPrompt">
+      New to Invoice Engine? <button type="button" id="switchModeButton">Create an account</button>
+    </p>
+
+    <a class="back" href="/frontend/index.html">← Back to Invoice Engine</a>
+    <p class="fine-print">Your workspace is protected by Supabase authentication.</p>
+  </main>
+
+  <script>
+    "use strict";
+
+    let mode = "login";
+    const $ = (id) => document.getElementById(id);
+    const title = $("title");
+    const subtitle = $("subtitle");
+    const loginTab = $("loginTab");
+    const signupTab = $("signupTab");
+    const authForm = $("authForm");
+    const submitButton = $("submitButton");
+    const googleButton = $("googleButton");
+    const message = $("message");
+    const confirmField = $("confirmField");
+    const confirmPassword = $("confirmPassword");
+    const forgotRow = $("forgotRow");
+    const switchPrompt = $("switchPrompt");
+
+    function clearMessage() {
+      message.className = "message";
+      message.textContent = "";
+    }
+
+    function showError(text) {
+      message.className = "message error";
+      message.textContent = text;
+    }
+
+    function showSuccess(text) {
+      message.className = "message success";
+      message.textContent = text;
+    }
+
+    function setBusy(busy, label) {
+      submitButton.disabled = busy;
+      googleButton.disabled = busy;
+      submitButton.textContent = busy ? label : (mode === "signup" ? "Create account" : "Sign in");
+      $("googleButtonText").textContent = busy ? "Connecting…" : "Continue with Google";
+    }
+
+    function showLogin() {
+      mode = "login";
+      title.textContent = "Welcome back";
+      subtitle.textContent = "Sign in to access your invoice workspace.";
+      loginTab.classList.add("active");
+      signupTab.classList.remove("active");
+      loginTab.setAttribute("aria-selected", "true");
+      signupTab.setAttribute("aria-selected", "false");
+      confirmField.hidden = true;
+      confirmPassword.required = false;
+      confirmPassword.value = "";
+      $("password").autocomplete = "current-password";
+      $("password").placeholder = "Enter your password";
+      forgotRow.hidden = false;
+      switchPrompt.innerHTML = 'New to Invoice Engine? <button type="button" id="switchModeButton">Create an account</button>';
+      $("switchModeButton").addEventListener("click", showSignup);
+      clearMessage();
+      setBusy(false);
+    }
+
+    function showSignup() {
+      mode = "signup";
+      title.textContent = "Create your account";
+      subtitle.textContent = "Set up your Invoice Engine workspace in a few steps.";
+      signupTab.classList.add("active");
+      loginTab.classList.remove("active");
+      signupTab.setAttribute("aria-selected", "true");
+      loginTab.setAttribute("aria-selected", "false");
+      confirmField.hidden = false;
+      confirmPassword.required = true;
+      $("password").autocomplete = "new-password";
+      $("password").placeholder = "Create a password";
+      forgotRow.hidden = true;
+      switchPrompt.innerHTML = 'Already have an account? <button type="button" id="switchModeButton">Sign in</button>';
+      $("switchModeButton").addEventListener("click", showLogin);
+      clearMessage();
+      setBusy(false);
+    }
+
+    function getClient() {
+      if (!window.supabase || typeof supabaseClient === "undefined" || !supabaseClient?.auth) {
+        throw new Error("Supabase is not configured. Check that /frontend/supabase-config.js loads correctly.");
+      }
+      return supabaseClient;
+    }
+
+    function explainNetworkError(error) {
+      const raw = String(error?.message || error || "");
+      if (/failed to fetch|networkerror|fetch failed|load failed/i.test(raw)) {
+        return "Could not reach Supabase. Check the Supabase project URL/key in frontend/supabase-config.js, and confirm the project is active. Then try again.";
+      }
+      return raw || "Authentication failed. Please try again.";
+    }
+
+    loginTab.addEventListener("click", showLogin);
+    signupTab.addEventListener("click", showSignup);
+
+    $("switchModeButton").addEventListener("click", showSignup);
+
+    googleButton.addEventListener("click", async () => {
+      clearMessage();
+      try {
+        const client = getClient();
+        setBusy(true, "Connecting…");
+        const { error } = await client.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: `${window.location.origin}/frontend/dashboard.html`,
+            queryParams: { access_type: "offline", prompt: "select_account" }
+          }
+        });
+        if (error) throw error;
+        // Supabase redirects the browser to Google; no local success state is needed.
+      } catch (error) {
+        console.error("Invoice Engine Google OAuth error:", error);
+        showError(explainNetworkError(error));
+        setBusy(false);
+      }
+    });
+
+    $("forgotButton").addEventListener("click", async () => {
+      clearMessage();
+      const email = $("email").value.trim();
+      if (!email) {
+        showError("Enter your email address first, then choose Forgot password.");
+        $("email").focus();
+        return;
+      }
+      try {
+        const client = getClient();
+        $("forgotButton").disabled = true;
+        const { error } = await client.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/frontend/auth.html`
+        });
+        if (error) throw error;
+        showSuccess("If an account exists for that email, a password-reset link will be sent.");
+      } catch (error) {
+        console.error("Invoice Engine password reset error:", error);
+        showError(explainNetworkError(error));
+      } finally {
+        $("forgotButton").disabled = false;
+      }
+    });
+
+    authForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      clearMessage();
+
+      const email = $("email").value.trim();
+      const password = $("password").value;
+
+      if (!email || !password) {
+        showError("Please enter your email address and password.");
+        return;
+      }
+      if (password.length < 6) {
+        showError("Your password must contain at least 6 characters.");
+        return;
+      }
+      if (mode === "signup" && password !== confirmPassword.value) {
+        showError("The passwords do not match. Please check both fields.");
+        confirmPassword.focus();
+        return;
+      }
+
+      try {
+        const client = getClient();
+        setBusy(true, mode === "signup" ? "Creating account…" : "Signing in…");
+
+        if (mode === "signup") {
+          const { data, error } = await client.auth.signUp({
+            email,
+            password,
+            options: {
+              emailRedirectTo: `${window.location.origin}/frontend/dashboard.html`
+            }
+          });
+          if (error) throw error;
+
+          if (data.user && !data.session) {
+            showSuccess("Your account has been created. Check your email and verify your address before signing in.");
+            setBusy(false);
             return;
+          }
 
-
-
+          showSuccess("Account created successfully. Opening your workspace…");
+          window.setTimeout(() => window.location.replace("/frontend/dashboard.html"), 700);
+          return;
         }
 
-
-
-
-
-        submitButton.disabled = true;
-
-
-
-
-
-        try {
-
-
-
-
-
-            /* ==================================================
-
-               CREATE ACCOUNT
-
-               ================================================== */
-
-
-
-
-
-            if (mode === "signup") {
-
-
-
-
-
-                const {
-
-                    data,
-
-                    error
-
-                } = await supabaseClient.auth.signUp({
-
-
-
-                    email: email,
-
-
-
-                    password: password,
-
-
-
-                    options: {
-
-
-
-                        emailRedirectTo:
-
-                            `${window.location.origin}/frontend/dashboard.html`
-
-
-
-                    }
-
-
-
-                });
-
-
-
-
-
-                if (error) {
-
-
-
-                    throw error;
-
-
-
-                }
-
-
-
-
-
-                /*
-
-                    Supabase can return a user without a session
-
-                    when email confirmation is enabled.
-
-                */
-
-
-
-
-
-                if (
-
-                    data.user &&
-
-                    !data.session
-
-                ) {
-
-
-
-                    showSuccess(
-
-                        "Account created. Check your email to verify your account."
-
-                    );
-
-
-
-
-
-                    submitButton.disabled = false;
-
-
-
-
-
-                    return;
-
-
-
-                }
-
-
-
-
-
-                /*
-
-                    If email confirmation is disabled,
-
-                    a session may already exist.
-
-                */
-
-
-
-
-
-                showSuccess(
-
-                    "Account created successfully."
-
-                );
-
-
-
-
-
-                setTimeout(
-
-                    function() {
-
-
-
-                        window.location.href =
-
-                            "/frontend/dashboard.html";
-
-
-
-                    },
-
-                    700
-
-                );
-
-
-
-
-
-                return;
-
-
-
-            }
-
-
-
-
-
-            /* ==================================================
-
-               SIGN IN
-
-               ================================================== */
-
-
-
-
-
-            const {
-
-                data,
-
-                error
-
-            } = await supabaseClient
-
-                .auth
-
-                .signInWithPassword({
-
-
-
-                    email: email,
-
-
-
-                    password: password
-
-
-
-                });
-
-
-
-
-
-            if (error) {
-
-
-
-                throw error;
-
-
-
-            }
-
-
-
-
-
-            if (!data.session) {
-
-
-
-                throw new Error(
-
-                    "Sign in succeeded but no session was created."
-
-                );
-
-
-
-            }
-
-
-
-
-
-            showSuccess(
-
-                "Signed in successfully. Opening your workspace..."
-
-            );
-
-
-
-
-
-            /*
-
-                Give Supabase a moment to persist the session
-
-                before moving to the dashboard.
-
-            */
-
-
-
-
-
-            setTimeout(
-
-                function() {
-
-
-
-                    window.location.replace(
-
-                        "/frontend/dashboard.html"
-
-                    );
-
-
-
-                },
-
-                700
-
-            );
-
-
-
-
-
-        }
-
-
-
-        catch (error) {
-
-
-
-            console.error(
-
-                "Invoice Engine authentication error:",
-
-                error
-
-            );
-
-
-
-
-
-            showError(
-
-                error.message ||
-
-                "Something went wrong while signing in."
-
-            );
-
-
-
-
-
-            submitButton.disabled = false;
-
-
-
-        }
-
-
-
+        const { data, error } = await client.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        if (!data.session) throw new Error("Sign-in completed but no session was returned. Please try again.");
+
+        showSuccess("Signed in successfully. Opening your workspace…");
+        window.setTimeout(() => window.location.replace("/frontend/dashboard.html"), 500);
+      } catch (error) {
+        console.error("Invoice Engine authentication error:", error);
+        showError(explainNetworkError(error));
+        setBusy(false);
+      }
+    });
+
+    async function checkExistingSession() {
+      try {
+        const client = getClient();
+        const { data, error } = await client.auth.getSession();
+        if (error) throw error;
+        if (data?.session) window.location.replace("/frontend/dashboard.html");
+      } catch (error) {
+        console.error("Invoice Engine session check error:", error);
+        // Keep the form visible so a configuration/network problem can be corrected.
+      }
     }
 
-);
-
-
-
-
-
-/* ==========================================================
-
-   EXISTING SESSION CHECK
-
-   ========================================================== */
-
-
-
-
-
-async function checkExistingSession() {
-
-
-
-    try {
-
-
-
-        const {
-
-            data,
-
-            error
-
-        } = await supabaseClient
-
-            .auth
-
-            .getSession();
-
-
-
-
-
-        if (error) {
-
-
-
-            console.error(
-
-                "Session check failed:",
-
-                error
-
-            );
-
-
-
-            return;
-
-
-
-        }
-
-
-
-
-
-        /*
-
-            If the user already has a valid session,
-
-            open the dashboard.
-
-        */
-
-
-
-
-
-        if (data && data.session) {
-
-
-
-            window.location.replace(
-
-                "/frontend/dashboard.html"
-
-            );
-
-
-
-        }
-
-
-
-    }
-
-
-
-    catch (error) {
-
-
-
-        console.error(
-
-            "Existing session check error:",
-
-            error
-
-        );
-
-
-
-    }
-
-
-
-}
-
-
-
-
-
-/* ==========================================================
-
-   START
-
-   ========================================================== */
-
-
-
-
-
-checkExistingSession();
-
-
-
-
-
-</script>
-
-
-
-
-
+    showLogin();
+    checkExistingSession();
+  </script>
 </body>
-
-
-
 </html>
