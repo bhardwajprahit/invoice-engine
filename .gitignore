@@ -11,3 +11,5 @@ uploads/
 outputs/
 data/
 *.xlsx
+desktop/backend/
+.build/
