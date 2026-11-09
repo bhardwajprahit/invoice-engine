@@ -13,3 +13,7 @@ data/
 *.xlsx
 desktop/backend/
 .build/
+node_modules/
+dist/
+*.db-wal
+*.db-shm

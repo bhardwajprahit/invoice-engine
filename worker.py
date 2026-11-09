@@ -1,6 +1,8 @@
 import time
 import hashlib
+import os
 from pathlib import Path
+import batch_processor
 
 from job_queue import (
     initialize_jobs_table,
@@ -29,13 +31,14 @@ from database import (
 )
 
 
-UPLOAD_FOLDER = Path("uploads")
-OUTPUT_FOLDER = Path("outputs")
+DATA_FOLDER = Path(os.environ.get("INVOICE_ENGINE_DATA_DIR", ".")).resolve()
+UPLOAD_FOLDER = DATA_FOLDER / "uploads"
+OUTPUT_FOLDER = DATA_FOLDER / "outputs"
 
 MAX_ATTEMPTS = 3
 
-UPLOAD_FOLDER.mkdir(exist_ok=True)
-OUTPUT_FOLDER.mkdir(exist_ok=True)
+UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
+OUTPUT_FOLDER.mkdir(parents=True, exist_ok=True)
 
 
 def create_job_excel(invoice, job_id):
@@ -45,12 +48,14 @@ def create_job_excel(invoice, job_id):
         / f"{job_id}.xlsx"
     )
 
-    temporary_output = Path(
-        "batch_processed_invoices.xlsx"
-    )
+    temporary_output = OUTPUT_FOLDER / f".{job_id}.batch_processed_invoices.xlsx"
 
     if temporary_output.exists():
         temporary_output.unlink()
+
+    # Keep the workbook beside this job's durable output instead of writing
+    # into the process working directory (which may be the packaged app data).
+    batch_processor.OUTPUT_FILE = str(temporary_output)
 
     excel_created = create_excel(
         [invoice],

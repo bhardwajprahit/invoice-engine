@@ -18,7 +18,7 @@
     .wrap{max-width:1160px;margin:auto;padding-left:24px;padding-right:24px}.hero{padding:92px 0 70px;text-align:center}.eyebrow{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--border);background:rgba(255,255,255,.025);padding:7px 12px;border-radius:99px;color:#bdc8dc;font-size:11px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px #5bdda077}
     h1{font-size:clamp(42px,7vw,76px);line-height:1.02;letter-spacing:-4px;max-width:900px;margin:25px auto 0;font-weight:800}.gradient{background:linear-gradient(90deg,#8b9aff,#72a7ff,#66e0ad,#b59aff);background-clip:text;-webkit-background-clip:text;color:transparent}
     .hero-copy{max-width:700px;margin:24px auto 0;color:var(--muted);font-size:17px;line-height:1.8}.hero-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:30px}.trust-note{margin-top:15px;color:var(--quiet);font-size:12px}
-    .module-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:54px;text-align:left}.module{border:1px solid var(--border);border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.008));padding:24px;min-height:205px;transition:transform .2s,border-color .2s}.module:hover{transform:translateY(-3px);border-color:#435270}.module-icon{height:42px;width:42px;border-radius:12px;display:grid;place-items:center;background:rgba(113,136,255,.13);color:#9baaff;font-size:20px}.module:nth-child(2) .module-icon{background:rgba(91,221,160,.11);color:var(--green)}.module:nth-child(3) .module-icon{background:rgba(177,154,255,.13);color:var(--purple)}.module h2{font-size:19px;margin-top:18px;letter-spacing:-.4px}.module p{font-size:13px;color:var(--muted);line-height:1.75;margin-top:8px}.module-tag{display:inline-block;color:var(--quiet);font-size:10px;letter-spacing:1px;font-weight:800;text-transform:uppercase;margin-top:15px}
+    .module-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:54px;text-align:left}.module{border:1px solid var(--border);border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.008));padding:22px;min-height:205px;transition:transform .2s,border-color .2s}.module:hover{transform:translateY(-3px);border-color:#435270}.module-icon{height:42px;width:42px;border-radius:12px;display:grid;place-items:center;background:rgba(113,136,255,.13);color:#9baaff;font-size:20px}.module:nth-child(2) .module-icon{background:rgba(91,221,160,.11);color:var(--green)}.module:nth-child(3) .module-icon{background:rgba(177,154,255,.13);color:var(--purple)}.module:nth-child(4) .module-icon{background:rgba(91,221,160,.11);color:var(--green)}.module h2{font-size:19px;margin-top:18px;letter-spacing:-.4px}.module p{font-size:13px;color:var(--muted);line-height:1.75;margin-top:8px}.module-tag{display:inline-block;color:var(--quiet);font-size:10px;letter-spacing:1px;font-weight:800;text-transform:uppercase;margin-top:15px}
     .section{padding:78px 0}.section-head{max-width:680px;margin-bottom:30px}.kicker{font-size:11px;font-weight:800;letter-spacing:1.5px;color:#9aaaff;text-transform:uppercase}.section h2.section-title{font-size:clamp(30px,4vw,43px);line-height:1.12;letter-spacing:-1.8px;margin-top:10px}.section-head p{color:var(--muted);font-size:14px;margin-top:13px;line-height:1.8}
     .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.feature{padding:22px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.018)}.feature h3{font-size:15px;margin-top:12px}.feature p{color:var(--muted);font-size:12px;line-height:1.75;margin-top:7px}.feature-symbol{color:var(--green);font-size:18px}
     .workflow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.step{padding:20px;border:1px solid var(--border);border-radius:13px;background:var(--surface)}.step-no{font-size:11px;color:var(--blue);font-weight:800;letter-spacing:1px}.step h3{font-size:14px;margin-top:9px}.step p{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.7}
@@ -44,14 +44,14 @@
   <main>
     <section class="hero">
       <div class="wrap">
-        <div class="eyebrow"><span class="dot"></span> One workspace. Three core workflows.</div>
+        <div class="eyebrow"><span class="dot"></span> One workspace. Four connected workflows.</div>
         <h1>Run your retail business.<br><span class="gradient">All in one place.</span></h1>
         <p class="hero-copy">Process supplier invoices, create customer bills, and understand your sales from one connected workspace — built to make everyday retail operations easier to manage.</p>
         <div class="hero-actions">
           <a class="btn primary" href="/frontend/auth.html">Explore Invoice Engine ↗</a>
           <a class="btn secondary" href="#workspaces">See the workspaces ↓</a>
         </div>
-        <p class="trust-note">Start with the workflow you need. Expand as your business grows.</p>
+        <p class="trust-note">Free to use during the initial release. No payment details or subscription are required to register.</p>
 
         <div class="module-grid" id="workspaces">
           <article class="module">
@@ -71,6 +71,12 @@
             <h2>Sales</h2>
             <p>Find sales records, review products and quantities sold, and turn transaction data into useful summaries and exports.</p>
             <span class="module-tag">Search · Sales history · Reports</span>
+          </article>
+          <article class="module">
+            <div class="module-icon" aria-hidden="true">▦</div>
+            <h2>Inventory</h2>
+            <p>Track catalogue stock, record manual receipts, and reduce stock when a bill is completed. Supplier invoice OCR is not connected to stock yet.</p>
+            <span class="module-tag">Stock · Receipts · Low stock</span>
           </article>
         </div>
       </div>
@@ -121,6 +127,7 @@
           <article class="tutorial-card"><span class="tutorial-tag">WORKSPACE 01</span><h3>Purchasing</h3><p>Supplier invoice uploads, extraction, review, searching and workbook exports.</p><p><a href="/frontend/auth.html">Open workspace ↗</a></p></article>
           <article class="tutorial-card"><span class="tutorial-tag">WORKSPACE 02</span><h3>Billing</h3><p>Product catalogue, bill preparation, bill customisation and transaction records.</p><p><a href="/frontend/auth.html">Open workspace ↗</a></p></article>
           <article class="tutorial-card"><span class="tutorial-tag">WORKSPACE 03</span><h3>Sales</h3><p>Sales history, product quantities, searchable transactions and available reports.</p><p><a href="/frontend/auth.html">Open workspace ↗</a></p></article>
+          <article class="tutorial-card"><span class="tutorial-tag">WORKSPACE 04</span><h3>Inventory</h3><p>Product stock, manual receipts, available quantities and stock changes from recorded bills.</p><p><a href="/frontend/auth.html">Open workspace ↗</a></p></article>
         </div>
       </div>
     </section>
@@ -137,7 +144,7 @@
   </main>
 
   <footer>
-    <div class="wrap footer-inner"><span>© 2026 Invoice Engine</span><span>Purchasing · Billing · Sales</span></div>
+    <div class="wrap footer-inner"><span>© 2026 Invoice Engine</span><span>Purchasing · Billing · Sales · Inventory</span></div>
   </footer>
 </body>
 </html>

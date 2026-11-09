@@ -42,8 +42,11 @@
       }
     ],
     "win": {
-      "target": ["nsis"],
-      "artifactName": "Invoice-Engine-Setup-${version}.${ext}"
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "Invoice-Engine-Setup-${version}.${ext}",
+      "signAndEditExecutable": false
     },
     "nsis": {
       "oneClick": false,
@@ -51,5 +54,8 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
     }
+  },
+  "allowScripts": {
+    "electron@34.5.8": true
   }
 }

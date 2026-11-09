@@ -2,6 +2,7 @@ const { app, BrowserWindow, dialog, shell } = require("electron");
 const { spawn } = require("node:child_process");
 const net = require("node:net");
 const path = require("node:path");
+const fs = require("node:fs");
 
 let apiProcess;
 let workerProcess;
@@ -19,7 +20,7 @@ function getFreePort() {
   });
 }
 
-function startBackend(role, port, dataDirectory) {
+function startBackend(role, port, dataDirectory, logFile) {
   const env = {
     ...process.env,
     DATABASE_PATH: path.join(dataDirectory, "invoice_engine.db"),
@@ -30,7 +31,12 @@ function startBackend(role, port, dataDirectory) {
 
   if (app.isPackaged) {
     const executable = path.join(process.resourcesPath, "backend", "invoice-engine-backend.exe");
-    return spawn(executable, [role, String(port)], { cwd: dataDirectory, env, windowsHide: true });
+    const child = spawn(executable, [role, String(port)], { cwd: dataDirectory, env, windowsHide: true });
+    child.stdout?.on("data", (chunk) => fs.appendFileSync(logFile, `[${role}] ${chunk}`));
+    child.stderr?.on("data", (chunk) => fs.appendFileSync(logFile, `[${role}:stderr] ${chunk}`));
+    child.on("exit", (code, signal) => fs.appendFileSync(logFile, `[${role}] exited code=${code} signal=${signal}\\n`));
+    child.on("error", (error) => fs.appendFileSync(logFile, `[${role}] spawn error: ${error.stack || error}\\n`));
+    return child;
   }
 
   const python = process.env.INVOICE_ENGINE_PYTHON || "python";
@@ -88,19 +94,33 @@ function stopServices() {
 
 app.whenReady().then(async () => {
   const dataDirectory = path.join(app.getPath("userData"), "data");
-  const fs = require("node:fs");
   fs.mkdirSync(dataDirectory, { recursive: true });
+  const logFile = path.join(dataDirectory, "startup.log");
+  fs.writeFileSync(logFile, `Invoice Engine startup ${new Date().toISOString()}\\n`);
+
+  // The API serves frontend files from a relative "frontend" directory.
+  // Copy the packaged frontend into the writable runtime directory so the
+  // backend can find it when its working directory is userData/data.
+  const packagedFrontend = path.join(app.getAppPath(), "frontend");
+  const runtimeFrontend = path.join(dataDirectory, "frontend");
+  if (fs.existsSync(packagedFrontend)) {
+    fs.cpSync(packagedFrontend, runtimeFrontend, { recursive: true, force: true });
+  }
+
   const port = await getFreePort();
-  apiProcess = startBackend("api", port, dataDirectory);
+  fs.appendFileSync(logFile, `Starting API on port ${port}; packaged=${app.isPackaged}; cwd=${dataDirectory}\\n`);
+  apiProcess = startBackend("api", port, dataDirectory, logFile);
   apiProcess.on("error", (error) => dialog.showErrorBox("Invoice Engine could not start", error.message));
-  workerProcess = startBackend("worker", port, dataDirectory);
+  workerProcess = startBackend("worker", port, dataDirectory, logFile);
   workerProcess.on("error", (error) => dialog.showErrorBox("Invoice Engine worker could not start", error.message));
   try {
     await waitForApi(port);
+    fs.appendFileSync(logFile, "API health check passed; opening window.\\n");
     createWindow(`http://127.0.0.1:${port}/frontend/auth.html`);
   } catch (error) {
+    fs.appendFileSync(logFile, `STARTUP FAILURE: ${error.stack || error}\\n`);
     stopServices();
-    dialog.showErrorBox("Invoice Engine could not start", `${error.message}\n\nRestart the app. If this continues, contact support.`);
+    dialog.showErrorBox("Invoice Engine could not start", `${error.message}\\n\\nDiagnostic log: ${logFile}`);
     app.quit();
   }
 });

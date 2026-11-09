@@ -3,9 +3,9 @@
 import sys
 from pathlib import Path
 
-# PyInstaller starts with this script's directory on sys.path; the application
-# modules live at the repository root during development and at the bundle root
-# in the one-file executable.
+# In development, application modules live at the repository root. In the
+# packaged one-file executable, PyInstaller also places bundled modules on
+# sys.path; this keeps the same entry point usable in both environments.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 
@@ -16,9 +16,10 @@ def main():
     role = sys.argv[1]
     if role == "api":
         import uvicorn
+        import api  # Static import so PyInstaller includes api.py in the bundle.
 
         port = int(sys.argv[2])
-        uvicorn.run("api:app", host="127.0.0.1", port=port, workers=1)
+        uvicorn.run(api.app, host="127.0.0.1", port=port, workers=1)
     elif role == "worker":
         import worker
 
