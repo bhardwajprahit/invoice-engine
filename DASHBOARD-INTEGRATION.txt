@@ -1,0 +1,14 @@
+Add these links inside the active dashboard sidebar (near Reports/Files):
+<a class="nav-item" href="/frontend/finance.html#bank-reconciliation">
+  <span class="nav-icon">▥</span><span class="nav-text">Bank reconciliation</span>
+</a>
+<a class="nav-item" href="/frontend/finance.html#migration-centre">
+  <span class="nav-icon">⇄</span><span class="nav-text">Migration centre</span>
+</a>
+
+If your sidebar uses button-only navigation, use:
+<button class="nav-item" type="button" onclick="location.href='/frontend/finance.html#bank-reconciliation'">Bank reconciliation</button>
+<button class="nav-item" type="button" onclick="location.href='/frontend/finance.html#migration-centre'">Migration centre</button>
+
+The finance page itself validates the signed-in Supabase session and sends the
+access token to the API. Do not remove authentication dependencies from routes.

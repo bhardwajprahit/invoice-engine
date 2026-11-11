@@ -1,0 +1,28 @@
+INVOICE ENGINE 1.0.1 RELEASE PATCH
+
+This patch prepares the desktop release source and the finance-enabled web dashboard.
+It does not include a prebuilt Windows installer; rebuild the installer on the Windows development PC.
+
+REPLACE THESE FILES IN THE EXISTING PROJECT (preserve all other project files):
+- api.py
+- auth.py
+- database.py
+- package.json
+- desktop/main.cjs
+- desktop/preload.cjs
+- frontend/dashboard.html
+- frontend/finance.html
+- frontend/auth.html
+
+The public landing page (frontend/index.html) is intentionally not included or changed.
+The existing frontend/supabase-config.js, .env, SQLite databases, worker.py, and other project modules must remain in place.
+
+IMPORTANT:
+1. Back up the project and its database before replacing files.
+2. Review/apply supabase_workspace_migration.sql in Supabase only if the cloud workspace migration has not already been applied. This SQL is not the local SQLite finance schema; the SQLite finance tables are initialized by database.py.
+3. Confirm the existing Supabase URL and public key configuration remains available in frontend/supabase-config.js. Never publish service-role keys or secrets.
+4. On the Windows development machine, install dependencies if needed, then run the existing npm script: npm run dist:win
+5. The new installer should be named Invoice-Engine-Setup-1.0.1.exe in dist/. Test installation, sign-in, Purchasing, Billing, Sales, Finance, and local database persistence before publishing.
+6. Upload the tested installer to a GitHub Release and link that release asset from the public website. Do not link to a local dist/ path.
+
+This patch has not been built into a new .exe in this environment. A Windows build and end-to-end test are still required.

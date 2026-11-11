@@ -160,6 +160,64 @@ def initialize_database():
                 (legacy_owner_id,),
             )
 
+        cursor.executescript("""
+            CREATE TABLE IF NOT EXISTS bank_transactions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                owner_id TEXT NOT NULL,
+                statement_ref TEXT NOT NULL,
+                txn_date TEXT NOT NULL,
+                description TEXT NOT NULL,
+                debit REAL NOT NULL DEFAULT 0,
+                credit REAL NOT NULL DEFAULT 0,
+                balance REAL,
+                matched_entry_id INTEGER,
+                match_status TEXT NOT NULL DEFAULT 'unmatched',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(owner_id, statement_ref)
+            );
+            CREATE INDEX IF NOT EXISTS idx_bank_tx_owner_date
+                ON bank_transactions(owner_id, txn_date);
+            CREATE TABLE IF NOT EXISTS book_entries (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                owner_id TEXT NOT NULL,
+                entry_date TEXT NOT NULL,
+                description TEXT NOT NULL,
+                amount REAL NOT NULL,
+                direction TEXT NOT NULL CHECK(direction IN ('debit','credit')),
+                reference TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE INDEX IF NOT EXISTS idx_book_owner_date
+                ON book_entries(owner_id, entry_date);
+            CREATE TABLE IF NOT EXISTS migration_batches (
+                id TEXT PRIMARY KEY,
+                owner_id TEXT NOT NULL,
+                source_system TEXT NOT NULL,
+                filename TEXT NOT NULL,
+                status TEXT NOT NULL DEFAULT 'preview',
+                total_rows INTEGER NOT NULL DEFAULT 0,
+                imported_rows INTEGER NOT NULL DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS migration_rows (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                batch_id TEXT NOT NULL,
+                owner_id TEXT NOT NULL,
+                row_number INTEGER NOT NULL,
+                record_type TEXT NOT NULL,
+                record_date TEXT,
+                account_name TEXT,
+                reference TEXT,
+                debit REAL NOT NULL DEFAULT 0,
+                credit REAL NOT NULL DEFAULT 0,
+                raw_json TEXT NOT NULL,
+                row_hash TEXT NOT NULL,
+                status TEXT NOT NULL DEFAULT 'ready',
+                FOREIGN KEY(batch_id) REFERENCES migration_batches(id) ON DELETE CASCADE,
+                UNIQUE(owner_id, row_hash)
+            );
+        """)
+
         connection.commit()
 
     except Exception:

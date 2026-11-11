@@ -12,13 +12,13 @@
     body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 50% -15%,rgba(91,119,255,.17),transparent 42%),var(--bg);color:var(--text);line-height:1.6}
     a{color:inherit;text-decoration:none}button{font:inherit}
     .nav{height:72px;position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 max(5%,calc((100% - 1160px)/2));background:rgba(8,11,18,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06);gap:20px}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:750;letter-spacing:-.4px;white-space:nowrap}.brand-mark{width:35px;height:35px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(113,136,255,.25),rgba(177,154,255,.16));border:1px solid rgba(113,136,255,.35);color:#9baaff;font-size:18px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:750;letter-spacing:-.4px;white-space:nowrap}.brand-logo{display:block;width:190px;max-width:32vw;height:auto;object-fit:contain}
     .nav-links,.nav-actions{display:flex;align-items:center;gap:24px}.nav-links{font-size:13px;color:var(--muted)}.nav-links a:hover{color:white}.nav-actions{gap:9px}
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:10px;padding:11px 17px;font-weight:700;font-size:13px;cursor:pointer;transition:transform .18s,border-color .18s,background .18s}.btn:hover{transform:translateY(-1px)}.primary{background:linear-gradient(135deg,#627bff,#7965df);color:white;box-shadow:0 8px 26px rgba(96,124,255,.18)}.secondary{background:var(--surface2);border-color:var(--border);color:var(--text)}.secondary:hover{border-color:#465675}
     .wrap{max-width:1160px;margin:auto;padding-left:24px;padding-right:24px}.hero{padding:92px 0 70px;text-align:center}.eyebrow{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--border);background:rgba(255,255,255,.025);padding:7px 12px;border-radius:99px;color:#bdc8dc;font-size:11px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px #5bdda077}
     h1{font-size:clamp(42px,7vw,76px);line-height:1.02;letter-spacing:-4px;max-width:900px;margin:25px auto 0;font-weight:800}.gradient{background:linear-gradient(90deg,#8b9aff,#72a7ff,#66e0ad,#b59aff);background-clip:text;-webkit-background-clip:text;color:transparent}
     .hero-copy{max-width:700px;margin:24px auto 0;color:var(--muted);font-size:17px;line-height:1.8}.hero-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:30px}.trust-note{margin-top:15px;color:var(--quiet);font-size:12px}
-    .module-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:54px;text-align:left}.module{border:1px solid var(--border);border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.008));padding:24px;min-height:205px;transition:transform .2s,border-color .2s}.module:hover{transform:translateY(-3px);border-color:#435270}.module-icon{height:42px;width:42px;border-radius:12px;display:grid;place-items:center;background:rgba(113,136,255,.13);color:#9baaff;font-size:20px}.module:nth-child(2) .module-icon{background:rgba(91,221,160,.11);color:var(--green)}.module:nth-child(3) .module-icon{background:rgba(177,154,255,.13);color:var(--purple)}.module h2{font-size:19px;margin-top:18px;letter-spacing:-.4px}.module p{font-size:13px;color:var(--muted);line-height:1.75;margin-top:8px}.module-tag{display:inline-block;color:var(--quiet);font-size:10px;letter-spacing:1px;font-weight:800;text-transform:uppercase;margin-top:15px}
+    .module-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:54px;text-align:left}.module{border:1px solid var(--border);border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.008));padding:22px;min-height:205px;transition:transform .2s,border-color .2s}.module:hover{transform:translateY(-3px);border-color:#435270}.module-icon{height:42px;width:42px;border-radius:12px;display:grid;place-items:center;background:rgba(113,136,255,.13);color:#9baaff;font-size:20px}.module:nth-child(2) .module-icon{background:rgba(91,221,160,.11);color:var(--green)}.module:nth-child(3) .module-icon{background:rgba(177,154,255,.13);color:var(--purple)}.module:nth-child(4) .module-icon{background:rgba(91,221,160,.11);color:var(--green)}.module h2{font-size:19px;margin-top:18px;letter-spacing:-.4px}.module p{font-size:13px;color:var(--muted);line-height:1.75;margin-top:8px}.module-tag{display:inline-block;color:var(--quiet);font-size:10px;letter-spacing:1px;font-weight:800;text-transform:uppercase;margin-top:15px}
     .section{padding:78px 0}.section-head{max-width:680px;margin-bottom:30px}.kicker{font-size:11px;font-weight:800;letter-spacing:1.5px;color:#9aaaff;text-transform:uppercase}.section h2.section-title{font-size:clamp(30px,4vw,43px);line-height:1.12;letter-spacing:-1.8px;margin-top:10px}.section-head p{color:var(--muted);font-size:14px;margin-top:13px;line-height:1.8}
     .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.feature{padding:22px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.018)}.feature h3{font-size:15px;margin-top:12px}.feature p{color:var(--muted);font-size:12px;line-height:1.75;margin-top:7px}.feature-symbol{color:var(--green);font-size:18px}
     .workflow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.step{padding:20px;border:1px solid var(--border);border-radius:13px;background:var(--surface)}.step-no{font-size:11px;color:var(--blue);font-weight:800;letter-spacing:1px}.step h3{font-size:14px;margin-top:9px}.step p{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.7}
@@ -27,16 +27,29 @@
     footer{border-top:1px solid var(--border);padding:26px 0;color:var(--quiet);font-size:12px}.footer-inner{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     @media(max-width:800px){.nav{padding:0 18px}.nav-links{display:none}.nav-actions{gap:7px}.btn{padding:10px 12px}.hero{padding-top:66px}h1{letter-spacing:-2.5px}.hero-copy{font-size:15px}.module-grid,.feature-grid,.tutorial-grid{grid-template-columns:1fr}.module{min-height:auto}.workflow{grid-template-columns:repeat(2,1fr)}.section{padding:56px 0}}
     @media(max-width:420px){.brand{font-size:14px}.brand-mark{width:31px;height:31px}.nav-actions .secondary{display:none}.workflow{grid-template-columns:1fr}.hero-actions .btn{width:100%}}
+  
+    .tutorial-grid{align-items:stretch}
+    .tutorial-video-card{padding:0;overflow:hidden}
+    .tutorial-video-wrap{width:100%;aspect-ratio:16/9;background:#03060b;overflow:hidden;border-bottom:1px solid var(--border)}
+    .tutorial-video{display:block;width:100%;height:100%;object-fit:contain;background:#03060b}
+    .tutorial-video-card .tutorial-tag,.tutorial-video-card h3,.tutorial-video-card p{margin-left:20px;margin-right:20px}
+    .tutorial-video-card .tutorial-tag{display:inline-block;margin-top:17px}
+    .tutorial-video-card p{margin-bottom:20px}
+    .nav-actions .btn { white-space: nowrap; }
+    .footer-inner a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+    @media(max-width:800px){.brand-logo{width:155px}.nav-actions{gap:6px}.nav-actions .btn{padding:9px 10px;font-size:12px}}
+
   </style>
 </head>
 <body>
   <nav class="nav" aria-label="Main navigation">
-    <a class="brand" href="#" aria-label="Invoice Engine home"><span class="brand-mark">▤</span>Invoice Engine</a>
+    <a class="brand" href="#" aria-label="Invoice Engine home"><img class="brand-logo" src="/frontend/invoice-engine-logo.png" alt="Invoice Engine"></a>
     <div class="nav-links">
       <a href="#workspaces">Workspaces</a><a href="#features">Features</a><a href="#workflow">How it works</a><a href="#tutorials">Tutorials</a>
     </div>
     <div class="nav-actions">
       <a class="btn secondary" href="/frontend/auth.html">Sign in</a>
+      <a class="btn secondary" href="https://github.com/bhardwajprahit/invoice-engine/releases/latest/download/Invoice-Engine-Setup-1.0.1.exe" download>Download Windows app ↓</a>
       <a class="btn primary" href="/frontend/auth.html">Open dashboard ↗</a>
     </div>
   </nav>
@@ -44,14 +57,15 @@
   <main>
     <section class="hero">
       <div class="wrap">
-        <div class="eyebrow"><span class="dot"></span> One workspace. Three core workflows.</div>
+        <div class="eyebrow"><span class="dot"></span> One workspace. Four connected workflows.</div>
         <h1>Run your retail business.<br><span class="gradient">All in one place.</span></h1>
         <p class="hero-copy">Process supplier invoices, create customer bills, and understand your sales from one connected workspace — built to make everyday retail operations easier to manage.</p>
         <div class="hero-actions">
           <a class="btn primary" href="/frontend/auth.html">Explore Invoice Engine ↗</a>
+          <a class="btn secondary" href="https://github.com/bhardwajprahit/invoice-engine/releases/latest/download/Invoice-Engine-Setup-1.0.1.exe" download>Download for Windows ↓</a>
           <a class="btn secondary" href="#workspaces">See the workspaces ↓</a>
         </div>
-        <p class="trust-note">Start with the workflow you need. Expand as your business grows.</p>
+        <p class="trust-note">Free to use during the initial release. No payment details or subscription are required to register.</p>
 
         <div class="module-grid" id="workspaces">
           <article class="module">
@@ -71,6 +85,12 @@
             <h2>Sales</h2>
             <p>Find sales records, review products and quantities sold, and turn transaction data into useful summaries and exports.</p>
             <span class="module-tag">Search · Sales history · Reports</span>
+          </article>
+          <article class="module">
+            <div class="module-icon" aria-hidden="true">▦</div>
+            <h2>Inventory</h2>
+            <p>Track catalogue stock, record manual receipts, and reduce stock when a bill is completed. Supplier invoice OCR is not connected to stock yet.</p>
+            <span class="module-tag">Stock · Receipts · Low stock</span>
           </article>
         </div>
       </div>
@@ -118,9 +138,18 @@
           <p>Use the product walkthroughs to get familiar with the intended flow for each part of Invoice Engine.</p>
         </div>
         <div class="tutorial-grid">
-          <article class="tutorial-card"><span class="tutorial-tag">WORKSPACE 01</span><h3>Purchasing</h3><p>Supplier invoice uploads, extraction, review, searching and workbook exports.</p><p><a href="/frontend/auth.html">Open workspace ↗</a></p></article>
-          <article class="tutorial-card"><span class="tutorial-tag">WORKSPACE 02</span><h3>Billing</h3><p>Product catalogue, bill preparation, bill customisation and transaction records.</p><p><a href="/frontend/auth.html">Open workspace ↗</a></p></article>
-          <article class="tutorial-card"><span class="tutorial-tag">WORKSPACE 03</span><h3>Sales</h3><p>Sales history, product quantities, searchable transactions and available reports.</p><p><a href="/frontend/auth.html">Open workspace ↗</a></p></article>
+          <article class="tutorial-card tutorial-video-card">
+            <div class="tutorial-video-wrap"><video class="tutorial-video" controls autoplay muted playsinline preload="auto" poster="/frontend/tutorials/overview-poster.jpg"><source src="/frontend/tutorials/invoice-engine-overview.mp4" type="video/mp4">Your browser does not support HTML video.</video></div>
+            <span class="tutorial-tag">01 · START HERE</span><h3>The complete retail suite</h3><p>See how Purchasing, Billing and Sales connect in one workspace.</p>
+          </article>
+          <article class="tutorial-card tutorial-video-card">
+            <div class="tutorial-video-wrap"><video class="tutorial-video" controls playsinline preload="metadata" poster="/frontend/tutorials/purchasing-poster.jpg"><source src="/frontend/tutorials/invoice-engine-purchasing.mp4" type="video/mp4">Your browser does not support HTML video.</video></div>
+            <span class="tutorial-tag">02 · PURCHASING</span><h3>Invoices in. Excel out.</h3><p>Upload supplier invoices, review extracted details and export organised records.</p>
+          </article>
+          <article class="tutorial-card tutorial-video-card">
+            <div class="tutorial-video-wrap"><video class="tutorial-video" controls playsinline preload="metadata" poster="/frontend/tutorials/billing-sales-poster.jpg"><source src="/frontend/tutorials/invoice-engine-billing-sales.mp4" type="video/mp4">Your browser does not support HTML video.</video></div>
+            <span class="tutorial-tag">03 · BILLING + SALES</span><h3>Checkout and understand your sales</h3><p>Create customer bills, save transactions and review sales activity.</p>
+          </article>
         </div>
       </div>
     </section>
@@ -137,7 +166,18 @@
   </main>
 
   <footer>
-    <div class="wrap footer-inner"><span>© 2026 Invoice Engine</span><span>Purchasing · Billing · Sales</span></div>
+    <div class="wrap footer-inner"><span>© 2026 Invoice Engine</span><span>Purchasing · Billing · Sales · Finance · <a href="https://github.com/bhardwajprahit/invoice-engine/releases/latest/download/Invoice-Engine-Setup-1.0.1.exe" download>Download Windows app</a></span></div>
   </footer>
+<script>
+  // Keep only one tutorial playing at a time. The overview starts muted because browsers
+  // permit muted autoplay; the other lessons start when the visitor presses Play.
+  document.addEventListener('play', function(event) {
+    if (event.target && event.target.tagName === 'VIDEO') {
+      document.querySelectorAll('video').forEach(function(video) {
+        if (video !== event.target) video.pause();
+      });
+    }
+  }, true);
+</script>
 </body>
 </html>

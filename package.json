@@ -1,0 +1,61 @@
+{
+  "name": "invoice-engine-desktop",
+  "version": "1.0.1",
+  "private": true,
+  "description": "Windows desktop shell for Invoice Engine",
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "build:backend": "powershell -ExecutionPolicy Bypass -File desktop/build-backend.ps1",
+    "dist:win": "npm run build:backend && electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "^34.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.invoiceengine.desktop",
+    "productName": "Invoice Engine",
+    "asar": true,
+    "files": [
+      "desktop/main.cjs",
+      "desktop/preload.cjs",
+      "api.py",
+      "auth.py",
+      "database.py",
+      "job_queue.py",
+      "worker.py",
+      "batch_processor.py",
+      "duplicate_detector.py",
+      "document_loader.py",
+      "field_parser.py",
+      "normalizer.py",
+      "validator.py",
+      "ai_extractor.py",
+      "requirements.txt",
+      "frontend/**"
+    ],
+    "extraResources": [
+      {
+        "from": "desktop/backend/invoice-engine-backend.exe",
+        "to": "backend/invoice-engine-backend.exe"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "Invoice-Engine-Setup-${version}.${ext}",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "allowScripts": {
+    "electron@34.5.8": true
+  }
+}

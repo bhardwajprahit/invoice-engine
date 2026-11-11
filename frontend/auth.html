@@ -26,7 +26,7 @@
       border:1px solid var(--line); border-radius:20px;
       background:var(--panel); box-shadow:0 25px 80px rgba(0,0,0,.38);
     }
-    .brand { display:flex; align-items:center; gap:11px; margin-bottom:34px; font-size:18px; font-weight:750; }
+    .auth-brand-logo{display:block;width:min(250px,100%);height:auto;object-fit:contain}.brand { display:flex; align-items:center; gap:11px; margin-bottom:34px; font-size:18px; font-weight:750; }
     .brand-mark {
       width:38px;height:38px;display:grid;place-items:center;border-radius:11px;
       background:linear-gradient(135deg,rgba(96,124,255,.22),rgba(155,124,255,.16));
@@ -86,12 +86,7 @@
 <body>
   <main class="auth-card">
     <div class="brand">
-      <div class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h5"/><path d="M10 13h5"/><path d="M10 17h5"/>
-        </svg>
-      </div>
-      <span>Invoice Engine</span>
+      <img src="/frontend/invoice-engine-logo.png" alt="Invoice Engine" class="auth-brand-logo">
     </div>
 
     <h1 id="title">Welcome back</h1>
@@ -365,5 +360,21 @@
     showLogin();
     checkExistingSession();
   </script>
+
+<style id="invoice-engine-light-theme">
+:root{color-scheme:light;--bg:#f5f6f1;--panel:#fff;--line:rgba(43,73,51,.16);--muted:#68776c;--text:#25352b;--blue:#34734b;--purple:#795638;--green:#34734b}
+html,body{background:#f5f6f1!important;color:#25352b!important}
+body{background:radial-gradient(circle at 50% -10%,rgba(52,115,75,.10),transparent 45%),#f5f6f1!important;color:#25352b!important}
+.auth-card{background:#fff!important;border-color:rgba(43,73,51,.15)!important;box-shadow:0 20px 60px rgba(44,66,48,.10)!important}
+.brand-mark{background:linear-gradient(135deg,#34734b,#795638)!important;border-color:rgba(52,115,75,.25)!important;color:#fff!important}
+h1,label{color:#25352b!important}.subtitle,.divider{color:#68776c!important}
+.mode-switch{background:#f2f5f0!important;border-color:rgba(43,73,51,.15)!important}
+.mode-button{color:#68776c!important}.mode-button.active{background:#e4eee5!important;color:#285d3d!important;box-shadow:none!important}
+input{background:#fff!important;color:#25352b!important;border-color:rgba(43,73,51,.2)!important}
+input:focus{border-color:#34734b!important;box-shadow:0 0 0 3px rgba(52,115,75,.12)!important}
+.submit,.primary,.mode-button.active{background:#34734b!important;color:#fff!important}
+.submit:hover{background:#285c3b!important}
+</style>
+
 </body>
 </html>

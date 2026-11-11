@@ -227,7 +227,7 @@
                 0 8px 25px rgba(70,110,230,.25);
         }
 
-        .brand-title {
+        .sidebar-brand-logo{display:block;width:34px;height:auto;max-height:34px;object-fit:contain}.brand-logo-wrap{background:transparent!important;box-shadow:none!important;width:42px!important;height:42px!important;border-radius:0!important;padding:0!important}.brand-title {
 
             font-size: 16px;
 
@@ -480,6 +480,11 @@
             color:
                 var(--muted);
         }
+
+        .cloud-sync-status { max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:7px 10px; border:1px solid var(--border); border-radius:999px; background:var(--surface); color:var(--muted); font-size:10px; }
+        .cloud-sync-status[data-mode="success"] { color:#9bf3c1; border-color:rgba(57,217,138,.3); }
+        .cloud-sync-status[data-mode="error"] { color:#ffd0a0; border-color:rgba(245,196,81,.35); }
+        .cloud-sync-status[data-mode="busy"] { color:#c5d5ff; border-color:rgba(91,140,255,.4); }
 
         .status-dot {
 
@@ -1962,8 +1967,8 @@
 
         <div class="brand">
 
-            <div class="brand-mark">
-                IE
+            <div class="brand-mark brand-logo-wrap">
+                <img src="/frontend/invoice-engine-logo.png" alt="Invoice Engine" class="sidebar-brand-logo">
             </div>
 
             <div class="brand-copy">
@@ -2031,6 +2036,15 @@
             <span class="nav-icon">▰</span>
             <span class="nav-text">Files</span>
         </button>
+
+        <a
+            class="nav-item"
+            href="/frontend/finance.html"
+            title="Bank reconciliation and account migration"
+        >
+            <span class="nav-icon">₹</span>
+            <span class="nav-text">Finance</span>
+        </a>
 
         <div class="sidebar-bottom">
 
@@ -2105,6 +2119,8 @@
                 </span>
 
             </div>
+
+            <div id="ieCloudSyncStatus" class="cloud-sync-status" data-mode="busy" role="status" aria-live="polite">Checking workspace sync…</div>
 
         </header>
 
@@ -2402,12 +2418,6 @@ const state = {
     module:
         "home",
 
-    pendingModule:
-        null,
-
-    selectedPlan:
-        null,
-
     retailView:
         "current-bill",
 
@@ -2641,16 +2651,31 @@ async function apiRequest(
     path,
     options = {}
 ) {
+    // API endpoints containing customer data must receive the current
+    // Supabase access token. getSession() also allows the SDK to refresh
+    // an expired session before the request is sent.
+    const headers = new Headers(options.headers || {});
+
+    if (typeof supabaseClient !== "undefined" && supabaseClient?.auth) {
+        const { data: sessionData, error: sessionError } =
+            await supabaseClient.auth.getSession();
+
+        if (sessionError) {
+            throw new Error(`Could not verify your sign-in session: ${sessionError.message}`);
+        }
+
+        const accessToken = sessionData?.session?.access_token;
+        if (accessToken && !headers.has("Authorization")) {
+            headers.set("Authorization", `Bearer ${accessToken}`);
+        }
+    }
 
     const response =
         await fetch(
             `${API_BASE}${path}`,
             {
                 ...options,
-
-                headers: {
-                    ...(options.headers || {})
-                }
+                headers
             }
         );
 
@@ -2743,7 +2768,7 @@ async function checkApi() {
    ============================================================ */
 
 document
-    .querySelectorAll(".nav-item")
+    .querySelectorAll(".nav-item[data-page]")
     .forEach(button => {
 
         button.addEventListener(
@@ -2974,11 +2999,12 @@ function renderOverview() {
         </div>
       </section>
       <section class="ie-tutorials" aria-labelledby="ie-tutorials-title">
-        <div class="ie-tutorials-heading"><div><span class="ie-kicker">THE QUICK TOUR</span><h2 id="ie-tutorials-title">See the workflow. Skip the manual.</h2><p>Three short walkthroughs. Captions on, music on, corporate snoozefest off.</p></div><span class="ie-sound-chip">♫ SOUND ON · CAPTIONS INCLUDED</span></div>
+        <div class="ie-tutorials-heading"><div><span class="ie-kicker">THE QUICK TOUR</span><h2 id="ie-tutorials-title">See the workflow. Skip the manual.</h2><p>Watch the overview, then open a focused walkthrough for each workflow.</p></div><span class="ie-sound-chip">♫ USE PLAYER CONTROLS FOR SOUND</span></div>
         <div class="ie-video-grid">
-          <article class="ie-video-card"><div class="ie-video-frame"><video controls playsinline preload="metadata" poster="/frontend/tutorials/invoice-engine-overview-preview.jpg"><source src="/frontend/tutorials/invoice-engine-overview-genz.mp4" type="video/mp4">Your browser does not support embedded video.</video></div><div class="ie-video-copy"><span class="ie-video-tag">01 / THE BIG PICTURE</span><h3>Invoice Engine, unlocked.</h3><p>The 30-second-ish vibe check: what connects the whole workflow.</p></div></article>
-          <article class="ie-video-card"><div class="ie-video-frame"><video controls playsinline preload="metadata" poster="/frontend/tutorials/invoice-engine-purchasing-preview.jpg"><source src="/frontend/tutorials/invoice-engine-purchasing-genz-music.mp4" type="video/mp4">Your browser does not support embedded video.</video></div><div class="ie-video-copy"><span class="ie-video-tag">02 / PURCHASES</span><h3>Invoices in. Spreadsheet chaos out.</h3><p>Batch upload, AI extraction, review, then one combined Excel export.</p></div></article>
-          <article class="ie-video-card"><div class="ie-video-frame"><video controls playsinline preload="metadata" poster="/frontend/tutorials/invoice-engine-billing-sales-preview.jpg"><source src="/frontend/tutorials/invoice-engine-billing-sales-genz-music.mp4" type="video/mp4">Your browser does not support embedded video.</video></div><div class="ie-video-copy"><span class="ie-video-tag">03 / BILLING + SALES</span><h3>Checkout, then know your numbers.</h3><p>Create bills, keep sales history, and review the recorded summaries.</p></div></article>
+          <article class="ie-video-card"><div class="ie-video-frame"><video controls autoplay muted playsinline preload="auto" poster="/frontend/tutorials/overview-poster.jpg"><source src="/frontend/tutorials/invoice-engine-overview.mp4" type="video/mp4">Your browser does not support embedded video.</video></div><div class="ie-video-copy"><span class="ie-video-tag">01 / THE BIG PICTURE</span><h3>Invoice Engine, unlocked.</h3><p>The 30-second-ish vibe check: what connects the whole workflow.</p></div></article>
+          <article class="ie-video-card"><div class="ie-video-frame"><video controls playsinline preload="metadata" poster="/frontend/tutorials/purchasing-poster.jpg"><source src="/frontend/tutorials/invoice-engine-purchasing.mp4" type="video/mp4">Your browser does not support embedded video.</video></div><div class="ie-video-copy"><span class="ie-video-tag">02 / PURCHASES</span><h3>Invoices in. Spreadsheet chaos out.</h3><p>Batch upload, AI extraction, review, then one combined Excel export.</p></div></article>
+          <article class="ie-video-card"><div class="ie-video-frame"><video controls playsinline preload="metadata" poster="/frontend/tutorials/billing-sales-poster.jpg"><source src="/frontend/tutorials/invoice-engine-billing-sales.mp4" type="video/mp4">Your browser does not support embedded video.</video></div><div class="ie-video-copy"><span class="ie-video-tag">03 / BILLING + SALES</span><h3>Checkout, then know your numbers.</h3><p>Create bills, keep sales history, and review the recorded summaries.</p></div></article>
+          <article class="ie-video-card ie-finance-guide"><div class="ie-video-copy"><span class="ie-video-tag">04 / FINANCE · QUICK GUIDE</span><h3>Reconcile. Review. Migrate.</h3><p><strong>Bank reconciliation:</strong> import a bank CSV/XLSX, compare statement transactions with book entries, review suggested matches, then confirm or unmatch as needed.</p><p><strong>Migration Centre:</strong> upload an authorised accounting export, map its columns, preview validation results and commit approved rows to the review-only staging ledger.</p><a class="btn btn-primary" href="/frontend/finance.html">Open Finance workspace ↗</a></div></article>
         </div>
       </section>`;
 }
@@ -6607,7 +6633,14 @@ async function initialize() {
     }
 
     // Load the user's tenant-scoped retail workspace before rendering Billing/Sales.
-    await syncRetailStateFromCloud();
+    try {
+        await syncRetailStateFromCloud();
+    } catch (error) {
+        retailCloudSyncEnabled = false;
+        state.retail = window.ieRetailUserId ? loadRetailData(window.ieRetailUserId) : loadRetailData();
+        setCloudSyncStatus("Cloud unavailable; browser copy retained", "error");
+        console.warn("Retail workspace sync failed:", error);
+    }
     state.initialized = true;
 
     applySignedInIdentity();
@@ -6670,17 +6703,21 @@ document
 
 /* ============================================================
    RETAIL MODULES (BILLING + SALES)
-   Browser prototype storage is used until the retail API/database
-   is implemented. This is not a substitute for tenant-secure cloud storage.
+   Retail workspace state is stored per authenticated user in Supabase,
+   with a browser cache for availability and export.
    ============================================================ */
 
 function emptyRetailData() {
     return { products: [], sales: [], purchases: [], customers: [] };
 }
 
-function loadRetailData() {
+function retailStorageKey(userId = null) {
+    return userId ? `${RETAIL_STORAGE_KEY}:${userId}` : RETAIL_STORAGE_KEY;
+}
+
+function loadRetailData(userId = null) {
     try {
-        const parsed = JSON.parse(localStorage.getItem(RETAIL_STORAGE_KEY) || "null");
+        const parsed = JSON.parse(localStorage.getItem(retailStorageKey(userId)) || "null");
         if (!parsed || typeof parsed !== "object") return emptyRetailData();
         return {
             products: Array.isArray(parsed.products) ? parsed.products : [],
@@ -6696,6 +6733,8 @@ function loadRetailData() {
 let retailCloudSaveTimer = null;
 let retailCloudSyncBusy = false;
 let retailCloudSyncEnabled = false;
+let retailCloudSaveQueued = false;
+window.ieLegacyRetailAvailable = false;
 
 function setCloudSyncStatus(message, mode = "neutral") {
     const el = document.getElementById("ieCloudSyncStatus");
@@ -6703,6 +6742,10 @@ function setCloudSyncStatus(message, mode = "neutral") {
     el.textContent = message;
     el.dataset.mode = mode;
     el.title = message;
+}
+
+function writeRetailCache(value, userId) {
+    localStorage.setItem(retailStorageKey(userId), JSON.stringify(normalizeRetailState(value)));
 }
 
 function normalizeRetailState(value) {
@@ -6720,46 +6763,64 @@ async function syncRetailStateFromCloud() {
         setCloudSyncStatus("Cloud sync not configured", "error");
         return;
     }
-    const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
-    if (sessionError || !sessionData?.session?.user?.id) {
+    let sessionData;
+    try {
+        ({ data: sessionData } = await supabaseClient.auth.getSession());
+    } catch (error) {
+        console.warn("Could not read the session for workspace sync:", error);
+    }
+    const userId = sessionData?.session?.user?.id;
+    if (!userId) {
+        window.ieRetailUserId = null;
+        window.ieLegacyRetailAvailable = false;
+        state.retail = loadRetailData();
+        retailCloudSyncEnabled = false;
         setCloudSyncStatus("Sign in required for cloud sync", "error");
         return;
     }
-    const userId = sessionData.session.user.id;
+    window.ieRetailUserId = userId;
+    // Never reuse the unscoped browser cache in another signed-in account.
+    const localState = loadRetailData(userId);
+    const legacyState = loadRetailData();
+    const hasLegacyData = Object.values(legacyState).some(list => list.length > 0);
+    state.retail = localState;
+    window.ieLegacyRetailAvailable = hasLegacyData && !Object.values(localState).some(list => list.length > 0);
     setCloudSyncStatus("Connecting to cloud…", "busy");
     const { data, error } = await supabaseClient.from("user_workspaces")
         .select("owner_id, retail_state").eq("owner_id", userId).maybeSingle();
     if (error) {
-        setCloudSyncStatus("Cloud sync needs setup — see setup guide", "error");
+        retailCloudSyncEnabled = false;
+        setCloudSyncStatus(window.ieLegacyRetailAvailable ? "Older browser records need account assignment" : "Cloud unavailable; using this account’s browser copy", "error");
         console.warn("Invoice Engine workspace sync is not ready:", error.message);
         return;
     }
     if (data?.retail_state && typeof data.retail_state === "object") {
         const cloudState = normalizeRetailState(data.retail_state);
-        const localState = normalizeRetailState(state.retail);
         const hasCloudData = Object.values(cloudState).some(list => list.length > 0);
         const hasLocalData = Object.values(localState).some(list => list.length > 0);
         // If a row was created by saving business settings first, don't replace
         // existing browser records with the schema's empty default state.
         if (!hasCloudData && hasLocalData) {
+            window.ieLegacyRetailAvailable = false;
             state.retail = localState;
             const { error: seedError } = await supabaseClient.from("user_workspaces")
                 .update({ retail_state: localState, updated_at: new Date().toISOString() })
                 .eq("owner_id", userId);
             if (seedError) throw seedError;
-            try { localStorage.setItem(RETAIL_STORAGE_KEY, JSON.stringify(state.retail)); } catch (_) {}
+            try { writeRetailCache(state.retail, userId); } catch (_) {}
             retailCloudSyncEnabled = true;
             setCloudSyncStatus("Local records backed up to cloud", "success");
             return;
         }
         state.retail = hasCloudData ? cloudState : localState;
-        try { localStorage.setItem(RETAIL_STORAGE_KEY, JSON.stringify(state.retail)); } catch (_) {}
+        window.ieLegacyRetailAvailable = !hasCloudData && !hasLocalData && hasLegacyData;
+        try { writeRetailCache(state.retail, userId); } catch (_) {}
         retailCloudSyncEnabled = true;
-        setCloudSyncStatus(hasCloudData ? "Synced from cloud" : "Cloud workspace ready", "success");
+        setCloudSyncStatus(window.ieLegacyRetailAvailable ? "Older browser records need account assignment" : (hasCloudData ? "Synced from cloud" : "Cloud workspace ready"), window.ieLegacyRetailAvailable ? "error" : "success");
         return;
     }
-    // First sync: preserve local records by uploading them only when no cloud row exists.
-    const localState = normalizeRetailState(state.retail);
+    // First sync uses only the per-account cache. The legacy unscoped browser
+    // cache is deliberately not assigned to whichever account signs in first.
     const { error: insertError } = await supabaseClient.from("user_workspaces").insert({
         owner_id: userId,
         retail_state: localState,
@@ -6767,19 +6828,61 @@ async function syncRetailStateFromCloud() {
         updated_at: new Date().toISOString()
     });
     if (insertError) {
-        setCloudSyncStatus("Cloud sync needs setup — see setup guide", "error");
+        if (insertError.code === "23505") {
+            const retry = await supabaseClient.from("user_workspaces")
+                .select("retail_state").eq("owner_id", userId).maybeSingle();
+            if (!retry.error && retry.data) {
+                const cloudState = normalizeRetailState(retry.data.retail_state);
+                const hasCloudData = Object.values(cloudState).some(list => list.length > 0);
+                state.retail = hasCloudData ? cloudState : localState;
+                window.ieLegacyRetailAvailable = !hasCloudData && !Object.values(localState).some(list => list.length > 0) && hasLegacyData;
+                if (!hasCloudData) {
+                    const saved = await supabaseClient.from("user_workspaces")
+                        .update({ retail_state: localState, updated_at: new Date().toISOString() })
+                        .eq("owner_id", userId);
+                    if (saved.error) throw saved.error;
+                }
+                retailCloudSyncEnabled = true;
+                try { writeRetailCache(state.retail, userId); } catch (_) {}
+                setCloudSyncStatus("Workspace synced", "success");
+                return;
+            }
+        }
+        retailCloudSyncEnabled = false;
+        setCloudSyncStatus("Workspace could not be created; browser copy retained", "error");
         console.warn("Could not initialize workspace cloud row:", insertError.message);
         return;
     }
     retailCloudSyncEnabled = true;
-    setCloudSyncStatus("Local records backed up to cloud", "success");
+    try { writeRetailCache(state.retail, userId); } catch (_) {}
+    window.ieLegacyRetailAvailable = hasLegacyData && !Object.values(localState).some(list => list.length > 0);
+    setCloudSyncStatus(window.ieLegacyRetailAvailable ? "Older browser records need account assignment" : "Cloud workspace created", window.ieLegacyRetailAvailable ? "error" : "success");
+}
+
+function legacyRetailTransferAction() {
+    return window.ieLegacyRetailAvailable
+        ? '<button class="btn" type="button" onclick="importLegacyRetailData()">Review older browser records</button>'
+        : '';
+}
+
+function importLegacyRetailData() {
+    const legacy = loadRetailData();
+    const counts = Object.entries(legacy).map(([name, rows]) => `${rows.length} ${name}`).join(', ');
+    const accepted = window.confirm(`This browser has older records (${counts}) that are not assigned to an account. Import them into the currently signed-in workspace? Continue only if you have reviewed them and they belong to this business.`);
+    if (!accepted) return;
+    const previous = state.retail;
+    state.retail = legacy;
+    if (!saveRetailData()) { state.retail = previous; return; }
+    window.ieLegacyRetailAvailable = false;
+    setCloudSyncStatus(retailCloudSyncEnabled ? "Older records are being synced to this workspace" : "Imported to this account’s browser cache only; cloud sync is unavailable", retailCloudSyncEnabled ? "busy" : "error");
+    renderPage();
 }
 
 function scheduleRetailCloudSave() {
     if (!retailCloudSyncEnabled || typeof supabaseClient === "undefined" || !supabaseClient?.auth) return;
     clearTimeout(retailCloudSaveTimer);
     retailCloudSaveTimer = setTimeout(async () => {
-        if (retailCloudSyncBusy) return;
+        if (retailCloudSyncBusy) { retailCloudSaveQueued = true; return; }
         retailCloudSyncBusy = true;
         setCloudSyncStatus("Saving to cloud…", "busy");
         try {
@@ -6790,19 +6893,27 @@ function scheduleRetailCloudSave() {
                 .update({ retail_state: normalizeRetailState(state.retail), updated_at: new Date().toISOString() })
                 .eq("owner_id", userId);
             if (error) throw error;
+            writeRetailCache(state.retail, userId);
             setCloudSyncStatus("All changes synced", "success");
         } catch (error) {
             setCloudSyncStatus("Cloud save failed — local copy retained", "error");
             console.warn("Invoice Engine cloud save failed:", error.message);
         } finally {
             retailCloudSyncBusy = false;
+            if (retailCloudSaveQueued) {
+                retailCloudSaveQueued = false;
+                scheduleRetailCloudSave();
+            }
         }
     }, 650);
 }
 
 function saveRetailData() {
     try {
-        localStorage.setItem(RETAIL_STORAGE_KEY, JSON.stringify(state.retail));
+        // The active account key is set after cloud initialization; localStorage
+        // remains a fallback while session details are temporarily unavailable.
+        const key = window.ieRetailUserId ? retailStorageKey(window.ieRetailUserId) : RETAIL_STORAGE_KEY;
+        localStorage.setItem(key, JSON.stringify(state.retail));
         scheduleRetailCloudSave();
         return true;
     } catch (error) {
@@ -6813,42 +6924,7 @@ function saveRetailData() {
 
 function setModule(module) {
     if (!['home', 'purchasing', 'billing', 'sales'].includes(module)) return;
-    if (module === 'billing' || module === 'sales') {
-        state.pendingModule = module;
-        renderPlanChooser();
-        return;
-    }
     state.module = module;
-    renderPage();
-}
-
-function renderPlanChooser() {
-    const content = document.getElementById('content');
-    const app = document.querySelector('.app');
-    if (app) app.classList.remove('home-mode');
-    document.getElementById('pageTitle').textContent = 'Choose your plan';
-    document.getElementById('pageSubtitle').textContent = 'Select a plan to continue, or skip for now and explore the workspace.';
-    document.querySelectorAll('.module-tab').forEach(button => button.classList.toggle('active', false));
-    const target = state.pendingModule || 'billing';
-    content.innerHTML = `
-      <div class="page-header"><div><h2>Plans for ${target === 'billing' ? 'Billing' : 'Sales'}</h2><p>Start small and upgrade when your shop needs more.</p></div></div>
-      <div class="plan-grid">
-        <article class="card plan-card"><div class="suite-eyebrow">STARTER</div><h3>Starter</h3><div class="plan-price">Free to explore</div><p>Try the workspace and build your product catalogue.</p><ul><li>Product catalogue</li><li>Current bill and receipt preview</li><li>Basic sales records</li></ul><button class="btn" onclick="chooseRetailPlan('starter')">Choose Starter</button></article>
-        <article class="card plan-card featured"><div class="suite-eyebrow">FOR BUSY SHOPS</div><h3>Growth</h3><div class="plan-price">Flexible plan</div><p>For shops managing frequent transactions and stock.</p><ul><li>Fast product lookup and barcode/SKU support</li><li>Discounts, GST and payment tracking</li><li>Sales history and exports</li><li>Inventory and stock-receipt tools</li></ul><button class="btn btn-primary" onclick="chooseRetailPlan('growth')">Choose Growth</button></article>
-        <article class="card plan-card"><div class="suite-eyebrow">ALL-IN-ONE</div><h3>Complete Retail Suite</h3><div class="plan-price">Flexible plan</div><p>For purchasing, stock, billing and sales in one flow.</p><ul><li>Purchasing + Billing + Sales</li><li>Supplier and customer records</li><li>Combined stock and sales reports</li><li>Designed for future shared cloud inventory</li></ul><button class="btn" onclick="chooseRetailPlan('suite')">Choose Complete Suite</button></article>
-      </div>
-      <div class="module-landing-actions"><button class="btn" onclick="skipPlanForNow()">Skip for now</button><button class="btn" onclick="setModule('home')">← Back to modules</button></div>`;
-}
-
-function chooseRetailPlan(plan) {
-    state.selectedPlan = plan;
-    skipPlanForNow();
-}
-
-function skipPlanForNow() {
-    const target = state.pendingModule || 'billing';
-    state.module = target;
-    state.pendingModule = null;
     renderPage();
 }
 
@@ -6900,8 +6976,8 @@ function renderBillingModule() {
             <div><h2>Retail billing desk</h2><p>Create a bill, print customer and shop copies, and record the sale once.</p></div>
             <span class="retail-pill">BILLING + SALES</span>
         </div>
-        <nav class="retail-toolbar retail-workspace-nav" aria-label="Billing options"><button class="btn" data-retail-view="current-bill" onclick="setRetailView('current-bill')">Current bill</button><button class="btn" data-retail-view="catalogue" onclick="setRetailView('catalogue')">Product catalogue</button><button class="btn" data-retail-view="bill-designer" onclick="setRetailView('bill-designer')">Customize bills</button><button class="btn" data-retail-view="purchases" onclick="setRetailView('purchases')">Purchases / stock</button><button class="btn" onclick="setModule('sales')">Sales history & reports</button></nav>
-        <div class="retail-warning"><strong>Prototype storage notice:</strong> these new retail products, sales and stock records are saved in this browser only. They are not yet connected to secure shared cloud storage or to OCR purchase records. Do not use this browser-only version as the shop's sole production ledger.</div>
+        <nav class="retail-toolbar retail-workspace-nav" aria-label="Billing options"><button class="btn" data-retail-view="current-bill" onclick="setRetailView('current-bill')">Current bill</button><button class="btn" data-retail-view="catalogue" onclick="setRetailView('catalogue')">Product catalogue</button><button class="btn" data-retail-view="bill-designer" onclick="setRetailView('bill-designer')">Customize bills</button><button class="btn" data-retail-view="purchases" onclick="setRetailView('purchases')">Purchases / stock</button><button class="btn" onclick="setModule('sales')">Sales history & reports</button>${legacyRetailTransferAction()}</nav>
+        <div class="retail-warning"><strong>Workspace sync:</strong> retail records sync to the signed-in user’s Supabase workspace when cloud sync is available. The browser keeps a local cache; check the workspace status above before relying on another device. OCR supplier invoices do not update stock automatically.</div>
         <div class="retail-layout">
             <section id="billDesignerSection" class="card retail-card" hidden style="width:100%"><div class="retail-section-title"><h3>Customizable bill designer</h3><span class="retail-pill">BILLING</span></div><iframe title="Customizable bill designer" src="/frontend/business-tools.html?tool=bill" style="display:block;width:100%;height:1450px;border:0;border-radius:12px;background:#080c14" loading="lazy"></iframe></section>
             <div class="retail-stack">
@@ -7076,7 +7152,7 @@ function addRetailProduct() {
     document.getElementById("newProductCost").value = '0';
     document.getElementById("newProductStock").value = '0';
     renderRetailProducts(); renderReceiveProductOptions();
-    showToast("Product saved", `${name} was added to the browser's retail catalogue.`);
+    showToast("Product saved", `${name} was added to this workspace${retailCloudSyncEnabled ? ' and is syncing to cloud' : ' and is currently cached in this browser'}.`);
 }
 
 function renderRetailProducts() {
@@ -7213,7 +7289,7 @@ function completeRetailSale() {
     const phoneInput = document.getElementById("retailCustomerPhone"); if (phoneInput) phoneInput.value = '';
     const discountInput = document.getElementById("retailDiscount"); if (discountInput) discountInput.value = '0';
     renderRetailProducts(); renderRetailCart();
-    showToast("Sale recorded", `${billNumber} saved in this browser. Preparing two receipt copies.`);
+    showToast("Sale recorded", `${billNumber} saved to this workspace${retailCloudSyncEnabled ? ' and is syncing to cloud' : ' and is currently cached in this browser'}. Preparing two receipt copies.`);
     printRetailSale(sale);
 }
 
@@ -7231,6 +7307,9 @@ function printRetailSale(sale) {
         .ie-tutorials-heading p { margin:0; color:var(--muted); font-size:13px; line-height:1.6; }
         .ie-kicker { color:#72f5cb; font-size:10px; font-weight:900; letter-spacing:.18em; }
         .ie-sound-chip { flex-shrink:0; border:1px solid rgba(114,245,203,.22); background:rgba(114,245,203,.07); color:#9af7d9; border-radius:999px; padding:9px 12px; font-size:9px; font-weight:900; letter-spacing:.08em; }
+        .ie-finance-guide { display:flex; align-items:stretch; }
+        .ie-finance-guide .ie-video-copy { display:flex; flex-direction:column; align-items:flex-start; gap:10px; }
+        .ie-finance-guide .btn { margin-top:auto; text-decoration:none; }
         .ie-video-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:15px; }
         .ie-video-card { min-width:0; overflow:hidden; border:1px solid rgba(255,255,255,.09); border-radius:17px; background:rgba(15,22,34,.92); transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease; }
         .ie-video-card:hover { transform:translateY(-4px); border-color:rgba(114,245,203,.3); box-shadow:0 18px 40px rgba(0,0,0,.25); }
@@ -7252,12 +7331,21 @@ function printRetailSale(sale) {
 </style>
 <div id="ieCloudSyncStatus" data-mode="neutral" role="status" aria-live="polite">Cloud sync setup required</div>
 
+<script>
+document.addEventListener('play', function(event) {
+  if (event.target && event.target.tagName === 'VIDEO') {
+    document.querySelectorAll('video').forEach(function(video) {
+      if (video !== event.target) video.pause();
+    });
+  }
+}, true);
+</script>
 </body></html>`);
     printWindow.document.close();
 }
 
 function renderSalesModule() {
-    return `<div class="page-header"><div><h2>Sales & business reports</h2><p>Every bill completed in Billing appears here automatically, with customer and product-level details.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="/frontend/business-tools.html?tool=gstin" style="text-decoration:none">GSTIN tools</a><button class="btn" onclick="exportRetailWorkbook()">↓ Export retail Excel</button><button class="btn btn-primary" onclick="setModule('billing')">＋ Create bill</button></div></div><div class="retail-warning"><strong>Data scope:</strong> these sales reports reflect browser-stored prototype records only. Secure multi-user cloud reporting and integration with supplier-invoice OCR require backend work.</div><div id="retailSalesStats" class="retail-stat-grid"></div><section class="card retail-card" style="margin-bottom:16px"><div class="retail-section-title"><h3>Customer records</h3><span class="retail-pill" id="retailCustomerCount">0 customers</span></div><div id="retailCustomersTable" class="retail-table-wrap"></div></section><section class="card retail-card"><div class="retail-section-title"><h3>Sales history</h3><button class="btn btn-small" onclick="exportRetailWorkbook()">Export all retail data</button></div><div class="retail-toolbar"><input id="retailSalesSearch" class="retail-input" placeholder="Search bill number, customer, phone or item..." oninput="renderSalesHistory()"><select id="retailSalesPeriod" class="retail-input" style="max-width:190px" onchange="renderSalesData()"><option value="all">All time</option><option value="today">Today</option><option value="month" selected>This month</option></select><button class="btn btn-primary" type="button" onclick="exportFilteredSalesWorkbook()">↓ Export searched results</button></div><p class="retail-muted">Export all retail data for the full workbook, or search/filter above and export only the matching bills and relevant purchased items.</p><div id="retailSalesTable" class="retail-table-wrap"></div></section><section class="card retail-card" style="margin-top:16px"><div class="retail-section-title"><h3>Recent purchase / stock receipts</h3><span class="retail-pill">${state.retail.purchases.length} records</span></div><div id="retailPurchasesTable" class="retail-table-wrap"></div></section>`;
+    return `<div class="page-header"><div><h2>Sales & business reports</h2><p>Every bill completed in Billing appears here automatically, with customer and product-level details.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="/frontend/business-tools.html?tool=gstin" style="text-decoration:none">GSTIN tools</a>${legacyRetailTransferAction()}<button class="btn" onclick="exportRetailWorkbook()">↓ Export retail Excel</button><button class="btn btn-primary" onclick="setModule('billing')">＋ Create bill</button></div></div><div class="retail-warning"><strong>Data scope:</strong> sales and manual stock receipts sync to this signed-in user’s workspace when the cloud status is successful. Supplier-invoice OCR is not linked to stock, and estimated profit is not accounting data.</div><div id="retailSalesStats" class="retail-stat-grid"></div><section class="card retail-card" style="margin-bottom:16px"><div class="retail-section-title"><h3>Customer records</h3><span class="retail-pill" id="retailCustomerCount">0 customers</span></div><div id="retailCustomersTable" class="retail-table-wrap"></div></section><section class="card retail-card"><div class="retail-section-title"><h3>Sales history</h3><button class="btn btn-small" onclick="exportRetailWorkbook()">Export all retail data</button></div><div class="retail-toolbar"><input id="retailSalesSearch" class="retail-input" placeholder="Search bill number, customer, phone or item..." oninput="renderSalesHistory()"><select id="retailSalesPeriod" class="retail-input" style="max-width:190px" onchange="renderSalesData()"><option value="all">All time</option><option value="today">Today</option><option value="month" selected>This month</option></select><button class="btn btn-primary" type="button" onclick="exportFilteredSalesWorkbook()">↓ Export searched results</button></div><p class="retail-muted">Export all retail data for the full workbook, or search/filter above and export only the matching bills and relevant purchased items.</p><div id="retailSalesTable" class="retail-table-wrap"></div></section><section class="card retail-card" style="margin-top:16px"><div class="retail-section-title"><h3>Recent purchase / stock receipts</h3><span class="retail-pill">${state.retail.purchases.length} records</span></div><div id="retailPurchasesTable" class="retail-table-wrap"></div></section>`;
 }
 
 function filteredRetailSales() {
@@ -7715,5 +7803,45 @@ protectDashboard();
 
 </script>
 
+
+<style id="invoice-engine-light-theme">
+:root{color-scheme:light;--bg:#f5f6f1;--panel:#ffffff;--panel-2:#f8faf7;--panel-3:#edf2ec;--border:rgba(43,73,51,.13);--border-strong:rgba(43,73,51,.22);--text:#25352b;--muted:#68776c;--muted-2:#89958b;--blue:#34734b;--blue-2:#795638;--green:#34734b;--yellow:#a86e22;--red:#bd4b4b;--shadow:0 12px 32px rgba(44,66,48,.09);}
+html,body{background:#f5f6f1!important;color:#25352b!important}
+.app{background:linear-gradient(135deg,#f7f8f3 0%,#f1f5ef 100%)!important;color:#25352b!important}
+.sidebar{background:#fff!important;border-right:1px solid rgba(43,73,51,.13)!important}
+.brand-mark{background:linear-gradient(135deg,#34734b,#795638)!important;color:#fff!important;box-shadow:0 7px 18px rgba(52,115,75,.18)!important}
+.nav-item{color:#657468!important}
+.nav-item:hover{background:#f1f5ef!important;color:#25352b!important}
+.nav-item.active{background:#e6f0e7!important;color:#285d3d!important}
+.avatar{background:#edf2ec!important;color:#5e4934!important}
+.topbar{background:rgba(255,255,255,.94)!important;border-bottom:1px solid rgba(43,73,51,.13)!important}
+.topbar-left h1,.page-header h2,.card h3,.modal-header h3{color:#25352b!important}
+.topbar-left p,.page-header p,.stat-label,.stat-note,.sub,.muted{color:#68776c!important}
+.card,.stat-card,.job-card,.report-card,.folder-card,.modal,.context-menu{background:#fff!important;border-color:rgba(43,73,51,.14)!important;color:#25352b!important;box-shadow:0 8px 24px rgba(44,66,48,.06)!important}
+.btn-primary,.btn-success,.primary,.module-tab.active{background:linear-gradient(135deg,#34734b,#285c3b)!important;border-color:#34734b!important;color:#fff!important}
+.btn-primary:hover,.btn-success:hover,.primary:hover{background:#285c3b!important}
+.btn,.btn-small,.menu-btn,.context-item{border-color:rgba(43,73,51,.18)!important}
+.btn:not(.btn-primary):not(.btn-success):not(.btn-danger),.menu-btn{background:#f5f7f3!important;color:#405446!important}
+.btn-danger{background:#fff1ef!important;color:#a83f3f!important;border-color:#e8c7c1!important}
+input,select,textarea,.search,.table-toolbar .search{background:#fff!important;color:#25352b!important;border-color:rgba(43,73,51,.2)!important}
+input:focus,select:focus,textarea:focus,.search:focus{border-color:#34734b!important;box-shadow:0 0 0 3px rgba(52,115,75,.12)!important;outline:none!important}
+table{color:#25352b!important}th{background:#f1f5ef!important;color:#526a58!important}td{border-color:rgba(43,73,51,.12)!important}tr:hover td{background:#f7faf6!important}
+.status-valid,.status-processing,.cloud-sync-status[data-mode="success"]{background:#e8f3e9!important;color:#2f7048!important}
+.upload-zone{background:#f7faf6!important;border-color:#b7cbb9!important}
+.upload-zone.dragover{background:#eaf3eb!important;border-color:#34734b!important}
+.modal-backdrop.show{background:rgba(28,43,32,.42)!important}
+.toast{background:#fff!important;color:#25352b!important;border:1px solid rgba(43,73,51,.15)!important;box-shadow:0 10px 30px rgba(44,66,48,.12)!important}
+.empty-icon,.folder-icon{color:#795638!important}
+</style>
+
+<script>
+document.addEventListener('play', function(event) {
+  if (event.target && event.target.tagName === 'VIDEO') {
+    document.querySelectorAll('video').forEach(function(video) {
+      if (video !== event.target) video.pause();
+    });
+  }
+}, true);
+</script>
 </body>
 </html>
