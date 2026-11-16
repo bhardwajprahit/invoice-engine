@@ -2037,15 +2037,6 @@
             <span class="nav-text">Files</span>
         </button>
 
-        <a
-            class="nav-item"
-            href="/frontend/finance.html"
-            title="Bank reconciliation and account migration"
-        >
-            <span class="nav-icon">₹</span>
-            <span class="nav-text">Finance</span>
-        </a>
-
         <div class="sidebar-bottom">
 
             <div class="profile">
@@ -2989,22 +2980,21 @@ function renderPage() {
 
 function renderOverview() {
     return `
-      <div class="page-header"><div><h2>Choose your workspace</h2><p>One platform. Three powerful ways to run your business.</p></div></div>
+      <div class="page-header"><div><h2>Choose your workspace</h2><p>One platform. Three connected workspaces for your business.</p></div></div>
       <section class="suite-section">
-        <div class="suite-heading"><div><h3>Purchasing. Billing. Sales.</h3><p>Choose a module to see its features and open its workspace.</p></div></div>
+        <div class="suite-heading"><div><h3>Purchasing. Billing. Sales.</h3><p>Three focused workspaces, brought together in Invoice Engine.</p></div></div>
         <div class="suite-grid">
-          <article class="card suite-card"><div class="suite-icon">▤</div><div class="suite-eyebrow">INVOICE AUTOMATION</div><h3>Purchasing — Invoice to Excel</h3><p>Turn supplier invoices into searchable, structured records and combined Excel reports.</p><ul><li>Bulk photo/PDF uploads</li><li>OCR + AI extraction and validation</li><li>Search by supplier, invoice, item and HSN</li><li>Invoice history, review tools and combined Excel exports</li></ul><button class="btn btn-primary" onclick="setModule('purchasing')">Open Purchasing</button></article>
-          <article class="card suite-card"><div class="suite-icon">▣</div><div class="suite-eyebrow">RETAIL CHECKOUT</div><h3>Billing + Sales</h3><p>Create customer bills and print receipts with saved product details automatically filled in.</p><ul><li>Product catalogue with prices, tax and stock</li><li>Current bill with fast product lookup</li><li>Discounts, GST and payment methods</li><li>Customer records, sales history and reports</li></ul><button class="btn btn-primary" onclick="setModule('billing')">Open Billing</button></article>
-          <article class="card suite-card suite-card-featured"><div class="suite-icon">✦</div><div class="suite-eyebrow">ALL-IN-ONE RETAIL</div><h3>Complete Retail Suite</h3><p>Connect supplier purchases, stock and checkout in one retail workflow.</p><ul><li>Purchasing + Billing + Sales</li><li>Shared inventory and stock movements</li><li>Supplier and customer records</li><li>Combined purchase, stock and sales reports</li></ul><button class="btn" onclick="setModule('billing')">Explore Retail Suite</button></article>
+          <article class="card suite-card"><div class="suite-icon">▤</div><div class="suite-eyebrow">INVOICE AUTOMATION</div><h3>Purchasing</h3><p>Turn supplier invoices into searchable, structured records and organised Excel reports.</p><ul><li>Bulk photo/PDF uploads</li><li>OCR + AI extraction and validation</li><li>Search by supplier, invoice, item and HSN</li><li>Invoice history, review tools and combined Excel exports</li></ul><button class="btn btn-primary" onclick="setModule('purchasing')">Open Purchasing</button></article>
+          <article class="card suite-card"><div class="suite-icon">▣</div><div class="suite-eyebrow">RETAIL CHECKOUT</div><h3>Billing</h3><p>Create customer bills and receipts using your saved product catalogue.</p><ul><li>Product catalogue with prices, tax and stock</li><li>Current bill with fast product lookup</li><li>Discounts, GST and payment methods</li><li>Customer details and bill records</li></ul><button class="btn btn-primary" onclick="setModule('billing')">Open Billing</button></article>
+          <article class="card suite-card suite-card-featured"><div class="suite-icon">↗</div><div class="suite-eyebrow">SALES & REPORTING</div><h3>Sales</h3><p>Review completed sales and understand activity recorded through billing.</p><ul><li>Sales history and transaction details</li><li>Search sales and customer records</li><li>Review products and quantities sold</li><li>Sales summaries and reports</li></ul><button class="btn btn-primary" onclick="setModule('sales')">Open Sales</button></article>
         </div>
       </section>
       <section class="ie-tutorials" aria-labelledby="ie-tutorials-title">
         <div class="ie-tutorials-heading"><div><span class="ie-kicker">THE QUICK TOUR</span><h2 id="ie-tutorials-title">See the workflow. Skip the manual.</h2><p>Watch the overview, then open a focused walkthrough for each workflow.</p></div><span class="ie-sound-chip">♫ USE PLAYER CONTROLS FOR SOUND</span></div>
         <div class="ie-video-grid">
-          <article class="ie-video-card"><div class="ie-video-frame"><video controls autoplay muted playsinline preload="auto" poster="/frontend/tutorials/overview-poster.jpg"><source src="/frontend/tutorials/invoice-engine-overview.mp4" type="video/mp4">Your browser does not support embedded video.</video></div><div class="ie-video-copy"><span class="ie-video-tag">01 / THE BIG PICTURE</span><h3>Invoice Engine, unlocked.</h3><p>The 30-second-ish vibe check: what connects the whole workflow.</p></div></article>
-          <article class="ie-video-card"><div class="ie-video-frame"><video controls playsinline preload="metadata" poster="/frontend/tutorials/purchasing-poster.jpg"><source src="/frontend/tutorials/invoice-engine-purchasing.mp4" type="video/mp4">Your browser does not support embedded video.</video></div><div class="ie-video-copy"><span class="ie-video-tag">02 / PURCHASES</span><h3>Invoices in. Spreadsheet chaos out.</h3><p>Batch upload, AI extraction, review, then one combined Excel export.</p></div></article>
+          <article class="ie-video-card"><div class="ie-video-frame"><video controls autoplay muted playsinline preload="auto" poster="/frontend/tutorials/overview-poster.jpg"><source src="/frontend/tutorials/invoice-engine-overview.mp4" type="video/mp4">Your browser does not support embedded video.</video></div><div class="ie-video-copy"><span class="ie-video-tag">01 / THE BIG PICTURE</span><h3>Invoice Engine, unlocked.</h3><p>See how the three workspaces fit into one product.</p></div></article>
+          <article class="ie-video-card"><div class="ie-video-frame"><video controls playsinline preload="metadata" poster="/frontend/tutorials/purchasing-poster.jpg"><source src="/frontend/tutorials/invoice-engine-purchasing.mp4" type="video/mp4">Your browser does not support embedded video.</video></div><div class="ie-video-copy"><span class="ie-video-tag">02 / PURCHASING</span><h3>Invoices in. Spreadsheet chaos out.</h3><p>Batch upload, AI extraction, review, then one combined Excel export.</p></div></article>
           <article class="ie-video-card"><div class="ie-video-frame"><video controls playsinline preload="metadata" poster="/frontend/tutorials/billing-sales-poster.jpg"><source src="/frontend/tutorials/invoice-engine-billing-sales.mp4" type="video/mp4">Your browser does not support embedded video.</video></div><div class="ie-video-copy"><span class="ie-video-tag">03 / BILLING + SALES</span><h3>Checkout, then know your numbers.</h3><p>Create bills, keep sales history, and review the recorded summaries.</p></div></article>
-          <article class="ie-video-card ie-finance-guide"><div class="ie-video-copy"><span class="ie-video-tag">04 / FINANCE · QUICK GUIDE</span><h3>Reconcile. Review. Migrate.</h3><p><strong>Bank reconciliation:</strong> import a bank CSV/XLSX, compare statement transactions with book entries, review suggested matches, then confirm or unmatch as needed.</p><p><strong>Migration Centre:</strong> upload an authorised accounting export, map its columns, preview validation results and commit approved rows to the review-only staging ledger.</p><a class="btn btn-primary" href="/frontend/finance.html">Open Finance workspace ↗</a></div></article>
         </div>
       </section>`;
 }
@@ -7339,7 +7329,7 @@ document.addEventListener('play', function(event) {
     });
   }
 }, true);
-</script>
+<\/script>
 </body></html>`);
     printWindow.document.close();
 }
@@ -7803,36 +7793,6 @@ protectDashboard();
 
 </script>
 
-
-<style id="invoice-engine-light-theme">
-:root{color-scheme:light;--bg:#f5f6f1;--panel:#ffffff;--panel-2:#f8faf7;--panel-3:#edf2ec;--border:rgba(43,73,51,.13);--border-strong:rgba(43,73,51,.22);--text:#25352b;--muted:#68776c;--muted-2:#89958b;--blue:#34734b;--blue-2:#795638;--green:#34734b;--yellow:#a86e22;--red:#bd4b4b;--shadow:0 12px 32px rgba(44,66,48,.09);}
-html,body{background:#f5f6f1!important;color:#25352b!important}
-.app{background:linear-gradient(135deg,#f7f8f3 0%,#f1f5ef 100%)!important;color:#25352b!important}
-.sidebar{background:#fff!important;border-right:1px solid rgba(43,73,51,.13)!important}
-.brand-mark{background:linear-gradient(135deg,#34734b,#795638)!important;color:#fff!important;box-shadow:0 7px 18px rgba(52,115,75,.18)!important}
-.nav-item{color:#657468!important}
-.nav-item:hover{background:#f1f5ef!important;color:#25352b!important}
-.nav-item.active{background:#e6f0e7!important;color:#285d3d!important}
-.avatar{background:#edf2ec!important;color:#5e4934!important}
-.topbar{background:rgba(255,255,255,.94)!important;border-bottom:1px solid rgba(43,73,51,.13)!important}
-.topbar-left h1,.page-header h2,.card h3,.modal-header h3{color:#25352b!important}
-.topbar-left p,.page-header p,.stat-label,.stat-note,.sub,.muted{color:#68776c!important}
-.card,.stat-card,.job-card,.report-card,.folder-card,.modal,.context-menu{background:#fff!important;border-color:rgba(43,73,51,.14)!important;color:#25352b!important;box-shadow:0 8px 24px rgba(44,66,48,.06)!important}
-.btn-primary,.btn-success,.primary,.module-tab.active{background:linear-gradient(135deg,#34734b,#285c3b)!important;border-color:#34734b!important;color:#fff!important}
-.btn-primary:hover,.btn-success:hover,.primary:hover{background:#285c3b!important}
-.btn,.btn-small,.menu-btn,.context-item{border-color:rgba(43,73,51,.18)!important}
-.btn:not(.btn-primary):not(.btn-success):not(.btn-danger),.menu-btn{background:#f5f7f3!important;color:#405446!important}
-.btn-danger{background:#fff1ef!important;color:#a83f3f!important;border-color:#e8c7c1!important}
-input,select,textarea,.search,.table-toolbar .search{background:#fff!important;color:#25352b!important;border-color:rgba(43,73,51,.2)!important}
-input:focus,select:focus,textarea:focus,.search:focus{border-color:#34734b!important;box-shadow:0 0 0 3px rgba(52,115,75,.12)!important;outline:none!important}
-table{color:#25352b!important}th{background:#f1f5ef!important;color:#526a58!important}td{border-color:rgba(43,73,51,.12)!important}tr:hover td{background:#f7faf6!important}
-.status-valid,.status-processing,.cloud-sync-status[data-mode="success"]{background:#e8f3e9!important;color:#2f7048!important}
-.upload-zone{background:#f7faf6!important;border-color:#b7cbb9!important}
-.upload-zone.dragover{background:#eaf3eb!important;border-color:#34734b!important}
-.modal-backdrop.show{background:rgba(28,43,32,.42)!important}
-.toast{background:#fff!important;color:#25352b!important;border:1px solid rgba(43,73,51,.15)!important;box-shadow:0 10px 30px rgba(44,66,48,.12)!important}
-.empty-icon,.folder-icon{color:#795638!important}
-</style>
 
 <script>
 document.addEventListener('play', function(event) {
